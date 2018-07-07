@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import MiniDrawer from './sidebar';
-
+import MiniDrawer from './sideBar';
 
 ReactDOM.render(<MiniDrawer />, document.querySelector('#app'));
