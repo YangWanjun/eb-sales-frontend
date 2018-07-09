@@ -14,7 +14,7 @@ import LibraryBooks from '@material-ui/icons/LibraryBooks'
 
 export const homeListItmes = (
     <div>
-        <ListItem button>
+        <ListItem button component='a' href="/">
             <ListItemIcon>
                 <HomeIcon />
             </ListItemIcon>

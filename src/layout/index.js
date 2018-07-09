@@ -10,7 +10,7 @@ import IconButton from '@material-ui/core/IconButton';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import { homeListItmes, memberListItems, projectListItems } from './sideMenu';
-import TopBar from './topBar'
+import TopBar from '../components/topBar'
 
 const drawerWidth = 240;
 
@@ -78,7 +78,7 @@ const styles = theme => ({
   },
 });
 
-class MiniDrawer extends React.Component {
+class Layout extends React.Component {
   state = {
     open: false,
   };
@@ -119,15 +119,16 @@ class MiniDrawer extends React.Component {
         <main className={classes.content}>
           <div className={classes.toolbar} />
           <Typography noWrap>{'You think water moves fast? You should see ice.'}</Typography>
+          {this.props.children}
         </main>
       </div>
     );
   }
 }
 
-MiniDrawer.propTypes = {
+Layout.propTypes = {
   classes: PropTypes.object.isRequired,
   theme: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles, { withTheme: true })(MiniDrawer);
+export default withStyles(styles, { withTheme: true })(Layout);
