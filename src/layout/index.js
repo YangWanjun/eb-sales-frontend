@@ -1,16 +1,17 @@
 import React from 'react';
+import { Switch, Route } from 'react-router-dom'
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
-import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import { homeListItmes, memberListItems, projectListItems } from './sideMenu';
-import TopBar from '../components/topBar'
+import TopBar from '../components/topBar';
+import MemberList from '../pages/members';
 
 const drawerWidth = 240;
 
@@ -118,8 +119,9 @@ class Layout extends React.Component {
         </Drawer>
         <main className={classes.content}>
           <div className={classes.toolbar} />
-          <Typography noWrap>{'You think water moves fast? You should see ice.'}</Typography>
-          {this.props.children}
+          <Switch>
+            <Route path='/members' component={MemberList} />
+          </Switch>
         </main>
       </div>
     );

@@ -1,6 +1,7 @@
 // This file is shared across the demos.
 
 import React from 'react';
+import { Link } from 'react-router-dom'
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -14,7 +15,7 @@ import LibraryBooks from '@material-ui/icons/LibraryBooks'
 
 export const homeListItmes = (
     <div>
-        <ListItem button component='a' href="/">
+        <ListItem button component={Link} to="/">
             <ListItemIcon>
                 <HomeIcon />
             </ListItemIcon>
@@ -25,13 +26,13 @@ export const homeListItmes = (
 
 export const memberListItems = (
     <div>
-        <ListItem button>
+        <ListItem button component={Link} to='/members'>
             <ListItemIcon>
                 <People />
             </ListItemIcon>
             <ListItemText primary="社員一覧" />
         </ListItem>
-        <ListItem button>
+        <ListItem button component={Link} to='/departments'>
             <ListItemIcon>
                 <FolderShared />
             </ListItemIcon>
@@ -42,25 +43,25 @@ export const memberListItems = (
 
 export const projectListItems = (
     <div>
-        <ListItem button>
+        <ListItem button component={Link} to='/projects'>
             <ListItemIcon>
                 <GroupWork />
             </ListItemIcon>
             <ListItemText primary="案件一覧" />
         </ListItem>
-        <ListItem button>
+        <ListItem button component={Link} to='/customers'>
             <ListItemIcon>
                 <Business />
             </ListItemIcon>
             <ListItemText primary="取引先一覧" />
         </ListItem>
-        <ListItem button>
+        <ListItem button component={Link} to='/partners'>
             <ListItemIcon>
                 <RecentActors />
             </ListItemIcon>
             <ListItemText primary="協力会社一覧" />
         </ListItem>
-        <ListItem button>
+        <ListItem button component={Link} to='/bpcontracts'>
             <ListItemIcon>
                 <LibraryBooks />
             </ListItemIcon>
