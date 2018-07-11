@@ -1,5 +1,19 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import CircularProgress from '@material-ui/core/CircularProgress';
+import { withStyles } from '@material-ui/core/styles';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+
+const styles = theme => ({
+  paper: {
+    padding: theme.spacing.unit * 2,
+    paddingTop: 100,
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
+    minHeight: 200,
+  },
+});
 
 class DataProvider extends Component {
   static propTypes = {
@@ -25,9 +39,21 @@ class DataProvider extends Component {
   }
 
   render() {
+    const { classes } = this.props;
     const { data, loaded, placeholder } = this.state;
-    return loaded ? this.props.render(data) : <p>{placeholder}</p>;
+    if (loaded) {
+      return this.props.render(data);
+    } else {
+      return (
+        <Paper className={classes.paper}>
+          <CircularProgress />
+          <Typography component="p">
+            {placeholder}
+          </Typography>
+        </Paper>
+      );
+    }
   }
 }
 
-export default DataProvider;
+export default withStyles(styles)(DataProvider);
