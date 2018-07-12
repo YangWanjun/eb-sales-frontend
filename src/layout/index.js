@@ -12,6 +12,7 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import { homeListItmes, memberListItems, projectListItems } from './sideMenu';
 import TopBar from '../components/topBar';
 import MemberList from '../pages/members';
+import PartnerList from '../pages/partners';
 
 const drawerWidth = 240;
 
@@ -121,6 +122,7 @@ class Layout extends React.Component {
           <div className={classes.toolbar} />
           <Switch>
             <Route path='/members' component={MemberList} />
+            <Route path='/partners' component={PartnerList} />
           </Switch>
         </main>
       </div>
