@@ -31,18 +31,21 @@ class EnhancedTableHead extends React.Component {
   };
 
   render() {
-    const { onSelectAllClick, order, orderBy, numSelected, rowCount, columnData } = this.props;
+    const { onSelectAllClick, order, orderBy, numSelected, rowCount, columnData, isSelectable } = this.props;
+    const chkCell = isSelectable ? (
+      <TableCell padding="none">
+        <Checkbox
+          indeterminate={numSelected > 0 && numSelected < rowCount}
+          checked={numSelected === rowCount}
+          onChange={onSelectAllClick}
+        />
+      </TableCell>
+    ) : (<React.Fragment></React.Fragment>)
 
     return (
       <TableHead>
         <TableRow>
-          <TableCell padding="none">
-            <Checkbox
-              indeterminate={numSelected > 0 && numSelected < rowCount}
-              checked={numSelected === rowCount}
-              onChange={onSelectAllClick}
-            />
-          </TableCell>
+          { chkCell }
           {columnData.map(column => {
             return (
               <TableCell
@@ -202,6 +205,9 @@ class EnhancedTable extends React.Component {
   };
 
   handleClick = (event, id) => {
+    if (this.props.isSelectable === false) {
+      return;
+    }
     const { selected } = this.state;
     const selectedIndex = selected.indexOf(id);
     let newSelected = [];
@@ -233,13 +239,13 @@ class EnhancedTable extends React.Component {
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
   render() {
-    const { classes, tableTitle } = this.props;
+    const { classes, tableTitle, isSelectable } = this.props;
     const { data, columns, order, orderBy, selected, rowsPerPage, page } = this.state;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
 
     return (
       <Paper className={classes.root}>
-        <EnhancedTableToolbar numSelected={selected.length} tableTitle={tableTitle} />
+        <EnhancedTableToolbar numSelected={selected.length} tableTitle={tableTitle} isSelectable={isSelectable} />
         <div className={classes.tableWrapper}>
           <Table className={classes.table} aria-labelledby="tableTitle">
             <EnhancedTableHead
@@ -257,6 +263,11 @@ class EnhancedTable extends React.Component {
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map(n => {
                   const isSelected = this.isSelected(n.id);
+                  const chkCell = isSelectable ? (
+                    <TableCell padding="none">
+                      <Checkbox checked={isSelected} />
+                    </TableCell>
+                  ) : (<React.Fragment></React.Fragment>);
                   return (
                     <TableRow
                       hover
@@ -267,9 +278,7 @@ class EnhancedTable extends React.Component {
                       key={n.id}
                       selected={isSelected}
                     >
-                      <TableCell padding="none">
-                        <Checkbox checked={isSelected} />
-                      </TableCell>
+                      {chkCell}
                       {columns.map(col => {
                         if (col.numeric === true) {
                           return (<TableCell key={col.id} numeric>{n[col.id]}</TableCell>);
@@ -282,7 +291,7 @@ class EnhancedTable extends React.Component {
                 })}
               {emptyRows > 0 && (
                 <TableRow style={{ height: 49 * emptyRows }}>
-                  <TableCell colSpan={columns.length} />
+                  <TableCell colSpan={ isSelectable ? columns.length + 1 : columns.length } />
                 </TableRow>
               )}
             </TableBody>

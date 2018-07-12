@@ -9,7 +9,7 @@ class MemberList extends React.Component {
     return (
       // <EnhancedTable tableTitle='社員一覧' />
       <DataProvider endpoint={ api.member_list } 
-                    render={ data => <EnhancedTable tableTitle='社員一覧' data={data} /> } />
+                    render={ data => <EnhancedTable tableTitle='社員一覧' data={data} isSelectable={false} /> } />
     );
   }
 }
