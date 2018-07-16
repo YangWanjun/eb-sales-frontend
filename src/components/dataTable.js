@@ -16,8 +16,8 @@ import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Delete';
-import FilterListIcon from '@material-ui/icons/FilterList';
 import { lighten } from '@material-ui/core/styles/colorManipulator';
+import FilterDialog from '../components/filterDialog';
 
 function getSorting(order, orderBy) {
   return order === 'desc'
@@ -47,7 +47,7 @@ class EnhancedTableHead extends React.Component {
         <TableRow>
           { chkCell }
           {columnData.map(column => {
-            return (
+            const cell = column.visible ? (
               <TableCell
                 key={column.id}
                 numeric={column.numeric}
@@ -68,7 +68,8 @@ class EnhancedTableHead extends React.Component {
                   </TableSortLabel>
                 </Tooltip>
               </TableCell>
-            );
+            ) : (<React.Fragment></React.Fragment>)
+            return cell;
           }, this)}
         </TableRow>
       </TableHead>
@@ -133,18 +134,13 @@ let EnhancedTableToolbar = props => {
       <div className={classes.spacer} />
       <div className={classes.actions}>
         {numSelected > 0 ? (
-          <Tooltip title="Delete">
+          <Tooltip title="削除">
             <IconButton aria-label="Delete">
               <DeleteIcon />
             </IconButton>
           </Tooltip>
-        ) : (
-          <Tooltip title="Filter list">
-            <IconButton aria-label="Filter list">
-              <FilterListIcon />
-            </IconButton>
-          </Tooltip>
-        )}
+        ) : <FilterDialog />
+        }
       </div>
     </Toolbar>
   );
@@ -280,10 +276,12 @@ class EnhancedTable extends React.Component {
                     >
                       {chkCell}
                       {columns.map(col => {
-                        if (col.numeric === true) {
+                        if (!col.visible) {
+                          return (<React.Fragment></React.Fragment>)
+                        } else if (col.numeric === true) {
                           return (<TableCell key={col.id} numeric>{n[col.id]}</TableCell>);
                         } else {
-                          return (<TableCell key={col.id} padding="none">{n[col.id]}</TableCell>);
+                          return (<TableCell key={col.id} padding="default">{n[col.id]}</TableCell>);
                         }
                       })}
                     </TableRow>
