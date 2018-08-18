@@ -4,16 +4,19 @@ import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Tooltip from '@material-ui/core/Tooltip';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import IconButton from '@material-ui/core/IconButton';
 
 class FilterDialog extends React.Component {
-  state = {
-    open: false,
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      open: false,
+    };
+  
+  }
 
   handleClickOpen = () => {
     this.setState({ open: true });
@@ -24,6 +27,7 @@ class FilterDialog extends React.Component {
   };
 
   render() {
+    const {filterTitle, columns} = this.props;
     return (
       <div>
         <Tooltip title="検索">
@@ -36,27 +40,31 @@ class FilterDialog extends React.Component {
           onClose={this.handleClose}
           aria-labelledby="form-dialog-title"
         >
-          <DialogTitle id="form-dialog-title">Subscribe</DialogTitle>
+          <DialogTitle id="form-dialog-title">{filterTitle}を検索</DialogTitle>
           <DialogContent>
-            <DialogContentText>
-              To subscribe to this website, please enter your email address here. We will send
-              updates occasionally.
-            </DialogContentText>
-            <TextField
+            {columns.map(col => {
+              return col.searchable ? <TextField 
+                key={col.id}
+                id={col.id}
+                label={col.label}
+                margin="normal"
+              /> : <React.Fragment key={col.id}/>;
+            })}
+            {/* <TextField
               autoFocus
               margin="dense"
               id="name"
               label="Email Address"
               type="email"
               fullWidth
-            />
+            /> */}
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleClose} color="primary">
-              Cancel
+              キャンセル
             </Button>
             <Button onClick={this.handleClose} color="primary">
-              Subscribe
+              検索
             </Button>
           </DialogActions>
         </Dialog>

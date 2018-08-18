@@ -68,7 +68,7 @@ class EnhancedTableHead extends React.Component {
                   </TableSortLabel>
                 </Tooltip>
               </TableCell>
-            ) : (<React.Fragment></React.Fragment>)
+            ) : (<React.Fragment key={column.id}/>)
             return cell;
           }, this)}
         </TableRow>
@@ -112,7 +112,7 @@ const toolbarStyles = theme => ({
 });
 
 let EnhancedTableToolbar = props => {
-  const { numSelected, classes, tableTitle } = props;
+  const { numSelected, classes, tableTitle, columns } = props;
 
   return (
     <Toolbar
@@ -139,7 +139,7 @@ let EnhancedTableToolbar = props => {
               <DeleteIcon />
             </IconButton>
           </Tooltip>
-        ) : <FilterDialog />
+        ) : <FilterDialog filterTitle={tableTitle} columns={columns} />
         }
       </div>
     </Toolbar>
@@ -241,7 +241,7 @@ class EnhancedTable extends React.Component {
 
     return (
       <Paper className={classes.root}>
-        <EnhancedTableToolbar numSelected={selected.length} tableTitle={tableTitle} isSelectable={isSelectable} />
+        <EnhancedTableToolbar numSelected={selected.length} columns={columns} tableTitle={tableTitle} isSelectable={isSelectable} />
         <div className={classes.tableWrapper}>
           <Table className={classes.table} aria-labelledby="tableTitle">
             <EnhancedTableHead
@@ -277,7 +277,7 @@ class EnhancedTable extends React.Component {
                       {chkCell}
                       {columns.map(col => {
                         if (!col.visible) {
-                          return (<React.Fragment></React.Fragment>)
+                          return <React.Fragment  key={col.id}/>;
                         } else if (col.numeric === true) {
                           return (<TableCell key={col.id} numeric>{n[col.id]}</TableCell>);
                         } else {
