@@ -32,7 +32,7 @@ class TopBar extends React.Component {
                         <MenuIcon />
                     </IconButton>
                     <Typography variant="title" color="inherit" noWrap>
-                        営業システム
+                        システム
                     </Typography>
                 </Toolbar>
             </AppBar>

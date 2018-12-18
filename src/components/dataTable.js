@@ -170,14 +170,16 @@ class EnhancedTable extends React.Component {
   constructor(props) {
     super(props);
 
+    this.handleChangePage = this.handleChangePage.bind(this);
     this.state = {
       order: 'asc',
       orderBy: 'calories',
       selected: [],
       data: props.data.results,
+      dataLength: props.data.count,
       columns: props.data.columns,
       page: 0,
-      rowsPerPage: 5,
+      rowsPerPage: 25,
     };
   }
 
@@ -226,6 +228,7 @@ class EnhancedTable extends React.Component {
 
   handleChangePage = (event, page) => {
     this.setState({ page });
+    this.props.onPageChange(this.state.rowsPerPage, page);
   };
 
   handleChangeRowsPerPage = event => {
@@ -236,8 +239,8 @@ class EnhancedTable extends React.Component {
 
   render() {
     const { classes, tableTitle, isSelectable } = this.props;
-    const { data, columns, order, orderBy, selected, rowsPerPage, page } = this.state;
-    const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
+    const { data, dataLength, columns, order, orderBy, selected, rowsPerPage, page } = this.state;
+    const emptyRows = rowsPerPage - Math.min(rowsPerPage, dataLength - page * rowsPerPage);
 
     return (
       <Paper className={classes.root}>
@@ -251,12 +254,12 @@ class EnhancedTable extends React.Component {
               orderBy={orderBy}
               onSelectAllClick={this.handleSelectAllClick}
               onRequestSort={this.handleRequestSort}
-              rowCount={data.length}
+              rowCount={dataLength}
             />
             <TableBody>
               {data
                 .sort(getSorting(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map(n => {
                   const isSelected = this.isSelected(n.id);
                   const chkCell = isSelectable ? (
@@ -297,7 +300,7 @@ class EnhancedTable extends React.Component {
         </div>
         <TablePagination
           component="div"
-          count={data.length}
+          count={dataLength}
           rowsPerPage={rowsPerPage}
           page={page}
           backIconButtonProps={{

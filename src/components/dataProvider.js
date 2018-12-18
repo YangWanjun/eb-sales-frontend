@@ -18,17 +18,29 @@ const styles = theme => ({
 class DataProvider extends Component {
   static propTypes = {
     endpoint: PropTypes.string.isRequired,
-    render: PropTypes.func.isRequired
+    render: PropTypes.func.isRequired,
   };
 
-  state = {
-    data: [],
-    loaded: false,
-    placeholder: "Loading..."
-  };
+  constructor(props) {
+    super(props);
+    this.handleChangePage = this.handleChangePage.bind(this);
+    this.state = {
+      url: this.props.endpoint,
+      data: [],
+      limit: 25,  // PageSize
+      offset: 0,
+      loaded: false,
+      placeholder: "Loading..."
+    };
+  }
 
   componentDidMount() {
-    fetch(this.props.endpoint)
+    this.handleChangePage(this.state.limit, this.state.offset)
+  }
+
+  handleChangePage(limit, page) {
+    const url = this.props.endpoint + "?limit=" + limit + "&offset=" + page * limit;
+    fetch(url)
       .then(response => {
         if (response.status !== 200) {
           return this.setState({ placeholder: "Something went wrong" });
@@ -42,7 +54,7 @@ class DataProvider extends Component {
     const { classes } = this.props;
     const { data, loaded, placeholder } = this.state;
     if (loaded) {
-      return this.props.render(data);
+      return this.props.render(data, this.handleChangePage);
     } else {
       return (
         <Paper className={classes.paper}>
