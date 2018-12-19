@@ -7,9 +7,8 @@ import { api } from '../utils/config';
 class MemberList extends React.Component {
   render () {
     return (
-      // <EnhancedTable tableTitle='社員一覧' />
       <DataProvider endpoint={ api.member_list } 
-                    render={ data => <EnhancedTable tableTitle='社員一覧' data={data} isSelectable={false} /> } />
+                    render={ (data, filters, handleDataRedraw) => <EnhancedTable tableTitle='社員一覧' data={data} filters={filters} onDataRedraw={handleDataRedraw} isSelectable={false} /> } />
     );
   }
 }
