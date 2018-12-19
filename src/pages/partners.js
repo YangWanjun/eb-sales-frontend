@@ -8,7 +8,7 @@ class PartnerList extends React.Component {
   render () {
     return (
       <DataProvider endpoint={ api.partner_list } 
-                    render={ (data, handleChangePage) => <EnhancedTable tableTitle='協力会社一覧' data={data} onPageChange={handleChangePage} isSelectable={false} /> } />
+                    render={ (data, filters, handleDataRedraw) => <EnhancedTable tableTitle='協力会社一覧' data={data} filters={filters} onDataRedraw={handleDataRedraw} isSelectable={false} /> } />
     );
   }
 }

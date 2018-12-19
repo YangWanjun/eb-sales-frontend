@@ -18,12 +18,13 @@ import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { lighten } from '@material-ui/core/styles/colorManipulator';
 import FilterDialog from '../components/filterDialog';
+import ChipsArray from '../components/chipArray';
 
-function getSorting(order, orderBy) {
-  return order === 'desc'
-    ? (a, b) => (b[orderBy] < a[orderBy] ? -1 : 1)
-    : (a, b) => (a[orderBy] < b[orderBy] ? -1 : 1);
-}
+// function getSorting(order, orderBy) {
+//   return order === 'desc'
+//     ? (a, b) => (b[orderBy] < a[orderBy] ? -1 : 1)
+//     : (a, b) => (a[orderBy] < b[orderBy] ? -1 : 1);
+// }
 
 class EnhancedTableHead extends React.Component {
   createSortHandler = property => event => {
@@ -48,26 +49,34 @@ class EnhancedTableHead extends React.Component {
           { chkCell }
           {columnData.map(column => {
             const cell = column.visible ? (
-              <TableCell
-                key={column.id}
-                numeric={column.numeric}
-                padding={column.disablePadding ? 'none' : 'default'}
-                sortDirection={orderBy === column.id ? order : false}
-              >
-                <Tooltip
-                  title="Sort"
-                  placement={column.numeric ? 'bottom-end' : 'bottom-start'}
-                  enterDelay={300}
+              column.sortable ? (
+                <TableCell
+                  key={column.id}
+                  numeric={column.numeric}
+                  padding={column.disablePadding ? 'none' : 'default'}
+                  sortDirection={orderBy === column.id ? order : false}
                 >
-                  <TableSortLabel
-                    active={orderBy === column.id}
-                    direction={order}
-                    onClick={this.createSortHandler(column.id)}
+                  <Tooltip
+                    title="Sort"
+                    placement={column.numeric ? 'bottom-end' : 'bottom-start'}
+                    enterDelay={300}
                   >
-                    {column.label}
-                  </TableSortLabel>
-                </Tooltip>
-              </TableCell>
+                    <TableSortLabel
+                      active={orderBy === column.id}
+                      direction={order}
+                      onClick={this.createSortHandler(column.id)}
+                    >
+                      {column.label}
+                    </TableSortLabel>
+                  </Tooltip>
+                </TableCell>
+              ) : (
+                <TableCell
+                  key={column.id}
+                  numeric={column.numeric}
+                  padding={column.disablePadding ? 'none' : 'default'}
+                >{column.label}</TableCell>
+              )
             ) : (<React.Fragment key={column.id}/>)
             return cell;
           }, this)}
@@ -111,39 +120,66 @@ const toolbarStyles = theme => ({
   },
 });
 
-let EnhancedTableToolbar = props => {
-  const { numSelected, classes, tableTitle, columns } = props;
+class EnhancedTableToolbar extends React.Component {
+  
+  constructor(props) {
+    super(props);
+    this.handleDeleteFilter = this.handleDeleteFilter.bind(this);
+  }
 
-  return (
-    <Toolbar
-      className={classNames(classes.root, {
-        [classes.highlight]: numSelected > 0,
-      })}
-    >
-      <div className={classes.title}>
-        {numSelected > 0 ? (
-          <Typography color="inherit" variant="subheading">
+  handleDeleteFilter(filters) {
+    this.props.onChangeFilter(filters);
+  }
+
+  render () {
+    const { numSelected, classes, tableTitle, columns, filters } = this.props;
+    let toolComponent = null;
+
+    if (numSelected > 0 && filters.length > 0) {
+      toolComponent = (
+        <Typography color="inherit" variant="subheading">
             {numSelected} selected
-          </Typography>
-        ) : (
-          <Typography variant="title" id="tableTitle">
-            {tableTitle}
-          </Typography>
-        )}
-      </div>
-      <div className={classes.spacer} />
-      <div className={classes.actions}>
-        {numSelected > 0 ? (
-          <Tooltip title="削除">
-            <IconButton aria-label="Delete">
-              <DeleteIcon />
-            </IconButton>
-          </Tooltip>
-        ) : <FilterDialog filterTitle={tableTitle} columns={columns} />
-        }
-      </div>
-    </Toolbar>
-  );
+            <ChipsArray chipData={filters} onChangeFilter={this.handleDeleteFilter} />
+        </Typography>
+      );
+    } else if (numSelected > 0) {
+      toolComponent = (
+        <Typography color="inherit" variant="subheading">
+            {numSelected} selected
+        </Typography>
+      );
+    } else if (filters.length > 0) {
+      toolComponent = <ChipsArray chipData={filters} onChangeFilter={this.handleDeleteFilter} />;
+    } else {
+      toolComponent = (
+        <Typography variant="title" id="tableTitle">
+          {tableTitle}
+        </Typography>
+      );
+    }
+    return (
+      <Toolbar
+        className={classNames(classes.root, {
+          [classes.highlight]: (numSelected > 0 || filters.length > 0),
+        })}
+      >
+        <div className={classes.title}>
+          {toolComponent}
+        </div>
+        <div className={classes.spacer} />
+        <div className={classes.actions}>
+          {numSelected > 0 ? (
+            <Tooltip title="削除">
+              <IconButton aria-label="Delete">
+                <DeleteIcon />
+              </IconButton>
+            </Tooltip>
+          ) : <FilterDialog filterTitle={tableTitle} columns={columns} filters={filters} onChangeFilter={this.handleDeleteFilter} />
+          }
+        </div>
+      </Toolbar>
+    );
+  }
 };
 
 EnhancedTableToolbar.propTypes = {
@@ -171,13 +207,16 @@ class EnhancedTable extends React.Component {
     super(props);
 
     this.handleChangePage = this.handleChangePage.bind(this);
+    this.handleChangeRowsPerPage = this.handleChangeRowsPerPage.bind(this);
+    this.handleRequestSort = this.handleRequestSort.bind(this);
+    this.handleChangeFilter = this.handleChangeFilter.bind(this);
     this.state = {
       order: 'asc',
-      orderBy: 'calories',
+      orderBy: 'id',
       selected: [],
-      data: props.data.results,
-      dataLength: props.data.count,
-      columns: props.data.columns,
+      // data: props.data.results,
+      // dataLength: props.data.count,
+      // columns: props.data.columns,
       page: 0,
       rowsPerPage: 25,
     };
@@ -186,17 +225,21 @@ class EnhancedTable extends React.Component {
   handleRequestSort = (event, property) => {
     const orderBy = property;
     let order = 'desc';
+    let order_by = property;
 
     if (this.state.orderBy === property && this.state.order === 'desc') {
       order = 'asc';
+    } else {
+      order_by = '-' + order_by;
     }
 
     this.setState({ order, orderBy });
+    this.props.onDataRedraw(this.state.rowsPerPage, this.state.page, order_by, this.props.filters);
   };
 
   handleSelectAllClick = (event, checked) => {
     if (checked) {
-      this.setState(state => ({ selected: state.data.map(n => n.id) }));
+      this.setState(state => ({ selected: this.props.data.results.map(n => n.id) }));
       return;
     }
     this.setState({ selected: [] });
@@ -228,23 +271,40 @@ class EnhancedTable extends React.Component {
 
   handleChangePage = (event, page) => {
     this.setState({ page });
-    this.props.onPageChange(this.state.rowsPerPage, page);
+    const order_by = (this.state.order === 'desc' ? '-': '') + this.state.orderBy;
+    this.props.onDataRedraw(this.state.rowsPerPage, page, order_by, this.props.filters);
   };
 
   handleChangeRowsPerPage = event => {
     this.setState({ rowsPerPage: event.target.value });
+    const order_by = (this.state.order === 'desc' ? '-': '') + this.state.orderBy;
+    this.props.onDataRedraw(event.target.value, 0, order_by, this.props.filters);
   };
+
+  handleChangeFilter = filters => {
+    const order_by = (this.state.order === 'desc' ? '-': '') + this.state.orderBy;
+    this.props.onDataRedraw(this.state.rowsPerPage, 0, order_by, filters);
+  }
 
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
   render() {
-    const { classes, tableTitle, isSelectable } = this.props;
-    const { data, dataLength, columns, order, orderBy, selected, rowsPerPage, page } = this.state;
+    const { data, classes, tableTitle, isSelectable, filters } = this.props;
+    const { order, orderBy, selected, rowsPerPage, page } = this.state;
+    const dataLength = data.count;
+    const columns = data.columns;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, dataLength - page * rowsPerPage);
 
     return (
       <Paper className={classes.root}>
-        <EnhancedTableToolbar numSelected={selected.length} columns={columns} tableTitle={tableTitle} isSelectable={isSelectable} />
+        <EnhancedTableToolbar 
+          numSelected={selected.length} 
+          columns={columns} 
+          tableTitle={tableTitle} 
+          isSelectable={isSelectable} 
+          filters={filters} 
+          onChangeFilter={this.handleChangeFilter}
+        />
         <div className={classes.tableWrapper}>
           <Table className={classes.table} aria-labelledby="tableTitle">
             <EnhancedTableHead
@@ -257,8 +317,8 @@ class EnhancedTable extends React.Component {
               rowCount={dataLength}
             />
             <TableBody>
-              {data
-                .sort(getSorting(order, orderBy))
+              {data.results
+                // .sort(getSorting(order, orderBy))
                 // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map(n => {
                   const isSelected = this.isSelected(n.id);

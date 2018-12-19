@@ -23,10 +23,11 @@ class DataProvider extends Component {
 
   constructor(props) {
     super(props);
-    this.handleChangePage = this.handleChangePage.bind(this);
+    this.handleDataRedraw = this.handleDataRedraw.bind(this);
     this.state = {
       url: this.props.endpoint,
       data: [],
+      filters: [],
       limit: 25,  // PageSize
       offset: 0,
       loaded: false,
@@ -35,11 +36,22 @@ class DataProvider extends Component {
   }
 
   componentDidMount() {
-    this.handleChangePage(this.state.limit, this.state.offset)
+    this.handleDataRedraw(this.state.limit, this.state.offset)
   }
 
-  handleChangePage(limit, page) {
-    const url = this.props.endpoint + "?limit=" + limit + "&offset=" + page * limit;
+  handleDataRedraw(limit, page, order_by, filters) {
+    let url = this.props.endpoint + "?limit=" + limit + "&offset=" + page * limit + (order_by ? ('&ordering=' + order_by) : '');
+    if (filters) {
+      filters.map(item => {
+        if (item.value) {
+          return url += '&' + item.id + '__icontains=' + item.value;
+        } else {
+          return url;
+        }
+      })
+    } else {
+      filters = this.state.filters;
+    }
     fetch(url)
       .then(response => {
         if (response.status !== 200) {
@@ -47,14 +59,14 @@ class DataProvider extends Component {
         }
         return response.json();
       })
-      .then(data => this.setState({ data: data, loaded: true }));
+      .then(data => this.setState({ data: data, loaded: true, filters: filters }));
   }
 
   render() {
     const { classes } = this.props;
-    const { data, loaded, placeholder } = this.state;
+    const { data, loaded, placeholder, filters } = this.state;
     if (loaded) {
-      return this.props.render(data, this.handleChangePage);
+      return this.props.render(data, filters, this.handleDataRedraw);
     } else {
       return (
         <Paper className={classes.paper}>
