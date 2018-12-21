@@ -62,9 +62,9 @@ class EnhancedTableHead extends React.Component {
                     enterDelay={300}
                   >
                     <TableSortLabel
-                      active={orderBy === column.id}
+                      active={orderBy === column.sort_field}
                       direction={order}
-                      onClick={this.createSortHandler(column.id)}
+                      onClick={this.createSortHandler(column.sort_field)}
                     >
                       {column.label}
                     </TableSortLabel>

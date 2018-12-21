@@ -9,10 +9,11 @@ import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import { homeListItmes, memberListItems, projectListItems } from './sideMenu';
+import { homeListItmes, memberListItems, projectListItems, turnoverListItems } from './sideMenu';
 import TopBar from '../components/topBar';
 import MemberList from '../pages/members';
 import PartnerList from '../pages/partners';
+import TurnoverMonthlyList from '../pages/turnover_monthly';
 
 const drawerWidth = 240;
 
@@ -117,18 +118,27 @@ class Layout extends React.Component {
           <List>{memberListItems}</List>
           <Divider />
           <List>{projectListItems}</List>
+          <Divider />
+          <List>{turnoverListItems}</List>
         </Drawer>
         <main className={classes.content}>
           <div className={classes.toolbar} />
           <Switch>
             <Route path='/members' component={MemberList} />
             <Route path='/partners' component={PartnerList} />
+            <Route path='/turnover' component={TurnoverMonthlyList} />
           </Switch>
         </main>
       </div>
     );
   }
 }
+
+// const TurnoverList = ({match}) => (
+//   <div>
+//     <Route path={`${match.url}/monthly`} component={TurnoverMonthlyList}/>
+//   </div>
+// )
 
 Layout.propTypes = {
   classes: PropTypes.object.isRequired,

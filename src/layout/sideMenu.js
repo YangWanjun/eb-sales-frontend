@@ -11,7 +11,8 @@ import GroupWork from '@material-ui/icons/GroupWork';
 import Business from '@material-ui/icons/Business';
 import RecentActors from '@material-ui/icons/RecentActors';
 import FolderShared from '@material-ui/icons/FolderShared';
-import LibraryBooks from '@material-ui/icons/LibraryBooks'
+import LibraryBooks from '@material-ui/icons/LibraryBooks';
+import PieChart from '@material-ui/icons/PieChart';
 
 export const homeListItmes = (
     <div>
@@ -66,6 +67,17 @@ export const projectListItems = (
                 <LibraryBooks />
             </ListItemIcon>
             <ListItemText primary="BP契約一覧" />
+        </ListItem>
+    </div>
+);
+
+export const turnoverListItems = (
+    <div>
+        <ListItem button component={Link} to='/turnover'>
+            <ListItemIcon>
+                <PieChart />
+            </ListItemIcon>
+            <ListItemText primary="売上情報" />
         </ListItem>
     </div>
 );
