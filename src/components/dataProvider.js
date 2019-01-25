@@ -44,7 +44,7 @@ class DataProvider extends Component {
     if (filters) {
       filters.map(item => {
         if (item.value) {
-          return url += '&' + item.id + '__icontains=' + item.value;
+          return url += '&' + item.id + '=' + item.value;
         } else {
           return url;
         }

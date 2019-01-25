@@ -19,6 +19,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import { lighten } from '@material-ui/core/styles/colorManipulator';
 import FilterDialog from '../components/filterDialog';
 import ChipsArray from '../components/chipArray';
+import { common } from '../utils/common';
 
 // function getSorting(order, orderBy) {
 //   return order === 'desc'
@@ -342,7 +343,7 @@ class EnhancedTable extends React.Component {
                         if (!col.visible) {
                           return <React.Fragment  key={col.id}/>;
                         } else if (col.numeric === true) {
-                          return (<TableCell key={col.id} numeric>{n[col.id]}</TableCell>);
+                          return (<TableCell key={col.id} numeric>{common.toNumComma(n[col.id])}</TableCell>);
                         } else {
                           return (<TableCell key={col.id} padding="default">{n[col.id]}</TableCell>);
                         }

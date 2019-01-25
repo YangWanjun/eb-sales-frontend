@@ -1,5 +1,5 @@
 import React from 'react';
-import { Switch, Route } from 'react-router-dom'
+import { Switch, Route } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
@@ -13,6 +13,7 @@ import { homeListItmes, memberListItems, projectListItems, turnoverListItems } f
 import TopBar from '../components/topBar';
 import MemberList from '../pages/members';
 import PartnerList from '../pages/partners';
+import TurnoverDashboard from '../dashboard/turnover';
 import TurnoverMonthlyList from '../pages/turnover_monthly';
 
 const drawerWidth = 240;
@@ -126,7 +127,8 @@ class Layout extends React.Component {
           <Switch>
             <Route path='/members' component={MemberList} />
             <Route path='/partners' component={PartnerList} />
-            <Route path='/turnover' component={TurnoverMonthlyList} />
+            <Route path='/turnover/monthly' component={TurnoverMonthlyList} />
+            <Route path='/turnover' component={TurnoverDashboard} />
           </Switch>
         </main>
       </div>
