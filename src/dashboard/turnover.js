@@ -10,20 +10,79 @@ import Card from "../components/Card/Card";
 import CardHeader from "../components/Card/CardHeader.jsx";
 import CardBody from "../components/Card/CardBody.jsx";
 import CardFooter from "../components/Card/CardFooter.jsx";
+import { api } from '../utils/config';
 
 import {
     dailySalesChart,
-    emailsSubscriptionChart,
     completedTasksChart
 } from "../variables/charts.jsx";
 
 import dashboardStyle from "../assets/jss/views/dashboardStyle.jsx";
 
+var delays2 = 80,
+  durations2 = 500;
+
 class TurnoverDashboard extends React.Component {
 
-  state = {
-    value: 0
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      value: 0,
+      turnoverMonthlyChart: {
+        data: {
+          labels: null,
+          series: [],
+        },
+        options: {
+          axisX: {
+            showGrid: false
+          },
+          axisY: {
+            labelInterpolationFnc: function (value) {
+              return value / 1000000 + 'M';
+            },
+          },
+          // low: 0,
+          // high: 100000,
+          chartPadding: {
+            top: 0,
+            right: 5,
+            bottom: 0,
+            left: 0
+          }
+        },
+        responsiveOptions: [
+          [
+            "screen and (max-width: 640px)",
+            {
+              seriesBarDistance: 5,
+              axisX: {
+                labelInterpolationFnc: function(value) {
+                  return value[0];
+                }
+              }
+            }
+          ]
+        ],
+        animation: {
+          draw: function(data) {
+            if (data.type === "bar") {
+              data.element.animate({
+                opacity: {
+                  begin: (data.index + 1) * delays2,
+                  dur: durations2,
+                  from: 0,
+                  to: 1,
+                  easing: "ease"
+                }
+              });
+            }
+          }
+        },
+      }
+    };
+  }
+
   handleChange = (event, value) => {
     this.setState({ value });
   };
@@ -31,9 +90,23 @@ class TurnoverDashboard extends React.Component {
   handleChangeIndex = index => {
     this.setState({ value: index });
   };
+
+  componentDidMount() {
+    fetch(api.turnover_monthly_chart)
+    .then(response => {
+      if (response.status !== 200) {
+          return this.setState({ turnoverMonthlyChart: "Something went wrong" });
+      }
+      return response.json();
+    })
+    .then(data => this.setState({ 
+      turnoverMonthlyChart: data 
+    }));;
+  }
   
   render() {
     const { classes } = this.props;
+    const { turnoverMonthlyChart } = this.state;
     return (
       <div>
         <GridContainer>
@@ -69,11 +142,11 @@ class TurnoverDashboard extends React.Component {
               <CardHeader color="warning">
                 <ChartistGraph
                   className="ct-chart"
-                  data={emailsSubscriptionChart.data}
+                  data={turnoverMonthlyChart.data}
                   type="Bar"
-                  options={emailsSubscriptionChart.options}
-                  responsiveOptions={emailsSubscriptionChart.responsiveOptions}
-                  listener={emailsSubscriptionChart.animation}
+                  options={turnoverMonthlyChart.options}
+                  responsiveOptions={turnoverMonthlyChart.responsiveOptions}
+                  listener={turnoverMonthlyChart.animation}
                 />
               </CardHeader>
               <CardBody>
