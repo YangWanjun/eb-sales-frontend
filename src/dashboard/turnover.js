@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import withStyles from "@material-ui/core/styles/withStyles";
 import ArrowUpward from "@material-ui/icons/ArrowUpward";
 import AccessTime from "@material-ui/icons/AccessTime";
@@ -220,7 +221,9 @@ class TurnoverDashboard extends React.Component {
                 />
               </CardHeader>
               <CardBody>
-                <h4 className={classes.cardTitle}>月別売上一覧</h4>
+                <h4 className={classes.cardTitle}>
+                  <Link to="/turnover/monthly">月別売上一覧</Link>
+                </h4>
                 <p className={classes.cardCategory}>
                   過去１２か月間の売上情報
                 </p>
