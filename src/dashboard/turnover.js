@@ -11,14 +11,18 @@ import CardHeader from "../components/Card/CardHeader.jsx";
 import CardBody from "../components/Card/CardBody.jsx";
 import CardFooter from "../components/Card/CardFooter.jsx";
 import { api } from '../utils/config';
+import { common } from '../utils/common';
 
 import {
-    dailySalesChart,
     completedTasksChart
 } from "../variables/charts.jsx";
 
 import dashboardStyle from "../assets/jss/views/dashboardStyle.jsx";
 
+var Chartist = require("chartist");
+
+var delays = 80,
+  durations = 500;
 var delays2 = 80,
   durations2 = 500;
 
@@ -28,6 +32,60 @@ class TurnoverDashboard extends React.Component {
     super(props);
     this.state = {
       value: 0,
+      turnoverYearlyChart: {
+        data: {
+          labels: null,
+          series: [],
+        },
+        options: {
+          axisY: {
+            labelInterpolationFnc: function (value) {
+              return common.toNumComma(value / 1000000) + 'M';
+            },
+          },
+          lineSmooth: Chartist.Interpolation.cardinal({
+            tension: 0
+          }),
+          // low: 0,
+          // high: 50, // creative tim: we recommend you to set the high sa the biggest value + something for a better look
+          chartPadding: {
+            top: 0,
+            right: 0,
+            bottom: 0,
+            left: 10
+          }
+        },
+        // for animation
+        animation: {
+          draw: function(data) {
+            if (data.type === "line" || data.type === "area") {
+              data.element.animate({
+                d: {
+                  begin: 600,
+                  dur: 700,
+                  from: data.path
+                    .clone()
+                    .scale(1, 0)
+                    .translate(0, data.chartRect.height())
+                    .stringify(),
+                  to: data.path.clone().stringify(),
+                  easing: Chartist.Svg.Easing.easeOutQuint
+                }
+              });
+            } else if (data.type === "point") {
+              data.element.animate({
+                opacity: {
+                  begin: (data.index + 1) * delays,
+                  dur: durations,
+                  from: 0,
+                  to: 1,
+                  easing: "ease"
+                }
+              });
+            }
+          }
+        }
+      },
       turnoverMonthlyChart: {
         data: {
           labels: null,
@@ -39,7 +97,7 @@ class TurnoverDashboard extends React.Component {
           },
           axisY: {
             labelInterpolationFnc: function (value) {
-              return value / 1000000 + 'M';
+              return common.toNumComma(value / 1000000) + 'M';
             },
           },
           // low: 0,
@@ -92,6 +150,18 @@ class TurnoverDashboard extends React.Component {
   };
 
   componentDidMount() {
+    // 年間売上
+    fetch(api.turnover_yearly_chart)
+    .then(response => {
+      if (response.status !== 200) {
+          return this.setState({ turnoverYearlyChart: "Something went wrong" });
+      }
+      return response.json();
+    })
+    .then(data => this.setState({ 
+      turnoverYearlyChart: data 
+    }));
+    // 月別売上
     fetch(api.turnover_monthly_chart)
     .then(response => {
       if (response.status !== 200) {
@@ -101,12 +171,12 @@ class TurnoverDashboard extends React.Component {
     })
     .then(data => this.setState({ 
       turnoverMonthlyChart: data 
-    }));;
+    }));
   }
   
   render() {
     const { classes } = this.props;
-    const { turnoverMonthlyChart } = this.state;
+    const { turnoverYearlyChart, turnoverMonthlyChart } = this.state;
     return (
       <div>
         <GridContainer>
@@ -115,10 +185,10 @@ class TurnoverDashboard extends React.Component {
               <CardHeader color="success">
                 <ChartistGraph
                   className="ct-chart"
-                  data={dailySalesChart.data}
+                  data={turnoverYearlyChart.data}
                   type="Line"
-                  options={dailySalesChart.options}
-                  listener={dailySalesChart.animation}
+                  options={turnoverYearlyChart.options}
+                  listener={turnoverYearlyChart.animation}
                 />
               </CardHeader>
               <CardBody>
