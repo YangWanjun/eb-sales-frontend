@@ -14,10 +14,6 @@ import CardFooter from "../components/Card/CardFooter.jsx";
 import { api } from '../utils/config';
 import { common } from '../utils/common';
 
-import {
-    completedTasksChart
-} from "../variables/charts.jsx";
-
 import dashboardStyle from "../assets/jss/views/dashboardStyle.jsx";
 
 var Chartist = require("chartist");
@@ -138,7 +134,58 @@ class TurnoverDashboard extends React.Component {
             }
           }
         },
-      }
+      },
+      turnoverDivisionMonthlyChart: {
+        data: {
+          labels: null,
+          series: [],
+        },
+        options: {
+          axisY: {
+            labelInterpolationFnc: function (value) {
+              return common.toNumComma(value / 1000000) + 'M';
+            },
+          },
+          lineSmooth: Chartist.Interpolation.cardinal({
+            tension: 0
+          }),
+          chartPadding: {
+            top: 0,
+            right: 0,
+            bottom: 0,
+            left: 0
+          }
+        },
+        animation: {
+          draw: function(data) {
+            if (data.type === "line" || data.type === "area") {
+              data.element.animate({
+                d: {
+                  begin: 600,
+                  dur: 700,
+                  from: data.path
+                    .clone()
+                    .scale(1, 0)
+                    .translate(0, data.chartRect.height())
+                    .stringify(),
+                  to: data.path.clone().stringify(),
+                  easing: Chartist.Svg.Easing.easeOutQuint
+                }
+              });
+            } else if (data.type === "point") {
+              data.element.animate({
+                opacity: {
+                  begin: (data.index + 1) * delays,
+                  dur: durations,
+                  from: 0,
+                  to: 1,
+                  easing: "ease"
+                }
+              });
+            }
+          }
+        },
+      },
     };
   }
 
@@ -173,11 +220,22 @@ class TurnoverDashboard extends React.Component {
     .then(data => this.setState({ 
       turnoverMonthlyChart: data 
     }));
+    // 部署別、月別売上
+    fetch(api.turnover_division_monthly_chart)
+    .then(response => {
+      if (response.status !== 200) {
+          return this.setState({ turnoverDivisionMonthlyChart: "Something went wrong" });
+      }
+      return response.json();
+    })
+    .then(data => this.setState({ 
+      turnoverDivisionMonthlyChart: data 
+    }));
   }
   
   render() {
     const { classes } = this.props;
-    const { turnoverYearlyChart, turnoverMonthlyChart } = this.state;
+    const { turnoverYearlyChart, turnoverMonthlyChart, turnoverDivisionMonthlyChart } = this.state;
     return (
       <div>
         <GridContainer>
@@ -240,10 +298,10 @@ class TurnoverDashboard extends React.Component {
               <CardHeader color="danger">
                 <ChartistGraph
                   className="ct-chart"
-                  data={completedTasksChart.data}
+                  data={turnoverDivisionMonthlyChart.data}
                   type="Line"
-                  options={completedTasksChart.options}
-                  listener={completedTasksChart.animation}
+                  options={turnoverDivisionMonthlyChart.options}
+                  listener={turnoverDivisionMonthlyChart.animation}
                 />
               </CardHeader>
               <CardBody>
