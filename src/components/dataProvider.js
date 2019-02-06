@@ -40,7 +40,13 @@ class DataProvider extends Component {
   }
 
   handleDataRedraw(limit, page, order_by, filters) {
-    let url = this.props.endpoint + "?limit=" + limit + "&offset=" + page * limit + (order_by ? ('&ordering=' + order_by) : '');
+    let url = this.props.endpoint;
+    if (url.indexOf('?') > 0) {
+      url += '&';
+    } else {
+      url += '?';
+    }
+    url += "limit=" + limit + "&offset=" + page * limit + (order_by ? ('&ordering=' + order_by) : '');
     if (filters) {
       filters.map(item => {
         if (item.value) {
