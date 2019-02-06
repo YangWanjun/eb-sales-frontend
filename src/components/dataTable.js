@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
@@ -345,7 +346,11 @@ class EnhancedTable extends React.Component {
                         } else if (col.numeric === true) {
                           return (<TableCell key={col.id} numeric>{common.toNumComma(n[col.id])}</TableCell>);
                         } else {
-                          return (<TableCell key={col.id} padding="default">{n[col.id]}</TableCell>);
+                          if (col.urlField && n[col.urlField]) {
+                            return (<TableCell key={col.id} padding="default"><Link to={n[col.urlField]}>{n[col.id]}</Link></TableCell>);
+                          } else {
+                            return (<TableCell key={col.id} padding="default">{n[col.id]}</TableCell>);
+                          }
                         }
                       })}
                     </TableRow>

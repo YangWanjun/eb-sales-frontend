@@ -5,4 +5,5 @@ export const api = {
   turnover_monthly_chart: 'http://192.168.99.100:8001/api/turnover/monthly/chart',
   turnover_yearly_chart: 'http://192.168.99.100:8001/api/turnover/yearly/chart',
   turnover_division_monthly_chart: 'http://192.168.99.100:8001/api/turnover/division/monthly/chart',
+  turnover_clients_by_month: 'http://192.168.99.100:8001/api/turnover/clients_by_month/',
 };
