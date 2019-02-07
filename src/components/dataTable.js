@@ -220,7 +220,7 @@ class EnhancedTable extends React.Component {
       // dataLength: props.data.count,
       // columns: props.data.columns,
       page: 0,
-      rowsPerPage: 25,
+      rowsPerPage: 15,
     };
   }
 
@@ -368,6 +368,7 @@ class EnhancedTable extends React.Component {
           component="div"
           count={dataLength}
           rowsPerPage={rowsPerPage}
+          rowsPerPageOptions={[5, 10, 15, 25]}
           page={page}
           backIconButtonProps={{
             'aria-label': 'Previous Page',

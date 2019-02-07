@@ -16,6 +16,7 @@ import PartnerList from '../pages/partners';
 import TurnoverDashboard from '../dashboard/turnover';
 import TurnoverMonthlyList from '../pages/turnover_monthly';
 import TurnoverMonthlyDetail from '../pages/turnover_monthly_detail';
+import TurnoverMonthlyClientDetail from '../pages/turnover_monthly_client_detail';
 
 const drawerWidth = 240;
 
@@ -128,6 +129,7 @@ class Layout extends React.Component {
           <Switch>
             <Route path='/members' component={MemberList} />
             <Route path='/partners' component={PartnerList} />
+            <Route path='/turnover/month/:ym/client/:client_id' component={TurnoverMonthlyClientDetail} />
             <Route path='/turnover/monthly/:ym' component={TurnoverMonthlyDetail} />
             <Route path='/turnover/monthly' component={TurnoverMonthlyList} />
             <Route path='/turnover' component={TurnoverDashboard} />
