@@ -68,6 +68,10 @@ class FilterDialog extends React.Component {
     });
   }
 
+  get_field_name(col) {
+    return col.id + (col.searchType ? '__' + col.searchType : '');
+  }
+
   render() {
     const {filterTitle, columns} = this.props;
     const {filters} = this.state;
@@ -86,15 +90,16 @@ class FilterDialog extends React.Component {
           <DialogTitle id="form-dialog-title">{filterTitle}を検索</DialogTitle>
           <DialogContent>
             {columns.map(col => {
-              let value = filters[col.id] || '';
+              let field_id = this.get_field_name(col);
+              let value = filters[field_id] || '';
               return col.searchable ? <TextField 
-                key={col.id}
-                id={col.id}
+                key={field_id}
+                id={field_id}
                 label={col.label}
                 value={value}
                 margin={"normal"}
                 onChange={this.handleChange}
-              /> : <React.Fragment key={col.id}/>;
+              /> : <React.Fragment key={field_id}/>;
             })}
             {/* <TextField
               autoFocus
