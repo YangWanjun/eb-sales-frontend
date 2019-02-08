@@ -21,6 +21,7 @@ import { lighten } from '@material-ui/core/styles/colorManipulator';
 import FilterDialog from '../components/filterDialog';
 import ChipsArray from '../components/chipArray';
 import { common } from '../utils/common';
+import { config } from '../utils/config';
 
 // function getSorting(order, orderBy) {
 //   return order === 'desc'
@@ -220,7 +221,7 @@ class EnhancedTable extends React.Component {
       // dataLength: props.data.count,
       // columns: props.data.columns,
       page: 0,
-      rowsPerPage: 15,
+      rowsPerPage: config.rowsPerPage,
     };
   }
 

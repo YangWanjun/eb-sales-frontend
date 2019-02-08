@@ -4,6 +4,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
+import { config } from '../utils/config';
 
 const styles = theme => ({
   paper: {
@@ -28,7 +29,7 @@ class DataProvider extends Component {
       url: this.props.endpoint,
       data: [],
       filters: [],
-      limit: 25,  // PageSize
+      limit: config.rowsPerPage,  // PageSize
       offset: 0,
       loaded: false,
       placeholder: "Loading..."

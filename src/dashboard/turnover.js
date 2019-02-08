@@ -11,7 +11,7 @@ import Card from "../components/Card/Card";
 import CardHeader from "../components/Card/CardHeader.jsx";
 import CardBody from "../components/Card/CardBody.jsx";
 import CardFooter from "../components/Card/CardFooter.jsx";
-import { api } from '../utils/config';
+import { config } from '../utils/config';
 import { common } from '../utils/common';
 
 import dashboardStyle from "../assets/jss/views/dashboardStyle.jsx";
@@ -199,7 +199,7 @@ class TurnoverDashboard extends React.Component {
 
   componentDidMount() {
     // 年間売上
-    fetch(api.turnover_yearly_chart)
+    fetch(config.api.turnover_yearly_chart)
     .then(response => {
       if (response.status !== 200) {
           return this.setState({ turnoverYearlyChart: "Something went wrong" });
@@ -210,7 +210,7 @@ class TurnoverDashboard extends React.Component {
       turnoverYearlyChart: data 
     }));
     // 月別売上
-    fetch(api.turnover_monthly_chart)
+    fetch(config.api.turnover_monthly_chart)
     .then(response => {
       if (response.status !== 200) {
           return this.setState({ turnoverMonthlyChart: "Something went wrong" });
@@ -221,7 +221,7 @@ class TurnoverDashboard extends React.Component {
       turnoverMonthlyChart: data 
     }));
     // 部署別、月別売上
-    fetch(api.turnover_division_monthly_chart)
+    fetch(config.api.turnover_division_monthly_chart)
     .then(response => {
       if (response.status !== 200) {
           return this.setState({ turnoverDivisionMonthlyChart: "Something went wrong" });
