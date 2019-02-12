@@ -5,13 +5,34 @@ import EnhancedTable from '../components/dataTable';
 import DataProvider from '../components/dataProvider';
 import CustomBreadcrumbs from '../components/customBreadcrumbs';
 import { config } from '../utils/config';
+import { common } from '../utils/common';
 
 
 class TurnoverMonthlyClientDetail extends React.Component {
 
-  render () {
+  constructor(props) {
+    super(props);
+
+    this.state = { client_detail: {} };
+  }
+
+  componentDidMount() {
     const { params } = this.props.match;
-    const tableTitle = params.ym.substring(0, 4) + '年' + params.ym.substring(4, 6) + '月売上詳細';
+    const url_client_detail = common.formatStr(config.api.client_detail, params.client_id);
+    fetch(url_client_detail).then(response => {
+      if (response.status !== 200) {
+        return this.setState({ placeholder: "Something went wrong" });
+      }
+      return response.json();
+    }).then(data => {
+      this.setState({ client_detail: data, })
+    });
+  }
+
+  render () {
+    const { client_detail } = this.state;
+    const { params } = this.props.match;
+    const tableTitle = client_detail.name;
     const parentTitle = params.ym.substring(0, 4) + '年' + params.ym.substring(4, 6) + '月売上詳細';
     const api_url = config.api.turnover_client_by_month 
       + '?year=' + params.ym.substring(0, 4) 
