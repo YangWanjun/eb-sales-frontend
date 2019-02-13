@@ -9,6 +9,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
+import TableFooter from '@material-ui/core/TableFooter';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -97,6 +98,39 @@ EnhancedTableHead.propTypes = {
   orderBy: PropTypes.string.isRequired,
   rowCount: PropTypes.number.isRequired,
 };
+
+
+class EnhancedTableFooter extends React.Component {
+  render() {
+    const { onSelectAllClick, numSelected, rowCount, columnData, isSelectable, summary } = this.props;
+    const chkCell = isSelectable ? (
+      <TableCell padding="none">
+        <Checkbox
+          indeterminate={numSelected > 0 && numSelected < rowCount}
+          checked={numSelected === rowCount}
+          onChange={onSelectAllClick}
+        />
+      </TableCell>
+    ) : (<React.Fragment></React.Fragment>);
+
+    return (
+      <TableFooter>
+        <TableRow>
+          { chkCell }
+          {columnData.map(col => {
+            if (!col.visible) {
+              return <React.Fragment  key={col.id}/>;
+            } else if (col.numeric === true) {
+              return (<TableCell key={col.id} numeric>{common.toNumComma(summary[col.id])}</TableCell>);
+            } else {
+              return (<TableCell key={col.id} padding="default"></TableCell>);
+            }
+          })}
+        </TableRow>
+      </TableFooter>
+    )
+  }
+}
 
 const toolbarStyles = theme => ({
   root: {
@@ -292,7 +326,7 @@ class EnhancedTable extends React.Component {
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
   render() {
-    const { data, classes, tableTitle, isSelectable, filters } = this.props;
+    const { data, classes, tableTitle, isSelectable, filters, summary } = this.props;
     const { order, orderBy, selected, rowsPerPage, page } = this.state;
     const dataLength = data.count;
     const columns = data.columns;
@@ -363,6 +397,14 @@ class EnhancedTable extends React.Component {
                 </TableRow>
               )}
             </TableBody>
+            {summary ? 
+            <EnhancedTableFooter 
+              numSelected={selected.length}
+              columnData={columns}
+              rowCount={dataLength}
+              summary={summary}
+            /> : (<React.Fragment></React.Fragment>)
+            }
           </Table>
         </div>
         <TablePagination

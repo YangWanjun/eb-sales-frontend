@@ -27,7 +27,9 @@ class DataProvider extends Component {
     this.handleDataRedraw = this.handleDataRedraw.bind(this);
     this.state = {
       url: this.props.endpoint,
+      summaryUrl: this.props.summaryUrl,
       data: [],
+      summary: {},
       filters: [],
       limit: config.rowsPerPage,  // PageSize
       offset: 0,
@@ -38,6 +40,17 @@ class DataProvider extends Component {
 
   componentDidMount() {
     this.handleDataRedraw(this.state.limit, this.state.offset)
+
+    if (this.state.summaryUrl) {
+      fetch(this.state.summaryUrl).then(response => {
+        if (response.status !== 200) {
+          return this.setState({ placeholder: "Something went wrong" });
+        }
+        return response.json();
+      }).then(data => {
+        this.setState({ summary: data });
+      });
+    }
   }
 
   handleDataRedraw(limit, page, order_by, filters) {
@@ -71,9 +84,9 @@ class DataProvider extends Component {
 
   render() {
     const { classes } = this.props;
-    const { data, loaded, placeholder, filters } = this.state;
+    const { data, loaded, placeholder, filters, summary } = this.state;
     if (loaded) {
-      return this.props.render(data, filters, this.handleDataRedraw);
+      return this.props.render(data, filters, this.handleDataRedraw, summary);
     } else {
       return (
         <Paper className={classes.paper}>

@@ -9,6 +9,7 @@ export const config = {
     turnover_yearly_chart: 'http://192.168.99.100:8001/api/turnover/yearly/chart',
     turnover_division_monthly_chart: 'http://192.168.99.100:8001/api/turnover/division/monthly/chart',
     turnover_clients_by_month: 'http://192.168.99.100:8001/api/turnover/clients_by_month/',
+    turnover_clients_by_month_detail: 'http://192.168.99.100:8001/api/turnover/clients_by_month/%s/',
     turnover_client_by_month: 'http://192.168.99.100:8001/api/turnover/client_by_month/',
   },
   rowsPerPage: 15,

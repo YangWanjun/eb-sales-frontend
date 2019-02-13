@@ -38,7 +38,10 @@ class TurnoverMonthlyClientDetail extends React.Component {
       + '?year=' + params.ym.substring(0, 4) 
       + '&month=' + params.ym.substring(4, 6)
       + '&client_id=' + params.client_id;
-    return (
+    const summaryUrl = common.formatStr(config.api.turnover_clients_by_month_detail, params.client_id)
+      + '?year=' + params.ym.substring(0, 4) 
+      + '&month=' + params.ym.substring(4, 6);
+  return (
       <div>
         <CustomBreadcrumbs>
           <Link to="/turnover" >売上情報</Link>
@@ -46,8 +49,8 @@ class TurnoverMonthlyClientDetail extends React.Component {
           <Link to={"/turnover/monthly/" + params.ym} >{parentTitle}</Link>
           <Typography color="textPrimary">{tableTitle}</Typography>
         </CustomBreadcrumbs>
-        <DataProvider endpoint={ api_url } 
-                      render={ (data, filters, handleDataRedraw) => <EnhancedTable tableTitle={tableTitle} data={data} filters={filters} onDataRedraw={handleDataRedraw} isSelectable={false} /> } />
+        <DataProvider endpoint={ api_url } summaryUrl={ summaryUrl }
+                      render={ (data, filters, handleDataRedraw, summary) => <EnhancedTable tableTitle={tableTitle} data={data} summary={summary} filters={filters} onDataRedraw={handleDataRedraw} isSelectable={false} /> } />
       </div>
     );
   }
