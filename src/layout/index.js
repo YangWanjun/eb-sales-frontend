@@ -13,6 +13,7 @@ import { homeListItmes, memberListItems, projectListItems, turnoverListItems } f
 import TopBar from '../components/topBar';
 import MemberList from '../pages/members';
 import PartnerList from '../pages/partners';
+import ProjectList from '../pages/project';
 import TurnoverDashboard from '../dashboard/turnover';
 import TurnoverMonthlyList from '../pages/turnover_monthly';
 import TurnoverMonthlyDetail from '../pages/turnover_monthly_detail';
@@ -130,6 +131,7 @@ class Layout extends React.Component {
           <Switch>
             <Route path='/members' component={MemberList} />
             <Route path='/partners' component={PartnerList} />
+            <Route path='/project' component={ProjectList} />
             <Route path='/turnover/month/:ym/project/:project_id' component={TurnoverMonthlyProjectDetail} />
             <Route path='/turnover/month/:ym/client/:client_id' component={TurnoverMonthlyClientDetail} />
             <Route path='/turnover/monthly/:ym' component={TurnoverMonthlyDetail} />

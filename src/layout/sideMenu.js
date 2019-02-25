@@ -44,7 +44,7 @@ export const memberListItems = (
 
 export const projectListItems = (
     <div>
-        <ListItem button component={Link} to='/projects'>
+        <ListItem button component={Link} to='/project'>
             <ListItemIcon>
                 <GroupWork />
             </ListItemIcon>
