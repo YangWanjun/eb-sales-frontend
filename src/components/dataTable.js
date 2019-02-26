@@ -377,8 +377,13 @@ class EnhancedTable extends React.Component {
                       {chkCell}
                       {columns.map(col => {
                         if (!col.visible) {
+                          // 非表示の場合
                           return <React.Fragment  key={col.id}/>;
+                        } else if (col.choices && !common.isEmpty(col.choices)) {
+                          // 選択肢のある項目の場合
+                          return (<TableCell key={col.id} padding="default">{col.choices[n[col.id]]}</TableCell>);
                         } else if (col.numeric === true) {
+                          // 数字の場合
                           return (<TableCell key={col.id} numeric>{common.toNumComma(n[col.id])}</TableCell>);
                         } else {
                           if (col.urlField && n[col.urlField]) {

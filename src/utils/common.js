@@ -40,4 +40,16 @@ export const common = {
         }
         return r;
     },
+
+    /**
+     * オブジェクトは空白なのか
+     * @param {Object} obj 
+     */
+    isEmpty: function(obj) {
+        for(var key in obj) {
+            if(obj.hasOwnProperty(key))
+                return false;
+        }
+        return true;
+    },
 };
