@@ -1,6 +1,10 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
 import TextField from '@material-ui/core/TextField';
+import MenuItem from '@material-ui/core/MenuItem';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -8,6 +12,23 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Tooltip from '@material-ui/core/Tooltip';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import IconButton from '@material-ui/core/IconButton';
+import Select from '@material-ui/core/Select';
+import { common } from '../utils/common';
+import { withStyles } from '@material-ui/core';
+
+const styles = theme => ({
+  root: {
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
+  formControl: {
+    margin: theme.spacing.unit,
+    minWidth: 120,
+  },
+  selectEmpty: {
+    marginTop: theme.spacing.unit * 2,
+  },
+});
 
 class FilterDialog extends React.Component {
   constructor(props) {
@@ -37,6 +58,7 @@ class FilterDialog extends React.Component {
   };
 
   handleOk = (event) => {
+    event.preventDefault();
     this.setState({ open: false });
     let filters = [];
     for (var k in this.state.filters) {
@@ -73,7 +95,7 @@ class FilterDialog extends React.Component {
   }
 
   render() {
-    const {filterTitle, columns} = this.props;
+    const {classes, filterTitle, columns} = this.props;
     const {filters} = this.state;
     return (
       <div>
@@ -83,45 +105,65 @@ class FilterDialog extends React.Component {
           </IconButton>
         </Tooltip>
         <Dialog
-          open={this.state.open}
-          onClose={this.handleClose}
-          aria-labelledby="form-dialog-title"
-        >
-          <DialogTitle id="form-dialog-title">{filterTitle}を検索</DialogTitle>
-          <DialogContent>
-            {columns.map(col => {
-              let field_id = this.get_field_name(col);
-              let value = filters[field_id] || '';
-              return col.searchable ? <TextField 
-                key={field_id}
-                id={field_id}
-                label={col.label}
-                value={value}
-                margin={"normal"}
-                onChange={this.handleChange}
-              /> : <React.Fragment key={field_id}/>;
-            })}
-            {/* <TextField
-              autoFocus
-              margin="dense"
-              id="name"
-              label="Email Address"
-              type="email"
-              fullWidth
-            /> */}
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={this.handleClose} color="primary">
-              キャンセル
-            </Button>
-            <Button onClick={this.handleOk} color="primary">
-              検索
-            </Button>
-          </DialogActions>
+            open={this.state.open}
+            onClose={this.handleClose}
+            aria-labelledby="form-dialog-title"
+          >
+          <form onSubmit={this.handleOk}>
+            <DialogTitle id="form-dialog-title">{filterTitle}を検索</DialogTitle>
+            <DialogContent>
+              {columns.map(col => {
+                let field_id = this.get_field_name(col);
+                let value = filters[field_id] || '';
+                if (col.searchable) {
+                  if (col.choices && !common.isEmpty(col.choices)) {
+                    // 選択肢が存在する場合
+                    return (
+                      <FormControl className={classes.formControl}>
+                        <InputLabel htmlFor={field_id}>{col.label}</InputLabel>
+                        <Select value={value}>
+                        <MenuItem value=""><em>None</em></MenuItem>
+                          {Object.keys(col.choices).map(key => {
+                            return <MenuItem value={key}>{col.choices[key]}</MenuItem>;
+                          })}
+                        </Select>
+                      </FormControl>
+                    );
+                  } else {
+                    return (
+                      <FormControl className={classes.formControl}>
+                        <TextField 
+                          key={field_id}
+                          id={field_id}
+                          label={col.label}
+                          value={value}
+                          onChange={this.handleChange}
+                        />
+                      </FormControl>
+                    );
+                  }
+                } else {
+                  return <React.Fragment key={field_id}/>;
+                }
+              })}
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={this.handleClose} color="primary">
+                キャンセル
+              </Button>
+              <Button onClick={this.handleOk} color="primary" type="submit">
+                検索
+              </Button>
+            </DialogActions>
+          </form>
         </Dialog>
       </div>
     );
   }
 }
 
-export default FilterDialog;
+FilterDialog.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(FilterDialog);
