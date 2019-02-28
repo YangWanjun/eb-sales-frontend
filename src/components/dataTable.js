@@ -30,13 +30,19 @@ import { config } from '../utils/config';
 //     : (a, b) => (a[orderBy] < b[orderBy] ? -1 : 1);
 // }
 
+const headerStyles = theme => ({
+  cellPadding: {
+    paddingRight: 0,
+  },
+});
+
 class EnhancedTableHead extends React.Component {
   createSortHandler = property => event => {
     this.props.onRequestSort(event, property);
   };
 
   render() {
-    const { onSelectAllClick, order, orderBy, numSelected, rowCount, columnData, isSelectable } = this.props;
+    const { onSelectAllClick, order, orderBy, numSelected, rowCount, columnData, isSelectable, classes } = this.props;
     const chkCell = isSelectable ? (
       <TableCell padding="none">
         <Checkbox
@@ -57,7 +63,7 @@ class EnhancedTableHead extends React.Component {
                 <TableCell
                   key={column.id}
                   numeric={column.numeric}
-                  padding={column.disablePadding ? 'none' : 'default'}
+                  className={classes.cellPadding}
                   sortDirection={orderBy === column.id ? order : false}
                 >
                   <Tooltip
@@ -78,7 +84,7 @@ class EnhancedTableHead extends React.Component {
                 <TableCell
                   key={column.id}
                   numeric={column.numeric}
-                  padding={column.disablePadding ? 'none' : 'default'}
+                  className={classes.cellPadding}
                 >{column.label}</TableCell>
               )
             ) : (<React.Fragment key={column.id}/>)
@@ -91,6 +97,7 @@ class EnhancedTableHead extends React.Component {
 }
 
 EnhancedTableHead.propTypes = {
+  classes: PropTypes.object.isRequired,
   numSelected: PropTypes.number.isRequired,
   onRequestSort: PropTypes.func.isRequired,
   onSelectAllClick: PropTypes.func.isRequired,
@@ -99,6 +106,7 @@ EnhancedTableHead.propTypes = {
   rowCount: PropTypes.number.isRequired,
 };
 
+EnhancedTableHead = withStyles(headerStyles)(EnhancedTableHead);
 
 class EnhancedTableFooter extends React.Component {
   render() {
@@ -236,6 +244,9 @@ const styles = theme => ({
   },
   tableWrapper: {
     overflowX: 'auto',
+  },
+  cellPadding: {
+    paddingRight: 0,
   },
 });
 
@@ -381,15 +392,15 @@ class EnhancedTable extends React.Component {
                           return <React.Fragment  key={col.id}/>;
                         } else if (col.choices && !common.isEmpty(col.choices)) {
                           // 選択肢のある項目の場合
-                          return (<TableCell key={col.id} padding="default">{col.choices[n[col.id]]}</TableCell>);
+                          return (<TableCell key={col.id} className={classes.cellPadding}>{col.choices[n[col.id]]}</TableCell>);
                         } else if (col.numeric === true) {
                           // 数字の場合
-                          return (<TableCell key={col.id} numeric>{common.toNumComma(n[col.id])}</TableCell>);
+                          return (<TableCell key={col.id} numeric className={classes.cellPadding}>{common.toNumComma(n[col.id])}</TableCell>);
                         } else {
                           if (col.urlField && n[col.urlField]) {
-                            return (<TableCell key={col.id} padding="default"><Link to={n[col.urlField]}>{n[col.id]}</Link></TableCell>);
+                            return (<TableCell key={col.id} className={classes.cellPadding}><Link to={n[col.urlField]}>{n[col.id]}</Link></TableCell>);
                           } else {
-                            return (<TableCell key={col.id} padding="default">{n[col.id]}</TableCell>);
+                            return (<TableCell key={col.id} className={classes.cellPadding}>{n[col.id]}</TableCell>);
                           }
                         }
                       })}
