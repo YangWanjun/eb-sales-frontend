@@ -52,4 +52,15 @@ export const common = {
         }
         return true;
     },
-};
+
+    /**
+     * 項目のリストから項目を取得
+     * @param {Array} columns 
+     * @param {String} name 
+     */
+    getColumnByName: function(columns, name) {
+        name = name.split('__')[0];
+        let cols = columns.filter(col => col.id === name);
+        return cols.length > 0 ? cols[0] : null;
+    },
+};  

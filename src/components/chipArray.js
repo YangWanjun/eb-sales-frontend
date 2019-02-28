@@ -4,6 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Chip from '@material-ui/core/Chip';
 import Paper from '@material-ui/core/Paper';
 import TagFacesIcon from '@material-ui/icons/TagFaces';
+import { common } from '../utils/common';
 
 const styles = theme => ({
   root: {
@@ -44,11 +45,15 @@ class ChipsArray extends React.Component {
           }
 
           if (data.value) {
+            let label = data.value;
+            if (data.choices && !common.isEmpty(data.choices)) {
+              label = data.choices[data.value];
+            }
             return (
               <Chip
                 key={data.id}
                 icon={icon}
-                label={data.value}
+                label={label}
                 onDelete={this.handleDelete(data)}
                 className={classes.chip}
               />

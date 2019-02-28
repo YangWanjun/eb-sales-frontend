@@ -48,7 +48,7 @@ class FilterDialog extends React.Component {
   convertPropToFilter(filters) {
     let result = {};
     filters.map(i => {
-      return result[i.id] = i.value;
+      return result[i.id] = {'value': i.value, 'choices': i.choices};
     });
     return result;
   }
@@ -62,7 +62,8 @@ class FilterDialog extends React.Component {
     this.setState({ open: false });
     let filters = [];
     for (var k in this.state.filters) {
-      filters.push({id: k, value: this.state.filters[k]});
+      let vals = this.state.filters[k];
+      filters.push({id: k, value: vals.value, 'choices': vals.choices});
     }
     this.props.onChangeFilter(filters);
   };
@@ -73,19 +74,15 @@ class FilterDialog extends React.Component {
 
   handleChange(event) {
     let value = event.target.value;
-    let id = event.target.id;
+    let id = event.target.name;
+    let col = common.getColumnByName(this.props.columns, id);
+    let choices = null;
+    if (col) {
+      choices = col.choices;
+    }
     this.setState((state) => {
-      // let filters = state.filters;
-      // let item = filters.find(i => {
-      //   return i.id === id;
-      // })
-      // if (item) {
-      //   item.value = value;
-      // } else {
-      //   filters.push({id: id, value: value})
-      // }
       let filters = state.filters;
-      filters[id] = value;
+      filters[id] = {value: value, choices: choices};
       return {filters: filters};
     });
   }
@@ -114,15 +111,15 @@ class FilterDialog extends React.Component {
             <DialogContent>
               {columns.map(col => {
                 let field_id = this.get_field_name(col);
-                let value = filters[field_id] || '';
+                let value = (typeof(filters[field_id] || '') === 'object') ? filters[field_id].value : '';
                 if (col.searchable) {
                   if (col.choices && !common.isEmpty(col.choices)) {
                     // 選択肢が存在する場合
                     return (
                       <FormControl className={classes.formControl}>
                         <InputLabel htmlFor={field_id}>{col.label}</InputLabel>
-                        <Select value={value}>
-                        <MenuItem value=""><em>None</em></MenuItem>
+                        <Select inputProps={{ name: field_id, value: value }} onChange={this.handleChange}>
+                          <MenuItem value=""><em>None</em></MenuItem>
                           {Object.keys(col.choices).map(key => {
                             return <MenuItem value={key}>{col.choices[key]}</MenuItem>;
                           })}
@@ -134,7 +131,7 @@ class FilterDialog extends React.Component {
                       <FormControl className={classes.formControl}>
                         <TextField 
                           key={field_id}
-                          id={field_id}
+                          name={field_id}
                           label={col.label}
                           value={value}
                           onChange={this.handleChange}
