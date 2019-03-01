@@ -118,7 +118,7 @@ class FilterDialog extends React.Component {
                     return (
                       <FormControl className={classes.formControl}>
                         <InputLabel htmlFor={field_id}>{col.label}</InputLabel>
-                        <Select inputProps={{ name: field_id, value: value }} onChange={this.handleChange}>
+                        <Select value={value} inputProps={{ name: field_id, value: value }} onChange={this.handleChange}>
                           <MenuItem value=""><em>None</em></MenuItem>
                           {Object.keys(col.choices).map(key => {
                             return <MenuItem value={key}>{col.choices[key]}</MenuItem>;
