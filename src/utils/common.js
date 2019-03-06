@@ -59,8 +59,12 @@ export const common = {
      * @param {String} name 
      */
     getColumnByName: function(columns, name) {
-        name = name.split('__')[0];
-        let cols = columns.filter(col => col.id === name);
-        return cols.length > 0 ? cols[0] : null;
+        if (columns.length === 0) {
+            return 0;
+        } else {
+            name = name.split('__')[0];
+            let cols = columns.filter(col => col.id === name);
+            return cols.length > 0 ? cols[0] : null;
+        }
     },
 };  

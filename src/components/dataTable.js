@@ -341,7 +341,7 @@ class EnhancedTable extends React.Component {
     const { order, orderBy, selected, rowsPerPage, page } = this.state;
     const dataLength = data.count;
     const columns = data.columns;
-    const emptyRows = rowsPerPage - Math.min(rowsPerPage, dataLength - page * rowsPerPage);
+    // const emptyRows = rowsPerPage - Math.min(rowsPerPage, dataLength - page * rowsPerPage);
 
     return (
       <Paper className={classes.root}>
@@ -363,6 +363,7 @@ class EnhancedTable extends React.Component {
               onSelectAllClick={this.handleSelectAllClick}
               onRequestSort={this.handleRequestSort}
               rowCount={dataLength}
+              isSelectable={isSelectable}
             />
             <TableBody>
               {data.results
@@ -407,11 +408,11 @@ class EnhancedTable extends React.Component {
                     </TableRow>
                   );
                 })}
-              {emptyRows > 0 && (
+              {/* {emptyRows > 0 && (
                 <TableRow style={{ height: 49 * emptyRows }}>
                   <TableCell colSpan={ isSelectable ? columns.length + 1 : columns.length } />
                 </TableRow>
-              )}
+              )} */}
             </TableBody>
             {summary ? 
             <EnhancedTableFooter 
