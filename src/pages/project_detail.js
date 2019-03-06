@@ -184,7 +184,7 @@ class ProjectDetail extends React.Component {
           </GridItem>
         </GridContainer>
         <DataProvider endpoint={ config.api.project_member_list + '?project=' + params.project_id } 
-            render={ (data, filters, handleDataRedraw) => <EnhancedTable tableTitle='メンバー一覧' data={data} filters={filters} onDataRedraw={handleDataRedraw} isSelectable={true} /> } />
+            render={ (data, filters, handleDataRedraw) => <EnhancedTable tableTitle='メンバー一覧' data={data} filters={filters} onDataRedraw={handleDataRedraw} isClientSide={true} isSelectable={true} /> } />
       </div>
     );
   }

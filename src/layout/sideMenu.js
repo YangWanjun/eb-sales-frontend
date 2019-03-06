@@ -27,13 +27,13 @@ export const homeListItmes = (
 
 export const memberListItems = (
     <div>
-        <ListItem button component={Link} to='/members'>
+        <ListItem button component={Link} to='/member'>
             <ListItemIcon>
                 <People />
             </ListItemIcon>
             <ListItemText primary="社員一覧" />
         </ListItem>
-        <ListItem button component={Link} to='/departments'>
+        <ListItem button component={Link} to='/department'>
             <ListItemIcon>
                 <FolderShared />
             </ListItemIcon>
@@ -50,19 +50,19 @@ export const projectListItems = (
             </ListItemIcon>
             <ListItemText primary="案件一覧" />
         </ListItem>
-        <ListItem button component={Link} to='/customers'>
+        <ListItem button component={Link} to='/customer'>
             <ListItemIcon>
                 <Business />
             </ListItemIcon>
             <ListItemText primary="取引先一覧" />
         </ListItem>
-        <ListItem button component={Link} to='/partners'>
+        <ListItem button component={Link} to='/partner'>
             <ListItemIcon>
                 <RecentActors />
             </ListItemIcon>
             <ListItemText primary="協力会社一覧" />
         </ListItem>
-        <ListItem button component={Link} to='/bpcontracts'>
+        <ListItem button component={Link} to='/bpcontract'>
             <ListItemIcon>
                 <LibraryBooks />
             </ListItemIcon>

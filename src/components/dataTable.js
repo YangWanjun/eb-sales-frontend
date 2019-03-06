@@ -24,11 +24,21 @@ import ChipsArray from '../components/chipArray';
 import { common } from '../utils/common';
 import { config } from '../utils/config';
 
-// function getSorting(order, orderBy) {
-//   return order === 'desc'
-//     ? (a, b) => (b[orderBy] < a[orderBy] ? -1 : 1)
-//     : (a, b) => (a[orderBy] < b[orderBy] ? -1 : 1);
-// }
+function stableSort(array, cmp) {
+  const stabilizedThis = array.map((el, index) => [el, index]);
+  stabilizedThis.sort((a, b) => {
+    const order = cmp(a[0], b[0]);
+    if (order !== 0) return order;
+    return a[1] - b[1];
+  });
+  return stabilizedThis.map(el => el[0]);
+}
+
+function getSorting(order, orderBy) {
+  return order === 'desc'
+    ? (a, b) => (b[orderBy] < a[orderBy] ? -1 : 1)
+    : (a, b) => (a[orderBy] < b[orderBy] ? -1 : 1);
+}
 
 const headerStyles = theme => ({
   cellPadding: {
@@ -42,7 +52,7 @@ class EnhancedTableHead extends React.Component {
   };
 
   render() {
-    const { onSelectAllClick, order, orderBy, numSelected, rowCount, columnData, isSelectable, classes } = this.props;
+    const { onSelectAllClick, order, orderBy, numSelected, rowCount, columnData, isSelectable, isClientSide, classes } = this.props;
     const chkCell = isSelectable ? (
       <TableCell padding="none">
         <Checkbox
@@ -51,7 +61,7 @@ class EnhancedTableHead extends React.Component {
           onChange={onSelectAllClick}
         />
       </TableCell>
-    ) : (<React.Fragment></React.Fragment>)
+    ) : (<React.Fragment></React.Fragment>);
 
     return (
       <TableHead>
@@ -59,7 +69,7 @@ class EnhancedTableHead extends React.Component {
           { chkCell }
           {columnData.map(column => {
             const cell = column.visible ? (
-              column.sortable ? (
+              (isClientSide || column.sortable) ? (
                 <TableCell
                   key={column.id}
                   numeric={column.numeric}
@@ -72,9 +82,9 @@ class EnhancedTableHead extends React.Component {
                     enterDelay={300}
                   >
                     <TableSortLabel
-                      active={orderBy === column.sort_field}
+                      active={orderBy === (isClientSide ? column.id : column.sort_field)}
                       direction={order}
-                      onClick={this.createSortHandler(column.sort_field)}
+                      onClick={this.createSortHandler(isClientSide ? column.id : column.sort_field)}
                     >
                       {column.label}
                     </TableSortLabel>
@@ -282,7 +292,11 @@ class EnhancedTable extends React.Component {
     }
 
     this.setState({ order, orderBy });
-    this.props.onDataRedraw(this.state.rowsPerPage, this.state.page, order_by, this.props.filters);
+
+    const {isClientSide} = this.props;
+    if (!isClientSide) {
+      this.props.onDataRedraw(this.state.rowsPerPage, this.state.page, order_by, this.props.filters);
+    }
   };
 
   handleSelectAllClick = (event, checked) => {
@@ -319,29 +333,42 @@ class EnhancedTable extends React.Component {
 
   handleChangePage = (event, page) => {
     this.setState({ page });
-    const order_by = (this.state.order === 'desc' ? '-': '') + this.state.orderBy;
-    this.props.onDataRedraw(this.state.rowsPerPage, page, order_by, this.props.filters);
+    const {isClientSide} = this.props;
+    if (!isClientSide) {
+      const order_by = (this.state.order === 'desc' ? '-': '') + this.state.orderBy;
+      this.props.onDataRedraw(this.state.rowsPerPage, page, order_by, this.props.filters);
+    }
   };
 
   handleChangeRowsPerPage = event => {
     this.setState({ rowsPerPage: event.target.value });
-    const order_by = (this.state.order === 'desc' ? '-': '') + this.state.orderBy;
-    this.props.onDataRedraw(event.target.value, 0, order_by, this.props.filters);
+    const {isClientSide} = this.props;
+    if (!isClientSide) {
+      const order_by = (this.state.order === 'desc' ? '-': '') + this.state.orderBy;
+      this.props.onDataRedraw(event.target.value, 0, order_by, this.props.filters);
+    }
   };
 
   handleChangeFilter = filters => {
-    const order_by = (this.state.order === 'desc' ? '-': '') + this.state.orderBy;
-    this.props.onDataRedraw(this.state.rowsPerPage, 0, order_by, filters);
+    const {isClientSide} = this.props;
+    if (!isClientSide) {
+      const order_by = (this.state.order === 'desc' ? '-': '') + this.state.orderBy;
+      this.props.onDataRedraw(this.state.rowsPerPage, 0, order_by, filters);
+    }
   }
 
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
   render() {
-    const { data, classes, tableTitle, isSelectable, filters, summary } = this.props;
+    const { data, classes, tableTitle, isSelectable, filters, summary, isClientSide } = this.props;
     const { order, orderBy, selected, rowsPerPage, page } = this.state;
     const dataLength = data.count;
     const columns = data.columns;
     // const emptyRows = rowsPerPage - Math.min(rowsPerPage, dataLength - page * rowsPerPage);
+    let results = data.results;
+    if (isClientSide) {
+      results = stableSort(data.results, getSorting(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+    }
 
     return (
       <Paper className={classes.root}>
@@ -364,9 +391,10 @@ class EnhancedTable extends React.Component {
               onRequestSort={this.handleRequestSort}
               rowCount={dataLength}
               isSelectable={isSelectable}
+              isClientSide={isClientSide || false}
             />
             <TableBody>
-              {data.results
+              {results
                 // .sort(getSorting(order, orderBy))
                 // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map(n => {
