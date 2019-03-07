@@ -14,10 +14,11 @@ import CardBody from "../components/Card/CardBody.jsx";
 import CardFooter from "../components/Card/CardFooter.jsx";
 import EnhancedTable from '../components/dataTable';
 import DataProvider from '../components/dataProvider';
+import BadgeLabel from '../components/badgeLabel';
 import { config } from '../utils/config';
 import { common } from '../utils/common';
 
-const styles = {
+const styles = theme => ({
   cardCategoryWhite: {
     color: "rgba(255,255,255,.62)",
     margin: "0",
@@ -42,8 +43,8 @@ const styles = {
   cardStyle: {
     marginTop: 0,
     marginBottom: 15,
-  }
-};
+  },
+});
 
 class ProjectDetail extends React.Component {
 
@@ -173,7 +174,9 @@ class ProjectDetail extends React.Component {
                     ) : (<React.Fragment />)}
                     <TableRow>
                       <TableCell className={classes.cellHeader}>状態</TableCell>
-                      <TableCell>{ status }</TableCell>
+                      <TableCell>
+                        <BadgeLabel color="primary" badgeContent={ status } />
+                      </TableCell>
                     </TableRow>
                   </TableBody>
                 </Table>

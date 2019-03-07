@@ -212,6 +212,9 @@ class EnhancedTableToolbar extends React.Component {
         </Typography>
       );
     }
+    // 検索できる項目が存在するかどうか（Trueの場合、検索ダイアログが表示する）
+    const searchable = (columns.filter(col => col.searchable === true).length > 0);
+
     return (
       <Toolbar
         className={classNames(classes.root, {
@@ -229,7 +232,7 @@ class EnhancedTableToolbar extends React.Component {
                 <DeleteIcon />
               </IconButton>
             </Tooltip>
-          ) : <FilterDialog filterTitle={tableTitle} columns={columns} filters={filters} onChangeFilter={this.handleDeleteFilter} />
+          ) : (searchable ? <FilterDialog filterTitle={tableTitle} columns={columns} filters={filters} onChangeFilter={this.handleDeleteFilter} /> : <React.Fragment />)
           }
         </div>
       </Toolbar>
