@@ -1,7 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
+import Checkbox from '@material-ui/core/Checkbox';
 import FormControl from '@material-ui/core/FormControl';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import InputLabel from '@material-ui/core/InputLabel';
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -63,7 +65,7 @@ class FilterDialog extends React.Component {
     let filters = [];
     for (var k in this.state.filters) {
       let vals = this.state.filters[k];
-      filters.push({id: k, value: vals.value, 'choices': vals.choices});
+      filters.push({id: k, value: vals.value, 'choices': vals.choices, 'name': vals.name});
     }
     this.props.onChangeFilter(filters);
   };
@@ -77,12 +79,27 @@ class FilterDialog extends React.Component {
     let id = event.target.name;
     let col = common.getColumnByName(this.props.columns, id);
     let choices = null;
+    const name = col.label;
     if (col) {
       choices = col.choices;
     }
+    if (col.boolean === true) {
+      if (value === 'true') {
+        value = true;
+      } else if (value === 'false') {
+        value = false;
+      } else {
+        value = '';
+      }
+    }
+
     this.setState((state) => {
       let filters = state.filters;
-      filters[id] = {value: value, choices: choices};
+      if (value === '' || value === null) {
+        delete filters[id];
+      } else {
+        filters[id] = {value: value, choices: choices, name: name};
+      }
       return {filters: filters};
     });
   }
@@ -95,7 +112,7 @@ class FilterDialog extends React.Component {
     const {classes, filterTitle, columns} = this.props;
     const {filters} = this.state;
     return (
-      <div>
+      <React.Fragment>
         <Tooltip title="検索" placement='bottom' enterDelay={300}>
           <IconButton aria-label="Filter list" onClick={this.handleClickOpen}>
             <FilterListIcon />
@@ -126,6 +143,20 @@ class FilterDialog extends React.Component {
                         </Select>
                       </FormControl>
                     );
+                  } else if (col.boolean === true) {
+                    // チェックボックスを表示
+                    return (<FormControlLabel key={'form_contral_' + field_id} className={classes.formControl}
+                      control={
+                        <Checkbox 
+                          key={field_id} 
+                          name={field_id} 
+                          color="primary" 
+                          checked={value} 
+                          onChange={this.handleChange}
+                        />
+                      }
+                      label={col.label}
+                    />);
                   } else {
                     return (
                       <FormControl key={'form_contral_' + field_id} className={classes.formControl}>
@@ -154,7 +185,7 @@ class FilterDialog extends React.Component {
             </DialogActions>
           </form>
         </Dialog>
-      </div>
+      </React.Fragment>
     );
   }
 }

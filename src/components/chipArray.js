@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Chip from '@material-ui/core/Chip';
 import Paper from '@material-ui/core/Paper';
-import TagFacesIcon from '@material-ui/icons/TagFaces';
 import { common } from '../utils/common';
 
 const styles = theme => ({
@@ -40,14 +39,16 @@ class ChipsArray extends React.Component {
         {chipData.map(data => {
           let icon = null;
 
-          if (data.label === 'React') {
-            icon = <TagFacesIcon />;
-          }
-
-          if (data.value) {
+          if (data.value || data.value === false) {
             let label = data.value;
             if (data.choices && !common.isEmpty(data.choices)) {
-              label = data.choices[data.value];
+              if (data.value === true) {
+                label = data.name;
+              } else if (data.value === false) {
+                label = data.name + 'ではない';
+              } else {
+                label = data.choices[data.value];
+              }
             }
             return (
               <Chip

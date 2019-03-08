@@ -18,6 +18,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Delete';
+import AddIcon from '@material-ui/icons/Add';
 import { lighten } from '@material-ui/core/styles/colorManipulator';
 import FilterDialog from '../components/filterDialog';
 import ChipsArray from '../components/chipArray';
@@ -46,8 +47,11 @@ function getSorting(order, orderBy) {
 function stableFilter(array, filters) {
   filters.map( f => {
     array = array.filter(function(item) {
-      if (item[f.id]) {
-        return item[f.id].indexOf(f.value) >= 0;
+      let item_value = item[f.id];
+      if (item_value === true || item_value === false) {
+        return (f.value === true || f.value === false) ? item_value === f.value : true;
+      } else if (item_value) {
+        return item_value.indexOf(f.value) >= 0;
       } else {
         return false;
       }
@@ -186,6 +190,8 @@ const toolbarStyles = theme => ({
   },
   actions: {
     color: theme.palette.text.secondary,
+    minWidth: '150px',
+    textAlign: 'right',
   },
   title: {
     flex: '0 0 auto',
@@ -238,6 +244,24 @@ class EnhancedTableToolbar extends React.Component {
     }
     // 検索できる項目が存在するかどうか（Trueの場合、検索ダイアログが表示する）
     const searchable = (columns.filter(col => col.searchable === true).length > 0);
+    let searchComponent = <React.Fragment />;
+    if (searchable) {
+      searchComponent = (
+        <FilterDialog
+          filterTitle={tableTitle} 
+          columns={columns} 
+          filters={filters} 
+          onChangeFilter={this.handleDeleteFilter} 
+        />
+      );
+    }
+    let addComponent = (
+      <Tooltip title="追加" placement='bottom' enterDelay={300}>
+        <IconButton aria-label="Add" color='secondary'>
+          <AddIcon />
+        </IconButton>
+      </Tooltip>
+    );
 
     return (
       <Toolbar
@@ -256,8 +280,12 @@ class EnhancedTableToolbar extends React.Component {
                 <DeleteIcon />
               </IconButton>
             </Tooltip>
-          ) : (searchable ? <FilterDialog filterTitle={tableTitle} columns={columns} filters={filters} onChangeFilter={this.handleDeleteFilter} /> : <React.Fragment />)
-          }
+          ) : (
+            <React.Fragment>
+              {addComponent}
+              {searchComponent}
+            </React.Fragment>
+          )}
         </div>
       </Toolbar>
     );
