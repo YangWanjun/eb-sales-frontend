@@ -82,6 +82,7 @@ class ProjectDetail extends React.Component {
     const col_attendance_type = common.getColumnByName(columns, 'attendance_type');
     const business_type = col_business_type ? col_business_type.choices[project_detail.business_type] : '';
     const status = col_status ? col_status.choices[project_detail.status] : '';
+    const statusClass = col_status ? col_status.choiceClasses[project_detail.status] : '';
     const attendance_type = col_attendance_type ? col_attendance_type.choices[project_detail.attendance_type] : '';
 
     return (
@@ -175,7 +176,7 @@ class ProjectDetail extends React.Component {
                     <TableRow>
                       <TableCell className={classes.cellHeader}>状態</TableCell>
                       <TableCell>
-                        <BadgeLabel color="primary" badgeContent={ status } />
+                        <BadgeLabel color={statusClass} badgeContent={ status } />
                       </TableCell>
                     </TableRow>
                   </TableBody>
@@ -187,7 +188,18 @@ class ProjectDetail extends React.Component {
           </GridItem>
         </GridContainer>
         <DataProvider endpoint={ config.api.project_member_list + '?project=' + params.project_id } 
-            render={ (data, filters, handleDataRedraw) => <EnhancedTable tableTitle='メンバー一覧' data={data} filters={filters} onDataRedraw={handleDataRedraw} isClientSide={true} isSelectable={true} /> } />
+            render={ (data, filters, handleDataRedraw) => {
+              // 検索できる項目を設定
+              data.columns.map(col => {
+                if (col.id === 'member_name' || col.id === 'contract_type' || col.id === 'status' || col.id === 'is_working') {
+                  col.searchable = true;
+                  return col;
+                } else {
+                  return col;
+                }
+              });
+              return <EnhancedTable tableTitle='メンバー一覧' data={data} filters={filters} onDataRedraw={handleDataRedraw} isClientSide={true} isSelectable={true} />;
+            } } />
       </div>
     );
   }

@@ -21,8 +21,11 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import { lighten } from '@material-ui/core/styles/colorManipulator';
 import FilterDialog from '../components/filterDialog';
 import ChipsArray from '../components/chipArray';
+import BadgeLabel from '../components/badgeLabel';
 import { common } from '../utils/common';
 import { config } from '../utils/config';
+import GridContainer from './Grid/GridContainer';
+import GridItem from './Grid/GridItem';
 
 function stableSort(array, cmp) {
   const stabilizedThis = array.map((el, index) => [el, index]);
@@ -38,6 +41,20 @@ function getSorting(order, orderBy) {
   return order === 'desc'
     ? (a, b) => (b[orderBy] < a[orderBy] ? -1 : 1)
     : (a, b) => (a[orderBy] < b[orderBy] ? -1 : 1);
+}
+
+function stableFilter(array, filters) {
+  filters.map( f => {
+    array = array.filter(function(item) {
+      if (item[f.id]) {
+        return item[f.id].indexOf(f.value) >= 0;
+      } else {
+        return false;
+      }
+    })
+    return array
+  });
+  return array;
 }
 
 const headerStyles = theme => ({
@@ -72,7 +89,7 @@ class EnhancedTableHead extends React.Component {
               (isClientSide || column.sortable) ? (
                 <TableCell
                   key={column.id}
-                  numeric={column.numeric}
+                  align={column.numeric ? 'right' : 'inherit'}
                   className={classes.cellPadding}
                   sortDirection={orderBy === column.id ? order : false}
                 >
@@ -93,7 +110,7 @@ class EnhancedTableHead extends React.Component {
               ) : (
                 <TableCell
                   key={column.id}
-                  numeric={column.numeric}
+                  align={column.numeric ? 'right' : 'inherit'}
                   className={classes.cellPadding}
                 >{column.label}</TableCell>
               )
@@ -139,7 +156,7 @@ class EnhancedTableFooter extends React.Component {
             if (!col.visible) {
               return <React.Fragment  key={col.id}/>;
             } else if (col.numeric === true) {
-              return (<TableCell key={col.id} numeric>{common.toNumComma(summary[col.id])}</TableCell>);
+              return (<TableCell key={col.id} align='right'>{common.toNumComma(summary[col.id])}</TableCell>);
             } else {
               return (<TableCell key={col.id} padding="default"></TableCell>);
             }
@@ -191,19 +208,26 @@ class EnhancedTableToolbar extends React.Component {
     let toolComponent = null;
 
     if (numSelected > 0 && filters.length > 0) {
+      // 行が選択され、且つ検索のフィルター項目あり
       toolComponent = (
         <Typography color="inherit" variant="subheading">
-            {numSelected} selected
-            <ChipsArray chipData={filters} onChangeFilter={this.handleDeleteFilter} />
+          <GridContainer>
+            <GridItem style={{lineHeight: '45px'}}>{numSelected} selected</GridItem>
+            <GridItem>
+              <ChipsArray chipData={filters} onChangeFilter={this.handleDeleteFilter} />
+            </GridItem>
+          </GridContainer>
         </Typography>
       );
     } else if (numSelected > 0) {
+      // 行が選択される
       toolComponent = (
         <Typography color="inherit" variant="subheading">
             {numSelected} selected
         </Typography>
       );
     } else if (filters.length > 0) {
+      // 検索のフィルター項目あり
       toolComponent = <ChipsArray chipData={filters} onChangeFilter={this.handleDeleteFilter} />;
     } else {
       toolComponent = (
@@ -280,6 +304,7 @@ class EnhancedTable extends React.Component {
       // columns: props.data.columns,
       page: 0,
       rowsPerPage: config.rowsPerPage,
+      clientFilters: [],
     };
   }
 
@@ -357,20 +382,30 @@ class EnhancedTable extends React.Component {
     if (!isClientSide) {
       const order_by = (this.state.order === 'desc' ? '-': '') + this.state.orderBy;
       this.props.onDataRedraw(this.state.rowsPerPage, 0, order_by, filters);
+    } else {
+      this.setState({ clientFilters: filters});
     }
-  }
+  };
 
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
   render() {
     const { data, classes, tableTitle, isSelectable, filters, summary, isClientSide } = this.props;
-    const { order, orderBy, selected, rowsPerPage, page } = this.state;
-    const dataLength = data.count;
+    const { order, orderBy, selected, rowsPerPage, page, clientFilters } = this.state;
+    let dataLength = data.count;
     const columns = data.columns;
     // const emptyRows = rowsPerPage - Math.min(rowsPerPage, dataLength - page * rowsPerPage);
     let results = data.results;
     if (isClientSide) {
-      results = stableSort(data.results, getSorting(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+      // 並び替え
+      results = stableSort(data.results, getSorting(order, orderBy));
+      // 検索
+      if (clientFilters && clientFilters.length > 0) {
+        results = stableFilter(results, clientFilters);
+        dataLength = results.length;
+      }
+      // ページング
+      results = results.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
     }
 
     return (
@@ -380,7 +415,7 @@ class EnhancedTable extends React.Component {
           columns={columns} 
           tableTitle={tableTitle} 
           isSelectable={isSelectable} 
-          filters={filters} 
+          filters={filters.length > 0 ? filters : clientFilters} 
           onChangeFilter={this.handleChangeFilter}
         />
         <div className={classes.tableWrapper}>
@@ -424,10 +459,18 @@ class EnhancedTable extends React.Component {
                           return <React.Fragment  key={col.id}/>;
                         } else if (col.choices && !common.isEmpty(col.choices)) {
                           // 選択肢のある項目の場合
-                          return (<TableCell key={col.id} className={classes.cellPadding}>{col.choices[n[col.id]]}</TableCell>);
+                          if (col.choiceClasses && !common.isEmpty(col.choiceClasses)) {
+                            return (
+                              <TableCell key={col.id} className={classes.cellPadding}>
+                                <BadgeLabel color={col.choiceClasses[n[col.id]]} badgeContent={ col.choices[n[col.id]] } />
+                              </TableCell>
+                            );
+                          } else {
+                            return (<TableCell key={col.id} className={classes.cellPadding}>{col.choices[n[col.id]]}</TableCell>);
+                          }
                         } else if (col.numeric === true) {
                           // 数字の場合
-                          return (<TableCell key={col.id} numeric className={classes.cellPadding}>{common.toNumComma(n[col.id])}</TableCell>);
+                          return (<TableCell key={col.id} align='right' className={classes.cellPadding}>{common.toNumComma(n[col.id])}</TableCell>);
                         } else {
                           if (col.urlField && n[col.urlField]) {
                             return (<TableCell key={col.id} className={classes.cellPadding}><Link to={n[col.urlField]}>{n[col.id]}</Link></TableCell>);

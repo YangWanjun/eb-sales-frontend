@@ -67,4 +67,12 @@ export const common = {
             return cols.length > 0 ? cols[0] : null;
         }
     },
+
+    /**
+     * アルファベットの一文字目だけ大文字に
+     * @param {String} s 
+     */
+    capitalize: function(s) {
+        return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+    }
 };  

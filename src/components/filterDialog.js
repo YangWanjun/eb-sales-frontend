@@ -116,19 +116,19 @@ class FilterDialog extends React.Component {
                   if (col.choices && !common.isEmpty(col.choices)) {
                     // 選択肢が存在する場合
                     return (
-                      <FormControl className={classes.formControl}>
+                      <FormControl key={'form_contral_' + field_id} className={classes.formControl}>
                         <InputLabel htmlFor={field_id}>{col.label}</InputLabel>
                         <Select value={value} inputProps={{ name: field_id, value: value }} onChange={this.handleChange}>
                           <MenuItem value=""><em>None</em></MenuItem>
                           {Object.keys(col.choices).map(key => {
-                            return <MenuItem value={key}>{col.choices[key]}</MenuItem>;
+                            return <MenuItem key={key} value={key}>{col.choices[key]}</MenuItem>;
                           })}
                         </Select>
                       </FormControl>
                     );
                   } else {
                     return (
-                      <FormControl className={classes.formControl}>
+                      <FormControl key={'form_contral_' + field_id} className={classes.formControl}>
                         <TextField 
                           key={field_id}
                           name={field_id}

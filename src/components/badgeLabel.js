@@ -1,6 +1,8 @@
 import React from 'react';
 import withStyles from "@material-ui/core/styles/withStyles";
 
+import { common } from '../utils/common';
+
 const styles = theme => ({
   root: {
     display: 'inline-flex',
@@ -10,8 +12,8 @@ const styles = theme => ({
     marginRight: theme.spacing.unit * 3,
   },
   content: {
-    color: '#fff',
-    backgroundColor: '#2196f3',
+    color: theme.palette.textColor,
+    backgroundColor: theme.palette.color,
     top: 0,
     right: 0,
     height: '20px',
@@ -20,8 +22,8 @@ const styles = theme => ({
     zIndex: 1,
     position: 'absolute',
     flexWrap: 'wrap',
-    fontSize: '0.75rem',
-    minWidth: 50,
+    fontSize: '11px',
+    minWidth: 60,
     transform: 'scale(1) translate(50%, -50%)',
     boxSizing: 'border-box',
     transition: 'transform 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
@@ -29,10 +31,35 @@ const styles = theme => ({
     fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
     fontWeight: 500,
     alignContent: 'center',
-    borderRadius: 10,
+    borderRadius: 2,
     flexDirection: 'row',
     justifyContent: 'center',
     transformOrigin: '100% 0%',
+  },
+
+  colorGrey: {
+    backgroundColor: '#9e9e9e',
+    color: 'white',
+  },
+
+  colorGreen: {
+    backgroundColor: '#4caf50',
+    color: 'white',
+  },
+
+  colorBlue: {
+    backgroundColor: '#2196f3',
+    color: 'white',
+  },
+
+  colorPurple: {
+    backgroundColor: '#9c27b0',
+    color: 'white',
+  },
+
+  colorLime: {
+    backgroundColor: '#cddc39',
+    color: 'black',
   },
 });
 
@@ -42,8 +69,10 @@ class BadgeLabel extends React.Component {
     const { badgeContent, classes, color } = this.props;
 
     return (
-      <span color={color} className={classes.root}>
-        <span className={classes.content}>{ badgeContent }</span>
+      <span className={classes.root}>
+        <span className={[classes.content, classes['color' + common.capitalize(color)]].join(' ')}>
+          { badgeContent }
+        </span>
       </span>
     )
   }
