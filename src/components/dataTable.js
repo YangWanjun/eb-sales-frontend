@@ -38,10 +38,22 @@ function stableSort(array, cmp) {
   return stabilizedThis.map(el => el[0]);
 }
 
-function getSorting(order, orderBy) {
-  return order === 'desc'
+/**
+ * 
+ * @param {String} order 昇順／降順
+ * @param {String} orderBy 並び替え項目
+ * @param {Boolean} isNumeric 並び替え項目が数字かどうか
+ */
+function getSorting(order, orderBy, isNumeric) {
+  if (isNumeric) {
+    return order === 'desc'
+    ? (a, b) => (b[orderBy] - a[orderBy])
+    : (a, b) => (a[orderBy] - b[orderBy]);
+  } else {
+    return order === 'desc'
     ? (a, b) => (b[orderBy] < a[orderBy] ? -1 : 1)
     : (a, b) => (a[orderBy] < b[orderBy] ? -1 : 1);
+  }
 }
 
 function stableFilter(array, filters) {
@@ -68,8 +80,8 @@ const headerStyles = theme => ({
 });
 
 class EnhancedTableHead extends React.Component {
-  createSortHandler = property => event => {
-    this.props.onRequestSort(event, property);
+  createSortHandler = (property, isNumeric) => event => {
+    this.props.onRequestSort(event, property, isNumeric);
   };
 
   render() {
@@ -105,7 +117,7 @@ class EnhancedTableHead extends React.Component {
                     <TableSortLabel
                       active={orderBy === (isClientSide ? column.id : column.sort_field)}
                       direction={order}
-                      onClick={this.createSortHandler(isClientSide ? column.id : column.sort_field)}
+                      onClick={this.createSortHandler(isClientSide ? column.id : column.sort_field, column.numeric)}
                     >
                       {column.label}
                     </TableSortLabel>
@@ -326,6 +338,7 @@ class EnhancedTable extends React.Component {
     this.state = {
       order: 'asc',
       orderBy: 'id',
+      orderNumeric: false,  // 並び替え項目が数字かどうか
       selected: [],
       // data: props.data.results,
       // dataLength: props.data.count,
@@ -336,7 +349,7 @@ class EnhancedTable extends React.Component {
     };
   }
 
-  handleRequestSort = (event, property) => {
+  handleRequestSort = (event, property, orderNumeric) => {
     const orderBy = property;
     let order = 'desc';
     let order_by = property;
@@ -347,7 +360,7 @@ class EnhancedTable extends React.Component {
       order_by = '-' + order_by;
     }
 
-    this.setState({ order, orderBy });
+    this.setState({ order, orderBy, orderNumeric });
 
     const {isClientSide} = this.props;
     if (!isClientSide) {
@@ -419,14 +432,14 @@ class EnhancedTable extends React.Component {
 
   render() {
     const { data, classes, tableTitle, isSelectable, filters, summary, isClientSide } = this.props;
-    const { order, orderBy, selected, rowsPerPage, page, clientFilters } = this.state;
+    const { order, orderBy, orderNumeric, selected, rowsPerPage, page, clientFilters } = this.state;
     let dataLength = data.count;
     const columns = data.columns;
     // const emptyRows = rowsPerPage - Math.min(rowsPerPage, dataLength - page * rowsPerPage);
     let results = data.results;
     if (isClientSide) {
       // 並び替え
-      results = stableSort(data.results, getSorting(order, orderBy));
+      results = stableSort(data.results, getSorting(order, orderBy, orderNumeric));
       // 検索
       if (clientFilters && clientFilters.length > 0) {
         results = stableFilter(results, clientFilters);
@@ -461,8 +474,6 @@ class EnhancedTable extends React.Component {
             />
             <TableBody>
               {results
-                // .sort(getSorting(order, orderBy))
-                // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map(n => {
                   const isSelected = this.isSelected(n.id);
                   const chkCell = isSelectable ? (
