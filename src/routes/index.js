@@ -1,17 +1,45 @@
 import React, { Component } from 'react';
-import { BrowserRouter, Switch, Route } from 'react-router-dom'
-import Layout from '../layout'
+import { connect } from 'react-redux';
+import { Router, Switch, Route } from 'react-router-dom';
+import { createBrowserHistory } from 'history';
+import Layout from '../layout';
+import { alertActions } from '../reducers/alert.actions';
+import { PrivateRoute } from '../components/privateRoute';
+import login from '../components/login';
+
+const history = createBrowserHistory();
 
 class Routes extends Component {
+
+  constructor(props) {
+    super(props);
+
+    const {dispatch} = this.props;
+    history.listen((location, action) => {
+      // clear alert on location change
+      dispatch(alertActions.clear());
+    });
+  }
+
   render () {
     return (
-      <BrowserRouter>
-        <Switch>
-          <Route path="/" component={Layout} />
-        </Switch>
-      </BrowserRouter>
+      <div>
+        <Router history={history}>
+          <Switch>
+            <Route path="/login" component={login} />
+            <PrivateRoute path="/" component={Layout} />
+          </Switch>
+        </Router>
+      </div>
     );
   }
 }
 
-export default Routes;
+function mapStateToProps(state) {
+  const { alert } = state;
+  return {
+    alert
+  };
+}
+
+export default connect(mapStateToProps)(Routes);
