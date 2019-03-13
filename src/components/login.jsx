@@ -67,6 +67,9 @@ class Login extends Component {
   handleSubmit(e) {
     e.preventDefault();
     const { username, password } = this.state;
+    if (username && password) {
+      this.props.login(username,password);
+    }
   }
   render(){
     const { classes } = this.props;
@@ -81,13 +84,13 @@ class Login extends Component {
             </Avatar>
             <Typography variant="headline">ログインしてはじめよう！</Typography>
             {this.props.error ?
-              <p className={classes.alert}>ユーザ名またはパスワードが正しくありません。</p>
+              <p className={classes.alert}>ユーザー名またはパスワードが正しくありません。</p>
               : ''
             }
 
             <form className={classes.form}>
               <FormControl margin="normal" required fullWidth>
-                <InputLabel htmlFor="email">ユーザー名またはメールアドレス</InputLabel>
+                <InputLabel htmlFor="email">ユーザー名</InputLabel>
                 <Input id="email" name="username" autoFocus onChange={this.handleChange}/>
               </FormControl>
               <FormControl margin="normal" required fullWidth>

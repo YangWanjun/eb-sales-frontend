@@ -5,6 +5,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import { config } from '../utils/config';
+import { common } from '../utils/common';
 
 const styles = theme => ({
   paper: {
@@ -42,12 +43,7 @@ class DataProvider extends Component {
     this.handleDataRedraw(this.state.limit, this.state.offset)
 
     if (this.state.summaryUrl) {
-      fetch(this.state.summaryUrl).then(response => {
-        if (response.status !== 200) {
-          return this.setState({ placeholder: "Something went wrong" });
-        }
-        return response.json();
-      }).then(data => {
+      common.fetchGet(this.state.summaryUrl).then(data => {
         this.setState({ summary: data });
       });
     }
@@ -72,13 +68,7 @@ class DataProvider extends Component {
     } else {
       filters = this.state.filters;
     }
-    fetch(url)
-      .then(response => {
-        if (response.status !== 200) {
-          return this.setState({ placeholder: "Something went wrong" });
-        }
-        return response.json();
-      })
+    common.fetchGet(url)
       .then(data => this.setState({ data: data, loaded: true, filters: filters }));
   }
 

@@ -1,3 +1,5 @@
+import { authHeader } from '../utils/authHeader';
+
 export const common = {
     /**
      * 数字をカンマ区切りで表示
@@ -74,5 +76,56 @@ export const common = {
      */
     capitalize: function(s) {
         return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
-    }
-};  
+    },
+
+    /**
+     * 
+     * @param {String} url ＵＲＬ
+     * @param {Object} params パラメーター
+     */
+    fetchGet: function(url, params) {
+        return this.fetchCommon(url, 'GET', params);
+    },
+
+    /**
+     * 
+     * @param {String} url ＵＲＬ
+     * @param {Object} params パラメーター
+     */
+    fetchPost: function(url, params) {
+        return this.fetchCommon(url, 'POST', params);
+    },
+
+    /**
+     * ＡＰＩを呼び出す
+     * @param {String} url ＵＲＬ
+     * @param {String} method GET|POST|PUT|DELETE
+     * @param {Object} params パラメーター
+     */
+    fetchCommon: function(url, method, params) {
+        const requestOptions = {
+            method: method,
+            headers: authHeader(),
+        };
+
+        return fetch(url, requestOptions).then(this.handleResponse);
+    },
+
+    handleResponse: function(response) {
+        return response.text().then(text => {
+            const data = text && JSON.parse(text);
+            if (!response.ok) {
+                if (response.status === 401) {
+                    // auto logout if 401 response returned from api
+                    localStorage.removeItem('token');
+                    //location.reload(true);
+                }
+
+                const error = (data && data.message) || response.statusText;
+                return Promise.reject(error);
+            }
+    
+            return data;
+        });
+    },
+};

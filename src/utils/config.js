@@ -1,5 +1,6 @@
 export const config = {
   api: {
+    authenticate: 'http://192.168.99.100:8001/api/token-auth/',
     member_list: 'http://192.168.99.100:8001/api/members/',
     partner_list: 'http://192.168.99.100:8001/api/partners/',
     client_list: 'http://192.168.99.100:8001/api/client/',

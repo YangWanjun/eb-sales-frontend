@@ -60,12 +60,7 @@ class ProjectDetail extends React.Component {
   componentDidMount() {
     const { params } = this.props.match;
     const url_project_detail = common.formatStr(config.api.project_detail, params.project_id) + '?schema=1';
-    fetch(url_project_detail).then(response => {
-      if (response.status !== 200) {
-        return this.setState({ placeholder: "Something went wrong" });
-      }
-      return response.json();
-    }).then(data => {
+    common.fetchGet(url_project_detail).then(data => {
       this.setState({ 
         project_detail: data,
         columns: data.columns,

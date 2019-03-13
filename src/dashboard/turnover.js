@@ -199,35 +199,17 @@ class TurnoverDashboard extends React.Component {
 
   componentDidMount() {
     // 年間売上
-    fetch(config.api.turnover_yearly_chart)
-    .then(response => {
-      if (response.status !== 200) {
-          return this.setState({ turnoverYearlyChart: "Something went wrong" });
-      }
-      return response.json();
-    })
+    common.fetchGet(config.api.turnover_yearly_chart)
     .then(data => this.setState({ 
       turnoverYearlyChart: data 
     }));
     // 月別売上
-    fetch(config.api.turnover_monthly_chart)
-    .then(response => {
-      if (response.status !== 200) {
-          return this.setState({ turnoverMonthlyChart: "Something went wrong" });
-      }
-      return response.json();
-    })
+    common.fetchGet(config.api.turnover_monthly_chart)
     .then(data => this.setState({ 
       turnoverMonthlyChart: data 
     }));
     // 部署別、月別売上
-    fetch(config.api.turnover_division_monthly_chart)
-    .then(response => {
-      if (response.status !== 200) {
-          return this.setState({ turnoverDivisionMonthlyChart: "Something went wrong" });
-      }
-      return response.json();
-    })
+    common.fetchGet(config.api.turnover_division_monthly_chart)
     .then(data => this.setState({ 
       turnoverDivisionMonthlyChart: data 
     }));

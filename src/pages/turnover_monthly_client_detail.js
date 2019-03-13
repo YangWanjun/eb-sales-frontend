@@ -19,12 +19,7 @@ class TurnoverMonthlyClientDetail extends React.Component {
   componentDidMount() {
     const { params } = this.props.match;
     const url_client_detail = common.formatStr(config.api.client_detail, params.client_id);
-    fetch(url_client_detail).then(response => {
-      if (response.status !== 200) {
-        return this.setState({ placeholder: "Something went wrong" });
-      }
-      return response.json();
-    }).then(data => {
+    common.fetchGet(url_client_detail).then(data => {
       this.setState({ client_detail: data, })
     });
   }
