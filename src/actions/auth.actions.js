@@ -10,7 +10,7 @@ export const login = (username, password) => {
           .then(
               data => {
                   dispatch(loginSuccess(data));
-                  dispatch(push('/dashboard'));
+                  dispatch(push('/'));
               },
               error => {
                   dispatch(loginFailure(error));

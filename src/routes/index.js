@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import { Router, Switch, Route } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
-import { logoutAndRedirect } from '../actions/auth.actions';
-import { getMe, clearMe } from '../actions/user.actions';
-import Layout from '../layout';
 import { PrivateRoute } from '../components/privateRoute';
 import Login from '../containers/login';
+import Layout from '../containers/app';
 
 const history = createBrowserHistory();
 
@@ -26,18 +23,4 @@ class Routes extends Component {
   }
 }
 
-const mapStateToProps = (state, ownProps) => ({
-  me: state.user.me
-});
-
-const mapDispatchToProps = dispatch => ({
-  logout() {
-    dispatch(logoutAndRedirect());
-    dispatch(clearMe());
-  },
-  onMount() {
-    dispatch(getMe());
-  }
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Routes);
+export default Routes;

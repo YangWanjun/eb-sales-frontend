@@ -1,11 +1,12 @@
 import { authHeader } from '../utils/authHeader';
 import { config } from '../utils/config';
+import { common } from '../utils/common';
 
 const apiHost = 'http://192.168.99.100:8001/api';
 
 export const userService = {
     login,
-    logout,
+    logout: common.logout,
     getMe
 };
 
@@ -34,18 +35,8 @@ function login(username, password) {
         });
 }
 
-function logout() {
-    // ログアウト時にはローカルストレージからuserアイテムを削除する
-    localStorage.removeItem('token');
-}
-
 function getMe() {
-    const requestOptions = {
-        method: 'GET',
-        headers: authHeader()
-    };
-
-    return fetch(`${apiHost}/me`, requestOptions).then(handleResponse);
+    return fetchGet(`${apiHost}/me`);
 }
 
 function handleResponse(response) {
@@ -54,7 +45,7 @@ function handleResponse(response) {
         if (!response.ok) {
             if (response.status === 401) {
                 // auto logout if 401 response returned from api
-                logout();
+                common.logout();
                 //location.reload(true);
             }
 
@@ -64,4 +55,37 @@ function handleResponse(response) {
 
         return data;
     });
+}
+
+/**
+ * 
+ * @param {String} url ＵＲＬ
+ * @param {Object} params パラメーター
+ */
+export function fetchGet(url, params) {
+    return fetchCommon(url, 'GET', params);
+}
+
+/**
+ * 
+ * @param {String} url ＵＲＬ
+ * @param {Object} params パラメーター
+ */
+export function fetchPost(url, params) {
+    return fetchCommon(url, 'POST', params);
+}
+
+/**
+ * ＡＰＩを呼び出す
+ * @param {String} url ＵＲＬ
+ * @param {String} method GET|POST|PUT|DELETE
+ * @param {Object} params パラメーター
+ */
+function fetchCommon(url, method, params) {
+    const requestOptions = {
+        method: method,
+        headers: authHeader(),
+    };
+
+    return fetch(url, requestOptions).then(handleResponse);
 }
