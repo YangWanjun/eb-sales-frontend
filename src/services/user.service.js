@@ -1,12 +1,12 @@
 import { authHeader } from '../utils/authHeader';
 import { config } from '../utils/config';
-import { common } from '../utils/common';
+import { logout } from '../utils/common';
 
 const apiHost = 'http://192.168.99.100:8001/api';
 
 export const userService = {
     login,
-    logout: common.logout,
+    logout,
     getMe
 };
 
@@ -45,7 +45,7 @@ function handleResponse(response) {
         if (!response.ok) {
             if (response.status === 401) {
                 // auto logout if 401 response returned from api
-                common.logout();
+                logout();
                 //location.reload(true);
             }
 

@@ -112,13 +112,12 @@ export const common = {
     },
 
     handleResponse: function(response) {
-        var self = this;
         return response.text().then(text => {
             const data = text && JSON.parse(text);
             if (!response.ok) {
                 if (response.status === 401) {
                     // auto logout if 401 response returned from api
-                    self.logout();
+                    logout();
                     //location.reload(true);
                 }
 
@@ -130,9 +129,10 @@ export const common = {
         });
     },
 
-    logout: function() {
-        // ログアウト時にはローカルストレージからuserアイテムを削除する
-        localStorage.removeItem('token');
-    },
-
 };
+
+
+export function logout() {
+    // ログアウト時にはローカルストレージからuserアイテムを削除する
+    localStorage.removeItem('token');
+}
