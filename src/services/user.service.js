@@ -1,4 +1,3 @@
-import { authHeader } from '../utils/authHeader';
 import { config } from '../utils/config';
 import { logout } from '../utils/common';
 
@@ -36,7 +35,7 @@ function login(username, password) {
 }
 
 function getMe() {
-    return fetchGet(`${apiHost}/me`);
+    return fetch(`${apiHost}/me`);
 }
 
 function handleResponse(response) {
@@ -55,37 +54,4 @@ function handleResponse(response) {
 
         return data;
     });
-}
-
-/**
- * 
- * @param {String} url ＵＲＬ
- * @param {Object} params パラメーター
- */
-export function fetchGet(url, params) {
-    return fetchCommon(url, 'GET', params);
-}
-
-/**
- * 
- * @param {String} url ＵＲＬ
- * @param {Object} params パラメーター
- */
-export function fetchPost(url, params) {
-    return fetchCommon(url, 'POST', params);
-}
-
-/**
- * ＡＰＩを呼び出す
- * @param {String} url ＵＲＬ
- * @param {String} method GET|POST|PUT|DELETE
- * @param {Object} params パラメーター
- */
-function fetchCommon(url, method, params) {
-    const requestOptions = {
-        method: method,
-        headers: authHeader(),
-    };
-
-    return fetch(url, requestOptions).then(handleResponse);
 }
