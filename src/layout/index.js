@@ -10,7 +10,7 @@ import IconButton from '@material-ui/core/IconButton';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import { homeListItmes, memberListItems, projectListItems, turnoverListItems } from './sideMenu';
-import TopBar from '../components/topBar';
+import TopBar from '../containers/topBar';
 import MemberList from '../pages/member_list';
 import PartnerList from '../pages/partner_list';
 import ProjectList from '../pages/project_list';

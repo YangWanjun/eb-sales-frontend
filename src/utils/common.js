@@ -1,5 +1,4 @@
 import { authHeader } from '../utils/authHeader';
-import { replace } from 'react-router-redux';
 
 export const common = {
   /**

@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { Route, Switch } from 'react-router-dom';
-import { PrivateRoute } from '../components/privateRoute';
-import Login from '../containers/login';
-import Layout from '../containers/app';
+import { PrivateRoute } from './components/privateRoute';
+import Login from './containers/login';
+import Layout from './containers/app';
 
-class Routes extends Component {
+class App extends Component {
 
   render () {
     return (
@@ -16,4 +16,4 @@ class Routes extends Component {
   }
 }
 
-export default Routes;
+export default App;

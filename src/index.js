@@ -7,7 +7,7 @@ import thunk from 'redux-thunk';
 import { ConnectedRouter, routerReducer, routerMiddleware } from 'react-router-redux'
 import { Provider } from 'react-redux'
 
-import Routes from './routes';
+import App from './app';
 import * as reducers from './reducers';
 
 import "./assets/css/material-dashboard-react.css?v=1.5.0";
@@ -29,12 +29,11 @@ const store = createStore(
   ),
 );
 
-const App = () => (
+ReactDOM.render((
   <Provider store={store}>
     <ConnectedRouter history={history}>
-      <Routes />
+      <App />
     </ConnectedRouter>
   </Provider>
+  ), document.querySelector('#app')
 );
-
-ReactDOM.render(<App/>, document.querySelector('#app'));
