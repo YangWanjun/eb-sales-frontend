@@ -1,4 +1,7 @@
 import { authHeader } from '../utils/authHeader';
+import { logoutAndRedirect } from '../actions/auth.actions';
+import { clearMe } from '../actions/user.actions';
+import { store } from '../utils/store';
 
 export const common = {
   /**
@@ -158,10 +161,14 @@ export const common = {
       if (!response.ok) {
         if (response.status === 401) {
           // auto logout if 401 response returned from api
-          logout();
-          //location.reload(true);
+          store.dispatch(logoutAndRedirect());
+          store.dispatch(clearMe());
+            //location.reload(true);
+        } else if (response.status === 405) {
+          // Method Not Allowed
+          store.dispatch(logoutAndRedirect());
+          store.dispatch(clearMe());
         }
-
         const error = (data && data.message) || response.statusText;
         return Promise.reject(error);
       }
@@ -170,10 +177,3 @@ export const common = {
     });
   },
 };
-
-
-export function logout() {
-  // ログアウト時にはローカルストレージからuserアイテムを削除する
-  localStorage.removeItem('token');
-}
-

@@ -1,5 +1,5 @@
 import { config } from '../utils/config';
-import { logout, common } from '../utils/common';
+import { common } from '../utils/common';
 
 export const userService = {
     login,
@@ -30,6 +30,11 @@ function login(username, password) {
 
             return data;
         });
+}
+
+function logout() {
+  // ログアウト時にはローカルストレージからuserアイテムを削除する
+  localStorage.removeItem('token');
 }
 
 function getMe() {
