@@ -2,7 +2,7 @@ import { userConstants } from '../constants';
 
 const initialState = {
   loading: false,
-  me: {}
+  user: {}
 };
 
 export function user(state = initialState, action) {
@@ -17,7 +17,7 @@ export function user(state = initialState, action) {
       return {
         ...state,
         loading: false,
-        me: action.payload,
+        user: action.payload,
       };
     case userConstants.GET_ME_FAILURE:
       return {
@@ -28,7 +28,7 @@ export function user(state = initialState, action) {
     case userConstants.CLEAR_ME:
       return {
         ...state,
-        me: {},
+        user: {},
       }
     default:
       return state

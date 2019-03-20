@@ -92,6 +92,10 @@ class Layout extends React.Component {
     open: false,
   };
 
+  componentWillMount() {
+    this.props.onMount();
+  }
+
   handleDrawerOpen = () => {
     this.setState({ open: true });
   };

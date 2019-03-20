@@ -16,10 +16,12 @@ export const getMe = () => {
 const getMeRequest = () => ({
   type: userConstants.GET_ME_REQUEST
 });
+
 const getMeSuccess = (data) => ({
   type: userConstants.GET_ME_SUCCESS,
   payload: data
 });
+
 const getMeFailure = (error) => ({
   type: userConstants.GET_ME_FAILURE,
   error

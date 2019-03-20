@@ -1,7 +1,5 @@
 import { config } from '../utils/config';
-import { logout } from '../utils/common';
-
-const apiHost = 'http://192.168.99.100:8001/api';
+import { logout, common } from '../utils/common';
 
 export const userService = {
     login,
@@ -35,7 +33,7 @@ function login(username, password) {
 }
 
 function getMe() {
-    return fetch(`${apiHost}/me`);
+    return common.fetchPost(config.api.me);
 }
 
 function handleResponse(response) {

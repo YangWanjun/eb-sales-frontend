@@ -6,7 +6,7 @@ import { getMe, clearMe } from '../actions/user.actions';
 const mapStateToProps = (state, ownProps) => {
   return {
     loggedIn: state.auth.loggedIn,
-    me: state.user.me,
+    user: state.user.user,
   }
 };
 
