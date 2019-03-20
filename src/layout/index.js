@@ -20,6 +20,7 @@ import TurnoverMonthlyList from '../pages/turnover_monthly';
 import TurnoverMonthlyDetail from '../pages/turnover_monthly_detail';
 import TurnoverMonthlyClientDetail from '../pages/turnover_monthly_client_detail';
 import TurnoverMonthlyProjectDetail from '../pages/turnover_monthly_project_detail';
+import NotAllowed from '../pages/not_allowed';
 
 const drawerWidth = 240;
 
@@ -143,6 +144,7 @@ class Layout extends React.Component {
             <Route path='/turnover/monthly/:ym' component={TurnoverMonthlyDetail} />
             <Route path='/turnover/monthly' component={TurnoverMonthlyList} />
             <Route path='/turnover' component={TurnoverDashboard} />
+            <Route exact path='/forbidden' component={NotAllowed} />
           </Switch>
         </main>
       </div>

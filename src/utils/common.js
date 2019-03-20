@@ -1,3 +1,4 @@
+import { replace } from 'react-router-redux';
 import { authHeader } from '../utils/authHeader';
 import { logoutAndRedirect } from '../actions/auth.actions';
 import { clearMe } from '../actions/user.actions';
@@ -166,8 +167,7 @@ export const common = {
             //location.reload(true);
         } else if (response.status === 405) {
           // Method Not Allowed
-          store.dispatch(logoutAndRedirect());
-          store.dispatch(clearMe());
+          store.dispatch(replace('/forbidden'));
         }
         const error = (data && data.message) || response.statusText;
         return Promise.reject(error);

@@ -5,6 +5,7 @@ import { getMe, clearMe } from '../actions/user.actions';
 
 const mapStateToProps = (state, ownProps) => {
   return {
+    statusCode: state.status.httpStatusCode,
     loggedIn: state.auth.loggedIn,
     user: state.user.me,
   }
