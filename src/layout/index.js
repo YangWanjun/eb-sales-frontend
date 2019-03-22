@@ -11,6 +11,8 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import { homeListItmes, memberListItems, projectListItems, turnoverListItems } from './sideMenu';
 import TopBar from '../containers/topBar';
+import NotAllowed from '../containers/notAllowed';
+import NotFound from '../containers/notFound';
 import MemberList from '../pages/member_list';
 import PartnerList from '../pages/partner_list';
 import ProjectList from '../pages/project_list';
@@ -20,7 +22,6 @@ import TurnoverMonthlyList from '../pages/turnover_monthly';
 import TurnoverMonthlyDetail from '../pages/turnover_monthly_detail';
 import TurnoverMonthlyClientDetail from '../pages/turnover_monthly_client_detail';
 import TurnoverMonthlyProjectDetail from '../pages/turnover_monthly_project_detail';
-import NotAllowed from '../pages/not_allowed';
 
 const drawerWidth = 240;
 
@@ -145,6 +146,7 @@ class Layout extends React.Component {
             <Route path='/turnover/monthly' component={TurnoverMonthlyList} />
             <Route path='/turnover' component={TurnoverDashboard} />
             <Route exact path='/forbidden' component={NotAllowed} />
+            <Route exact path='/notfound' component={NotFound} />
           </Switch>
         </main>
       </div>

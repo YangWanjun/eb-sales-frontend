@@ -2,6 +2,7 @@ import { replace } from 'react-router-redux';
 import { authHeader } from '../utils/authHeader';
 import { logoutAndRedirect } from '../actions/auth.actions';
 import { clearMe } from '../actions/user.actions';
+import { changeStatusCode } from '../actions/status.actions';
 import { store } from '../utils/store';
 
 export const common = {
@@ -159,6 +160,7 @@ export const common = {
       try {
         data = JSON.parse(text);
       } catch (e) { }
+      store.dispatch(changeStatusCode(response.status));
       if (!response.ok) {
         if (response.status === 401) {
           // auto logout if 401 response returned from api
@@ -168,6 +170,9 @@ export const common = {
         } else if (response.status === 405) {
           // Method Not Allowed
           store.dispatch(replace('/forbidden'));
+        } else if (response.status === 404) {
+          // Page Not Found
+          store.dispatch(replace('/notfound'));
         }
         const error = (data && data.message) || response.statusText;
         return Promise.reject(error);

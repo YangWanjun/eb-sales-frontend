@@ -12,7 +12,7 @@ const styles = theme => ({
   },
 });
 
-class NotAllowed extends React.Component {
+class NotFound extends React.Component {
 
   render () {
     const { statusCode, classes } = this.props;
@@ -33,4 +33,4 @@ class NotAllowed extends React.Component {
   }
 }
 
-export default withStyles(styles)(NotAllowed);
+export default withStyles(styles)(NotFound);

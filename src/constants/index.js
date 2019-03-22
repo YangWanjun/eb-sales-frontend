@@ -1,5 +1,5 @@
 export * from './auth.constants';
 export * from './user.constants';
 export const httpStatusConstants = {
-  STATUS_CHANGE: 'STATUS_CHANGE'
+  CHANGE_STATUS_CODE: 'CHANGE_STATUS_CODE'
 };

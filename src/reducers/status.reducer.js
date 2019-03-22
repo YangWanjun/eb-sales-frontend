@@ -6,7 +6,7 @@ const initialState = {
 
 export function status(state = initialState, action) {
   switch (action.type) {
-    case httpStatusConstants.STATUS_CHANGE:
+    case httpStatusConstants.CHANGE_STATUS_CODE:
       return {
         ...state,
         httpStatusCode: action.httpStatusCode,
