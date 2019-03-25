@@ -13,71 +13,74 @@ import RecentActors from '@material-ui/icons/RecentActors';
 import FolderShared from '@material-ui/icons/FolderShared';
 import LibraryBooks from '@material-ui/icons/LibraryBooks';
 import PieChart from '@material-ui/icons/PieChart';
+import { common } from '../utils/common';
 
-export const homeListItmes = (
-    <div>
-        <ListItem button component={Link} to="/">
-            <ListItemIcon>
-                <HomeIcon />
-            </ListItemIcon>
-            <ListItemText primary="ホーム" />
-        </ListItem>
-    </div>
+export const HomeListItems = () => (
+  <div>
+    <ListItem button component={Link} to="/">
+      <ListItemIcon>
+        <HomeIcon />
+      </ListItemIcon>
+      <ListItemText primary="ホーム" />
+    </ListItem>
+  </div>
 );
 
-export const memberListItems = (
-    <div>
-        <ListItem button component={Link} to='/member'>
-            <ListItemIcon>
-                <People />
-            </ListItemIcon>
-            <ListItemText primary="社員一覧" />
-        </ListItem>
-        <ListItem button component={Link} to='/department'>
-            <ListItemIcon>
-                <FolderShared />
-            </ListItemIcon>
-            <ListItemText primary="部署一覧" />
-        </ListItem>
-    </div>
+export const MemberListItems = () => (
+  <div>
+    <ListItem button component={Link} to='/member'>
+      <ListItemIcon>
+        <People />
+      </ListItemIcon>
+      <ListItemText primary="社員一覧" />
+    </ListItem>
+    <ListItem button component={Link} to='/department'>
+      <ListItemIcon>
+        <FolderShared />
+      </ListItemIcon>
+      <ListItemText primary="部署一覧" />
+    </ListItem>
+  </div>
 );
 
-export const projectListItems = (
-    <div>
-        <ListItem button component={Link} to='/project'>
-            <ListItemIcon>
-                <GroupWork />
-            </ListItemIcon>
-            <ListItemText primary="案件一覧" />
-        </ListItem>
-        <ListItem button component={Link} to='/customer'>
-            <ListItemIcon>
-                <Business />
-            </ListItemIcon>
-            <ListItemText primary="取引先一覧" />
-        </ListItem>
-        <ListItem button component={Link} to='/partner'>
-            <ListItemIcon>
-                <RecentActors />
-            </ListItemIcon>
-            <ListItemText primary="協力会社一覧" />
-        </ListItem>
-        <ListItem button component={Link} to='/bpcontract'>
-            <ListItemIcon>
-                <LibraryBooks />
-            </ListItemIcon>
-            <ListItemText primary="BP契約一覧" />
-        </ListItem>
-    </div>
+export const ProjectListItems = () => (
+  <div>
+    { common.hasPerm('eb.view_project') ? (
+      <ListItem button component={Link} to='/project'>
+        <ListItemIcon>
+          <GroupWork />
+        </ListItemIcon>
+        <ListItemText primary="案件一覧" />
+      </ListItem>
+    ) : <React.Fragment /> }
+    <ListItem button component={Link} to='/customer'>
+      <ListItemIcon>
+        <Business />
+      </ListItemIcon>
+      <ListItemText primary="取引先一覧" />
+    </ListItem>
+    <ListItem button component={Link} to='/partner'>
+      <ListItemIcon>
+        <RecentActors />
+      </ListItemIcon>
+      <ListItemText primary="協力会社一覧" />
+    </ListItem>
+    <ListItem button component={Link} to='/bpcontract'>
+      <ListItemIcon>
+          <LibraryBooks />
+      </ListItemIcon>
+      <ListItemText primary="BP契約一覧" />
+    </ListItem>
+  </div>
 );
 
-export const turnoverListItems = (
-    <div>
-        <ListItem button component={Link} to='/turnover'>
-            <ListItemIcon>
-                <PieChart />
-            </ListItemIcon>
-            <ListItemText primary="売上情報" />
-        </ListItem>
-    </div>
+export const TurnoverListItems = () => (
+  <div>
+    <ListItem button component={Link} to='/turnover'>
+      <ListItemIcon>
+        <PieChart />
+      </ListItemIcon>
+      <ListItemText primary="売上情報" />
+    </ListItem>
+  </div>
 );

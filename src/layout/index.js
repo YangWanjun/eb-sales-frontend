@@ -9,7 +9,7 @@ import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import { homeListItmes, memberListItems, projectListItems, turnoverListItems } from './sideMenu';
+import { HomeListItems, MemberListItems, ProjectListItems, TurnoverListItems } from '../layout/sideMenu';
 import TopBar from '../containers/topBar';
 import NotAllowed from '../containers/notAllowed';
 import NotFound from '../containers/notFound';
@@ -125,13 +125,13 @@ class Layout extends React.Component {
             </IconButton>
           </div>
           <Divider />
-          <List>{homeListItmes}</List>
+          <List><HomeListItems /></List>
           <Divider />
-          <List>{memberListItems}</List>
+          <List><MemberListItems /></List>
           <Divider />
-          <List>{projectListItems}</List>
+          <List><ProjectListItems /></List>
           <Divider />
-          <List>{turnoverListItems}</List>
+          <List><TurnoverListItems /></List>
         </Drawer>
         <main className={classes.content}>
           <div className={classes.toolbar} />

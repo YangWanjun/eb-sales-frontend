@@ -8,6 +8,7 @@ const mapStateToProps = (state, ownProps) => {
     statusCode: state.status.httpStatusCode,
     loggedIn: state.auth.loggedIn,
     user: state.user.me,
+    perms: state.user.perms,
   }
 };
 

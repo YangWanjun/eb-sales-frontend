@@ -2,15 +2,15 @@ import { userConstants } from '../constants';
 import { userService } from '../services';
 
 export const getMe = () => {
-    return dispatch => {
-        dispatch(getMeRequest());
+  return dispatch => {
+    dispatch(getMeRequest());
 
-        userService.getMe()
-            .then(
-                data => dispatch(getMeSuccess(data)),
-                error => dispatch(getMeFailure(error))
-            );
-    };
+    userService.getMe()
+      .then(
+        data => dispatch(getMeSuccess(data)),
+        error => dispatch(getMeFailure(error))
+      );
+  };
 }
 
 const getMeRequest = () => ({

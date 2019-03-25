@@ -2,7 +2,8 @@ import { userConstants } from '../constants';
 
 const initialState = {
   loading: false,
-  me: {}
+  me: {},
+  perms: {},
 };
 
 export function user(state = initialState, action) {
@@ -17,7 +18,8 @@ export function user(state = initialState, action) {
       return {
         ...state,
         loading: false,
-        me: action.payload,
+        me: action.payload.me,
+        perms: action.payload.perms,
       };
     case userConstants.GET_ME_FAILURE:
       return {

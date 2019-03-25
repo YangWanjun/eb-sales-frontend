@@ -53,6 +53,9 @@ export const common = {
    * @param {Object} obj 
    */
   isEmpty: function(obj) {
+    if (Array.isArray(obj)) {
+      return obj.length === 0;
+    }
     for(var key in obj) {
       if(obj.hasOwnProperty(key))
         return false;
@@ -181,4 +184,19 @@ export const common = {
       return data;
     });
   },
+
+  /**
+   * 現在ログイン中のユーザーに指定の権限があるかどうか
+   * @param {String} perm 権限名称
+   */
+  hasPerm: function(perm) {
+    if (!store.getState()) {
+      return false;
+    }
+    const perms = store.getState().user.perms;
+    if (this.isEmpty(perms)) {
+      return false;
+    }
+    return perms.indexOf(perm) >= 0;
+  }
 };
