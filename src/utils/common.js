@@ -83,7 +83,11 @@ export const common = {
    * @param {String} s 
    */
   capitalize: function(s) {
-    return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+    if (s) {
+      return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+    } else {
+      return '';
+    }
   },
 
   /**
@@ -193,10 +197,13 @@ export const common = {
     if (!store.getState()) {
       return false;
     }
-    const perms = store.getState().user.perms;
-    if (this.isEmpty(perms)) {
+    const user = store.getState().user;
+    if (user.me.is_superuser) {
+      return true;
+    }
+    if (this.isEmpty(user.perms)) {
       return false;
     }
-    return perms.indexOf(perm) >= 0;
+    return user.perms.indexOf(perm) >= 0;
   }
 };

@@ -594,11 +594,13 @@ class EnhancedTable extends React.Component {
                           // 数字の場合
                           return (<TableCell key={col.id} align='right' className={classes.cellPadding}>{common.toNumComma(n[col.id])}</TableCell>);
                         } else {
-                          if (col.urlField && n[col.urlField]) {
-                            return (<TableCell key={col.id} className={classes.cellPadding}><Link to={n[col.urlField]}>{n[col.id]}</Link></TableCell>);
-                          } else {
-                            return (<TableCell key={col.id} className={classes.cellPadding}>{n[col.id]}</TableCell>);
-                          }
+                          return (
+                            <TableCell key={col.id} className={classes.cellPadding}>
+                              <Typography noWrap style={{ maxWidth: 200, }}>
+                                { (col.urlField && n[col.urlField]) ? (<Link to={n[col.urlField]}>{n[col.id]}</Link>) : n[col.id] }
+                              </Typography>
+                            </TableCell>
+                          );
                         }
                       })}
                     </TableRow>
