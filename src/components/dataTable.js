@@ -226,7 +226,7 @@ class EnhancedTableToolbar extends React.Component {
   }
 
   render () {
-    const { numSelected, classes, tableTitle, columns, filters } = this.props;
+    const { numSelected, classes, tableTitle, columns, filters, addUrl } = this.props;
     let toolComponent = null;
 
     if (numSelected > 0 && filters.length > 0) {
@@ -273,9 +273,15 @@ class EnhancedTableToolbar extends React.Component {
     }
     let addComponent = (
       <Tooltip title="追加" placement='bottom' enterDelay={300}>
-        <IconButton aria-label="Add" color='secondary'>
-          <AddIcon />
-        </IconButton>
+        { addUrl ? (
+          <IconButton aria-label="Add" color='secondary' component={Link} to={addUrl}>
+            <AddIcon />
+          </IconButton>
+        ) : (
+          <IconButton aria-label="Add" color='secondary'>
+            <AddIcon />
+          </IconButton>
+        )}
       </Tooltip>
     );
 
@@ -514,7 +520,7 @@ class EnhancedTable extends React.Component {
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
   render() {
-    const { data, classes, tableTitle, isSelectable, filters, summary, isClientSide } = this.props;
+    const { data, classes, tableTitle, isSelectable, filters, summary, isClientSide, addUrl } = this.props;
     const { order, orderBy, orderNumeric, selected, rowsPerPage, page, clientFilters } = this.state;
     let dataLength = data.count;
     const columns = data.columns;
@@ -541,6 +547,7 @@ class EnhancedTable extends React.Component {
           isSelectable={isSelectable} 
           filters={filters.length > 0 ? filters : clientFilters} 
           onChangeFilter={this.handleChangeFilter}
+          addUrl={addUrl}
         />
         <div className={classes.tableWrapper}>
           <Table className={classes.table} aria-labelledby="tableTitle">

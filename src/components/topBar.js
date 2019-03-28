@@ -31,7 +31,7 @@ class TopBar extends React.Component {
         position="fixed"
         className={classNames(classes.appBar, this.props.open && classes.appBarShift)}
       >
-        <Toolbar disableGutters={!this.props.open}>
+        <Toolbar disableGutters={!this.props.open} style={{paddingRight: 24}}>
           <IconButton
             color="inherit"
             aria-label="open drawer"

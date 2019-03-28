@@ -55,9 +55,10 @@ class ProjectDetail extends React.Component {
       project_detail: {},
       columns: [],
     };
+    this.initialize();
 　}
 
-  componentDidMount() {
+  initialize() {
     const { params } = this.props.match;
     const url_project_detail = common.formatStr(config.api.project_detail, params.project_id) + '?schema=1';
     common.fetchGet(url_project_detail).then(data => {
@@ -182,19 +183,31 @@ class ProjectDetail extends React.Component {
             </Card>
           </GridItem>
         </GridContainer>
-        <DataProvider endpoint={ config.api.project_member_list + '?project=' + params.project_id } 
-            render={ (data, filters, handleDataRedraw) => {
-              // 検索できる項目を設定
-              data.columns.map(col => {
-                if (col.id === 'member_name' || col.id === 'contract_type' || col.id === 'status' || col.id === 'is_working') {
-                  col.searchable = true;
-                  return col;
-                } else {
-                  return col;
-                }
-              });
-              return <EnhancedTable tableTitle='メンバー一覧' data={data} filters={filters} onDataRedraw={handleDataRedraw} isClientSide={true} isSelectable={true} />;
-            } } />
+        <DataProvider 
+          endpoint={ config.api.project_member_list + '?project=' + params.project_id } 
+          render={ (data, filters, handleDataRedraw) => {
+            // 検索できる項目を設定
+            data.columns.map(col => {
+              if (col.id === 'member_name' || col.id === 'contract_type' || col.id === 'status' || col.id === 'is_working') {
+                col.searchable = true;
+                return col;
+              } else {
+                return col;
+              }
+            });
+            return (
+              <EnhancedTable
+                tableTitle='メンバー一覧'
+                data={data}
+                filters={filters}
+                onDataRedraw={handleDataRedraw}
+                isClientSide={true}
+                isSelectable={true}
+                addUrl={'/project/' + project_detail.id + '/add/'}
+              />
+            );
+          } }
+        />
       </div>
     );
   }
