@@ -16,8 +16,8 @@ import NotFound from '../containers/notFound';
 import MemberList from '../pages/member_list';
 import PartnerList from '../pages/partner_list';
 import ProjectList from '../pages/project_list';
-import ProjectDetail from '../pages/project_detail';
-import ProjectMemberAdd from '../pages/project_member_add';
+import ProjectDetail from '../containers/pages/project_detail';
+// import ProjectMemberAdd from '../pages/project_member_add';
 import TurnoverDashboard from '../dashboard/turnover';
 import TurnoverMonthlyList from '../pages/turnover_monthly';
 import TurnoverMonthlyDetail from '../pages/turnover_monthly_detail';
@@ -156,7 +156,7 @@ class Layout extends React.Component {
           <Switch>
             <Route path='/member' component={MemberList} />
             <Route path='/partner' component={PartnerList} />
-            <Route path='/project/:project_id/add/' component={ProjectMemberAdd} />
+            {/* <Route path='/project/:project_id/add/' component={ProjectMemberAdd} /> */}
             <Route path='/project/:project_id/' component={ProjectDetail} />
             <Route path='/project' component={ProjectList} />
             <Route path='/turnover/month/:ym/project/:project_id' component={TurnoverMonthlyProjectDetail} />

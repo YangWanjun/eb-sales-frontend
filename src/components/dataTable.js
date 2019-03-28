@@ -226,7 +226,7 @@ class EnhancedTableToolbar extends React.Component {
   }
 
   render () {
-    const { numSelected, classes, tableTitle, columns, filters, addUrl } = this.props;
+    const { numSelected, classes, tableTitle, columns, filters, AddComponent } = this.props;
     let toolComponent = null;
 
     if (numSelected > 0 && filters.length > 0) {
@@ -271,10 +271,10 @@ class EnhancedTableToolbar extends React.Component {
         />
       );
     }
-    let addComponent = (
+    let addButton = (
       <Tooltip title="追加" placement='bottom' enterDelay={300}>
-        { addUrl ? (
-          <IconButton aria-label="Add" color='secondary' component={Link} to={addUrl}>
+        { AddComponent ? (
+          <IconButton aria-label="Add" color='secondary' onClick={AddComponent.props.showAddProjectMember}>
             <AddIcon />
           </IconButton>
         ) : (
@@ -304,10 +304,11 @@ class EnhancedTableToolbar extends React.Component {
             </Tooltip>
           ) : (
             <React.Fragment>
-              {addComponent}
+              {addButton}
               {searchComponent}
             </React.Fragment>
           )}
+          { AddComponent ? AddComponent : <React.Fragment />}
         </div>
       </Toolbar>
     );
@@ -520,7 +521,7 @@ class EnhancedTable extends React.Component {
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
   render() {
-    const { data, classes, tableTitle, isSelectable, filters, summary, isClientSide, addUrl } = this.props;
+    const { data, classes, tableTitle, isSelectable, filters, summary, isClientSide, AddComponent } = this.props;
     const { order, orderBy, orderNumeric, selected, rowsPerPage, page, clientFilters } = this.state;
     let dataLength = data.count;
     const columns = data.columns;
@@ -547,7 +548,7 @@ class EnhancedTable extends React.Component {
           isSelectable={isSelectable} 
           filters={filters.length > 0 ? filters : clientFilters} 
           onChangeFilter={this.handleChangeFilter}
-          addUrl={addUrl}
+          AddComponent={AddComponent}
         />
         <div className={classes.tableWrapper}>
           <Table className={classes.table} aria-labelledby="tableTitle">

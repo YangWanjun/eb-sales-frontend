@@ -15,6 +15,7 @@ import CardFooter from "../components/Card/CardFooter.jsx";
 import EnhancedTable from '../components/dataTable';
 import DataProvider from '../components/dataProvider';
 import BadgeLabel from '../components/badgeLabel';
+import FormDialog from '../containers/formDialog'
 import { config } from '../utils/config';
 import { common } from '../utils/common';
 
@@ -54,6 +55,7 @@ class ProjectDetail extends React.Component {
     this.state = { 
       project_detail: {},
       columns: [],
+      project_member_schema: {},
     };
     this.initialize();
 　}
@@ -67,11 +69,16 @@ class ProjectDetail extends React.Component {
         columns: data.columns,
       });
     });
+    common.fetchOptions(config.api.project_member_list).then(data => {
+      this.setState({ 
+        project_member_schema: data.actions.POST,
+      });
+    });
   }
 
   render () {
     const { classes } = this.props;
-    const { project_detail, columns } = this.state;
+    const { project_detail, columns, project_member_schema } = this.state;
     const { params } = this.props.match;
     const col_business_type = common.getColumnByName(columns, 'business_type');
     const col_status = common.getColumnByName(columns, 'status');
@@ -80,6 +87,14 @@ class ProjectDetail extends React.Component {
     const status = col_status ? col_status.choices[project_detail.status] : '';
     const statusClass = col_status ? col_status.choiceClasses[project_detail.status] : '';
     const attendance_type = col_attendance_type ? col_attendance_type.choices[project_detail.attendance_type] : '';
+
+    const addComponent = (
+      <FormDialog
+        schema={ project_member_schema }
+        showAddProjectMember={this.props.showAddProjectMember}
+        title={project_detail.name + 'にメンバー追加'}
+      />
+    );
 
     return (
       <div>
@@ -203,7 +218,7 @@ class ProjectDetail extends React.Component {
                 onDataRedraw={handleDataRedraw}
                 isClientSide={true}
                 isSelectable={true}
-                addUrl={'/project/' + project_detail.id + '/add/'}
+                AddComponent={addComponent}
               />
             );
           } }

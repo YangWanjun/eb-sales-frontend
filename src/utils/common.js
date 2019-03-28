@@ -146,6 +146,15 @@ export const common = {
   },
 
   /**
+   * 
+   * @param {String} url ＵＲＬ
+   * @param {Object} params パラメーター
+   */
+  fetchOptions: function(url) {
+    return this.fetchCommon(url, 'OPTIONS');
+  },
+
+  /**
    * ＡＰＩを呼び出す
    * @param {String} url ＵＲＬ
    * @param {String} method GET|POST|PUT|DELETE
@@ -155,10 +164,38 @@ export const common = {
     const requestOptions = {
       method: method,
       headers: authHeader(),
+      // credentials: 'same-origin',
     };
+    if (params && !this.isEmpty(params)) {
+      requestOptions['body'] = JSON.stringify(params)
+    }
 
     url = this.addUrlParameter(url, {'format': 'json'});
-    return fetch(url, requestOptions).then(this.handleResponse);
+    return fetch(url, requestOptions)
+      .then(this.handleStatus)
+      .then(this.handleResponse);
+  },
+
+  handleStatus: function(response) {
+    store.dispatch(changeStatusCode(response.status));
+    if (!response.ok) {
+      if (response.status === 401) {
+        // auto logout if 401 response returned from api
+        store.dispatch(logoutAndRedirect());
+        store.dispatch(clearMe());
+          //location.reload(true);
+      } else if (response.status === 405) {
+        // Method Not Allowed
+        store.dispatch(replace('/forbidden'));
+      } else if (response.status === 404) {
+        // Page Not Found
+        store.dispatch(replace('/notfound'));
+      }
+      const error = response.statusText;
+      return Promise.reject(error);
+    } else {
+      return response;
+    }
   },
 
   handleResponse: function(response) {
@@ -167,23 +204,6 @@ export const common = {
       try {
         data = JSON.parse(text);
       } catch (e) { }
-      store.dispatch(changeStatusCode(response.status));
-      if (!response.ok) {
-        if (response.status === 401) {
-          // auto logout if 401 response returned from api
-          store.dispatch(logoutAndRedirect());
-          store.dispatch(clearMe());
-            //location.reload(true);
-        } else if (response.status === 405) {
-          // Method Not Allowed
-          store.dispatch(replace('/forbidden'));
-        } else if (response.status === 404) {
-          // Page Not Found
-          store.dispatch(replace('/notfound'));
-        }
-        const error = (data && data.message) || response.statusText;
-        return Promise.reject(error);
-      }
 
       return data;
     });
