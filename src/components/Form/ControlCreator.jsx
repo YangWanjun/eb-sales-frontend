@@ -2,9 +2,11 @@ import React from "react";
 import { withStyles } from '@material-ui/core';
 import { TextField } from "@material-ui/core";
 import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import MyDatePicker from '../Control/DatePicker';
+import ModelChoice from '../Control/ModelChoice';
 
 const styles = theme => ({
   root: {
@@ -12,6 +14,7 @@ const styles = theme => ({
     flexWrap: 'wrap',
   },
   formControl: {
+    margin: theme.spacing.unit,
     minWidth: 120,
     width: '100%',
   },
@@ -20,13 +23,18 @@ const styles = theme => ({
 class ControlCreateor extends React.Component {
   render() {
     const { classes, name, column } = this.props;
-    let value = this.props.value;
+    let { value, label } = this.props;
+
+    if (column.required) {
+      label = label + '（*）';
+    }
 
     let control = null;
     if (column.type === 'date') {
       control = (
         <MyDatePicker
           value={value}
+          label={label}
           onChange={this.props.handleDateChange}
         />
       );
@@ -37,6 +45,7 @@ class ControlCreateor extends React.Component {
             name={name}
             type='number'
             value={value}
+            label={label}
             onChange={this.props.handleChange}
           />
         </FormControl>
@@ -48,6 +57,7 @@ class ControlCreateor extends React.Component {
             name={name}
             type='number'
             value={value}
+            label={label}
             onChange={this.props.handleChange}
           />
         </FormControl>
@@ -56,6 +66,7 @@ class ControlCreateor extends React.Component {
       value = value || '';
       control = (
         <FormControl className={classes.formControl}>
+          <InputLabel htmlFor={name}>{label}</InputLabel>
           <Select value={value} inputProps={{ name: name, value: value }} onChange={this.props.handleChange}>
             <MenuItem key='none' value=""><em>None</em></MenuItem>
             {column.choices.map(item => {
@@ -64,6 +75,14 @@ class ControlCreateor extends React.Component {
           </Select>
         </FormControl>
       );
+    } else if (column.type === 'field') {
+      control = (
+        <ModelChoice
+          name={name}
+          label={label}
+          url={column.search_url}
+        />
+      )
     }
 
     return (

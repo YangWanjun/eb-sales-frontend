@@ -6,11 +6,12 @@ import jaLocale from 'date-fns/locale/ja';
 import withStyles from "@material-ui/core/styles/withStyles";
 import FormControl from '@material-ui/core/FormControl';
 
-const styles = {
+const styles = theme => ({
   formControl: {
     width: '100%',
+    margin: theme.spacing.unit,
   },
-}
+});
 
 class MyDatePicker extends React.Component {
   render() {

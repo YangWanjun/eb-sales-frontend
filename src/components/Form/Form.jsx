@@ -1,9 +1,5 @@
 import React from "react";
 import PropTypes from 'prop-types';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableRow from '@material-ui/core/TableRow';
 import Button from '@material-ui/core/Button';
 import Card from "../Card/Card";
 import GridItem from "../Grid/GridItem.jsx";
@@ -75,38 +71,31 @@ class FormComponent extends React.Component {
                 {/* <p className={classes.cardCategoryWhite}>{project_detail.name}</p> */}
               </CardHeader>
               <CardBody className={classes.cardBody}>
-                <Table>
-                  <TableBody>
-                    { Object.keys(schema).map(key => {
-                      const col = schema[key];
-                      if (col.read_only) {
-                        return <React.Fragment key={'tableRow_' + key} />;
-                      } else {
-                        const fontWeight = col.required ? 'bold' : 'normal';
-                        return (
-                          <TableRow key={'tableRow_' + key}>
-                            <TableCell key={'cellHeader_' + key} style={{fontWeight: fontWeight}}>
-                              { col.label }
-                            </TableCell>
-                            <TableCell key={'cellValue_' + key}>
-                              <ControlCreateor
-                                name={key} 
-                                column={col} 
-                                value={data[key]}
-                                handleDateChange={this.handleDateChange(key)} 
-                                handleChange={this.handleChange}
-                              />
-                            </TableCell>
-                          </TableRow>
-                        )
-                      }
-                    }) }
-                  </TableBody>
-                </Table>
+                <GridContainer>
+                  { Object.keys(schema).map(key => {
+                    const col = schema[key];
+                    if (col.read_only) {
+                      return <React.Fragment key={'tableRow_' + key} />;
+                    } else {
+                      return (
+                        <GridItem key={'item_' + key} xs={12} sm={12} md={12}>
+                          <ControlCreateor
+                            name={key} 
+                            column={col} 
+                            value={data[key]}
+                            label={col.label}
+                            handleDateChange={this.handleDateChange(key)} 
+                            handleChange={this.handleChange}
+                          />
+                        </GridItem>
+                      );
+                    }
+                  }) }
+                </GridContainer>
               </CardBody>
               <CardFooter chart>
                 <div className={classes.rightAlign}>
-                  <Button onClick={this.props.handleClose} color="warning">
+                  <Button onClick={this.props.handleClose}>
                     キャンセル
                   </Button>
                   <Button onClick={this.handleOk} color="primary" type="submit" autoFocus={true}>

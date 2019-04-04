@@ -10,6 +10,7 @@
     "chartist": "^0.11.0",
     "date-fns": "^2.0.0-alpha.27",
     "history": "^4.7.2",
+    "material-ui-chip-input": "^1.0.0-beta.15",
     "material-ui-pickers": "^2.2.4",
     "react": "^16.4.1",
     "react-chartist": "^0.13.1",
