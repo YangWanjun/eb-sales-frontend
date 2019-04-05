@@ -31,6 +31,7 @@ import { common } from '../utils/common';
 import { config } from '../utils/config';
 import GridContainer from './Grid/GridContainer';
 import GridItem from './Grid/GridItem';
+import FormDialog from './Form/index'
 
 function stableSort(array, cmp) {
   const stabilizedThis = array.map((el, index) => [el, index]);
@@ -218,15 +219,23 @@ class EnhancedTableToolbar extends React.Component {
   
   constructor(props) {
     super(props);
+
     this.handleDeleteFilter = this.handleDeleteFilter.bind(this);
+    this.onShowAddDialog = this.onShowAddDialog.bind(this);
   }
 
   handleDeleteFilter(filters) {
     this.props.onChangeFilter(filters);
   }
 
+  onShowAddDialog = () => {
+    if (this.showModel) {
+      this.showModel();
+    }
+  }
+
   render () {
-    const { numSelected, classes, tableTitle, columns, filters, AddComponent } = this.props;
+    const { numSelected, classes, tableTitle, columns, filters, addComponentProps } = this.props;
     let toolComponent = null;
 
     if (numSelected > 0 && filters.length > 0) {
@@ -273,8 +282,8 @@ class EnhancedTableToolbar extends React.Component {
     }
     let addButton = (
       <Tooltip title="追加" placement='bottom' enterDelay={300}>
-        { AddComponent ? (
-          <IconButton aria-label="Add" color='secondary' onClick={AddComponent.props.showAddProjectMember}>
+        { addComponentProps ? (
+          <IconButton aria-label="Add" color='secondary' onClick={this.onShowAddDialog}>
             <AddIcon />
           </IconButton>
         ) : (
@@ -308,7 +317,12 @@ class EnhancedTableToolbar extends React.Component {
               {searchComponent}
             </React.Fragment>
           )}
-          { AddComponent ? AddComponent : <React.Fragment />}
+          { addComponentProps ? (
+            <FormDialog
+              innerRef={(dialog) => { this.showModel = dialog && dialog.handleOpen }}
+              {...addComponentProps}
+            />
+          ) : <React.Fragment />}
         </div>
       </Toolbar>
     );
@@ -521,7 +535,7 @@ class EnhancedTable extends React.Component {
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
   render() {
-    const { data, classes, tableTitle, isSelectable, filters, summary, isClientSide, AddComponent } = this.props;
+    const { data, classes, tableTitle, isSelectable, filters, summary, isClientSide, addComponentProps } = this.props;
     const { order, orderBy, orderNumeric, selected, rowsPerPage, page, clientFilters } = this.state;
     let dataLength = data.count;
     const columns = data.columns;
@@ -548,7 +562,7 @@ class EnhancedTable extends React.Component {
           isSelectable={isSelectable} 
           filters={filters.length > 0 ? filters : clientFilters} 
           onChangeFilter={this.handleChangeFilter}
-          AddComponent={AddComponent}
+          addComponentProps={addComponentProps}
         />
         <div className={classes.tableWrapper}>
           <Table className={classes.table} aria-labelledby="tableTitle">

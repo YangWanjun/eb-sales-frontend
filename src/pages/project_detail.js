@@ -15,7 +15,6 @@ import CardFooter from "../components/Card/CardFooter.jsx";
 import EnhancedTable from '../components/dataTable';
 import DataProvider from '../components/dataProvider';
 import BadgeLabel from '../components/badgeLabel';
-import FormDialog from '../containers/formDialog'
 import { config } from '../utils/config';
 import { common } from '../utils/common';
 
@@ -88,13 +87,10 @@ class ProjectDetail extends React.Component {
     const statusClass = col_status ? col_status.choiceClasses[project_detail.status] : '';
     const attendance_type = col_attendance_type ? col_attendance_type.choices[project_detail.attendance_type] : '';
 
-    const addComponent = (
-      <FormDialog
-        schema={ project_member_schema }
-        showAddProjectMember={this.props.showAddProjectMember}
-        title={project_detail.name + 'にメンバー追加'}
-      />
-    );
+    const addProps = {
+      schema: project_member_schema,
+      title: project_detail.name + 'にメンバー追加',
+    };
 
     return (
       <div>
@@ -218,7 +214,7 @@ class ProjectDetail extends React.Component {
                 onDataRedraw={handleDataRedraw}
                 isClientSide={true}
                 isSelectable={true}
-                AddComponent={addComponent}
+                addComponentProps={addProps}
               />
             );
           } }

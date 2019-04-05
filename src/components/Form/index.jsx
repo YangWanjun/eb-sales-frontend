@@ -55,17 +55,24 @@ const styles = theme => ({
 });
 
 class FormDialog extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      open: false,
+    }
+  }
 
   handleOpen = () => {
-    this.props.onOpen();
+    this.setState({open: true});
   };
 
   handleClose = () => {
-    this.props.onClose();
+    this.setState({open: false});
   };
 
   render() {
-    const { open } = this.props;
+    const { open } = this.state;
     return (
       <div>
         <Modal

@@ -16,7 +16,7 @@ import NotFound from '../containers/notFound';
 import MemberList from '../pages/member_list';
 import PartnerList from '../pages/partner_list';
 import ProjectList from '../pages/project_list';
-import ProjectDetail from '../containers/pages/project_detail';
+import ProjectDetail from '../pages/project_detail';
 // import ProjectMemberAdd from '../pages/project_member_add';
 import TurnoverDashboard from '../dashboard/turnover';
 import TurnoverMonthlyList from '../pages/turnover_monthly';
