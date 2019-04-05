@@ -5,6 +5,9 @@ import { withStyles } from '@material-ui/core/styles';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
+import SearchDialog from '../SearchDialog';
+import SimpleSnackbar from './Snackbar';
+import {constant} from '../../utils/constants';
 
 const styles = {
   root: {
@@ -28,9 +31,24 @@ const styles = {
 };
 
 class ModelChoice extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.onShowSearchDialog = this.onShowSearchDialog.bind(this);
+  }
+
+  onShowSearchDialog = () => {
+    if (this.props.url) {
+      if (this.showModel) {
+        this.showModel();
+      }
+    } else if (this.showSnackbar) {
+      this.showSnackbar(constant.SETTING.REQUIRE_SEARCH_URL);
+    }
+  }
 
   render () {
-    const { classes, search_url } = this.props;
+    const { classes, url } = this.props;
 
     return (
       <div className={classes.root}>
@@ -39,9 +57,21 @@ class ModelChoice extends React.Component {
           label={this.props.label}
         />
         <Divider className={classes.divider} />
-        <IconButton className={classes.iconButton} aria-label="Search">
+        <IconButton className={classes.iconButton} aria-label="Search" onClick={ this.onShowSearchDialog }>
           <SearchIcon />
         </IconButton>
+        <SearchDialog
+          innerRef={(dialog) => { this.showModel = dialog && dialog.handleOpen }}
+          title={this.props.label + 'を検索'}
+          url={url}
+        />
+        <SimpleSnackbar
+          ref={(dialog) => {
+            this.showSnackbar = dialog && dialog.handleOpen 
+          }}
+          variant='warning'
+          message={'asdf'}
+        />
       </div>
     );
   }

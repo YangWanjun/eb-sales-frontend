@@ -104,6 +104,15 @@ export const common = {
   },
 
   /**
+   * 二つのＵＲＬを結合する
+   * @param {String} url1 ＵＲＬ
+   * @param {String} url2 ＵＲＬ
+   */
+  joinUrl: function(url1, url2) {
+    return this.trim(url1, '/') + '/' + this.trim(url2, '/');
+  },
+
+  /**
    * JSONデータをＵＲＬ用のパラメーターに変換する
    * @param {Object} data JSONデータ
    */
