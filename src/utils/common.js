@@ -64,16 +64,20 @@ export const common = {
   },
 
   /**
-   * 項目のリストから項目を取得
+   * JSON項目のリストから項目を取得
    * @param {Array} columns 
-   * @param {String} name 
+   * @param {String} value 
    */
-  getColumnByName: function(columns, name) {
+  getColumnByName: function(columns, value, key='id') {
     if (columns.length === 0) {
       return 0;
+    } else if (!value) {
+      return null;
     } else {
-      name = name.split('__')[0];
-      let cols = columns.filter(col => col.id === name);
+      if (typeof value === 'string') {
+        value = value.split('__')[0];
+      }
+      let cols = columns.filter(col => col[key] === value);
       return cols.length > 0 ? cols[0] : null;
     }
   },

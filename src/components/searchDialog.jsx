@@ -48,7 +48,7 @@ class SearchDialog extends React.Component {
     const { open } = this.state;
     const { classes, title, url } = this.props;
     let search_url = url ? common.joinUrl(hostApi, url) : null;
-    // search_url = search_url ? common.addUrlParameter(search_url, {search: '楊'}) : null;
+    search_url = search_url ? common.addUrlParameter(search_url, {search: '楊'}) : null;
 
     return (
       <Dialog

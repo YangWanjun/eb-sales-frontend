@@ -29,6 +29,7 @@ import ChipsArray from '../components/chipArray';
 import BadgeLabel from '../components/badgeLabel';
 import { common } from '../utils/common';
 import { config } from '../utils/config';
+import { constant } from '../utils/constants';
 import GridContainer from './Grid/GridContainer';
 import GridItem from './Grid/GridItem';
 import FormDialog from './Form/index'
@@ -106,23 +107,24 @@ class EnhancedTableHead extends React.Component {
         <TableRow>
           { chkCell }
           {columnData.map(column => {
+            const numeric = column.type === 'integer' || column.type === 'decimal';
             const cell = column.visible ? (
               (isClientSide || column.sortable) ? (
                 <TableCell
-                  key={column.id}
-                  align={column.numeric ? 'right' : 'inherit'}
+                  key={column.name}
+                  align={numeric ? 'right' : 'inherit'}
                   className={classes.cellPadding}
-                  sortDirection={orderBy === column.id ? order : false}
+                  sortDirection={orderBy === column.name ? order : false}
                 >
                   <Tooltip
                     title="Sort"
-                    placement={column.numeric ? 'bottom-end' : 'bottom-start'}
+                    placement={numeric ? 'bottom-end' : 'bottom-start'}
                     enterDelay={300}
                   >
                     <TableSortLabel
-                      active={orderBy === (isClientSide ? column.id : column.sort_field)}
+                      active={orderBy === (isClientSide ? column.name : column.sort_field)}
                       direction={order}
-                      onClick={this.createSortHandler(isClientSide ? column.id : column.sort_field, column.numeric)}
+                      onClick={this.createSortHandler(isClientSide ? column.name : column.sort_field, numeric)}
                     >
                       {column.label}
                     </TableSortLabel>
@@ -130,12 +132,12 @@ class EnhancedTableHead extends React.Component {
                 </TableCell>
               ) : (
                 <TableCell
-                  key={column.id}
+                  key={column.name}
                   align={column.numeric ? 'right' : 'inherit'}
                   className={classes.cellPadding}
                 >{column.label}</TableCell>
               )
-            ) : (<React.Fragment key={column.id}/>)
+            ) : (<React.Fragment key={column.name}/>)
             return cell;
           }, this)}
         </TableRow>
@@ -174,12 +176,13 @@ class EnhancedTableFooter extends React.Component {
         <TableRow>
           { chkCell }
           {columnData.map(col => {
+            const numeric = col.type === 'integer' || col.type === 'decimal';
             if (!col.visible) {
-              return <React.Fragment  key={col.id}/>;
-            } else if (col.numeric === true) {
-              return (<TableCell key={col.id} align='right'>{common.toNumComma(summary[col.id])}</TableCell>);
+              return <React.Fragment  key={col.name}/>;
+            } else if (numeric === true) {
+              return (<TableCell key={col.name} align='right'>{common.toNumComma(summary[col.name])}</TableCell>);
             } else {
-              return (<TableCell key={col.id} padding="default"></TableCell>);
+              return (<TableCell key={col.name} padding="default"></TableCell>);
             }
           })}
         </TableRow>
@@ -581,56 +584,80 @@ class EnhancedTable extends React.Component {
               isClientSide={isClientSide || false}
             />
             <TableBody>
-              {results
-                .map(n => {
-                  const isSelected = this.isSelected(n.id);
-                  const chkCell = isSelectable ? (
-                    <TableCell padding="none">
-                      <Checkbox checked={isSelected} />
-                    </TableCell>
-                  ) : (<React.Fragment></React.Fragment>);
-                  return (
-                    <TableRow
-                      hover
-                      onClick={event => this.handleClick(event, n.id)}
-                      role="checkbox"
-                      aria-checked={isSelected}
-                      tabIndex={-1}
-                      key={n.id}
-                      selected={isSelected}
-                    >
-                      {chkCell}
-                      {columns.map(col => {
-                        if (!col.visible) {
-                          // 非表示の場合
-                          return <React.Fragment  key={col.id}/>;
-                        } else if (col.choices && !common.isEmpty(col.choices)) {
-                          // 選択肢のある項目の場合
-                          if (col.choiceClasses && !common.isEmpty(col.choiceClasses)) {
-                            return (
-                              <TableCell key={col.id} className={classes.cellPadding}>
-                                <BadgeLabel color={col.choiceClasses[n[col.id]]} badgeContent={ col.choices[n[col.id]] } />
-                              </TableCell>
-                            );
-                          } else {
-                            return (<TableCell key={col.id} className={classes.cellPadding}>{col.choices[n[col.id]]}</TableCell>);
-                          }
-                        } else if (col.numeric === true) {
-                          // 数字の場合
-                          return (<TableCell key={col.id} align='right' className={classes.cellPadding}>{common.toNumComma(n[col.id])}</TableCell>);
-                        } else {
-                          return (
-                            <TableCell key={col.id} className={classes.cellPadding}>
-                              <Typography noWrap style={{ maxWidth: 200, }}>
-                                { (col.urlField && n[col.urlField]) ? (<Link to={n[col.urlField]}>{n[col.id]}</Link>) : n[col.id] }
-                              </Typography>
-                            </TableCell>
-                          );
-                        }
-                      })}
-                    </TableRow>
-                  );
-                })}
+              {dataLength > 0 ? (
+                <React.Fragment>
+                  {results
+                    .map(n => {
+                      const isSelected = this.isSelected(n.id);
+                      const chkCell = isSelectable ? (
+                        <TableCell padding="none">
+                          <Checkbox checked={isSelected} />
+                        </TableCell>
+                      ) : (<React.Fragment></React.Fragment>);
+                      return (
+                        <TableRow
+                          hover
+                          onClick={event => this.handleClick(event, n.id)}
+                          role="checkbox"
+                          aria-checked={isSelected}
+                          tabIndex={-1}
+                          key={n.id}
+                          selected={isSelected}
+                        >
+                          {chkCell}
+                          {columns.map(col => {
+                            const numeric = col.type === 'integer' || col.type === 'decimal';
+                            if (!col.visible) {
+                              // 非表示の場合
+                              return <React.Fragment  key={col.name}/>;
+                            } else if (col.choices && !common.isEmpty(col.choices)) {
+                              const choice = common.getColumnByName(col.choices, n[col.name], 'value');
+                              const display_name = choice ? choice.display_name : null;
+                              // 選択肢のある項目の場合
+                              if (col.choiceClasses && !common.isEmpty(col.choiceClasses)) {
+                                return (
+                                  <TableCell key={col.name} className={classes.cellPadding}>
+                                    <BadgeLabel
+                                      color={col.choiceClasses[n[col.name]]}
+                                      badgeContent={ display_name }
+                                    />
+                                  </TableCell>
+                                );
+                              } else {
+                                return (
+                                  <TableCell
+                                    key={col.name}
+                                    className={classes.cellPadding}
+                                  >
+                                    {display_name}
+                                  </TableCell>
+                                );
+                              }
+                            } else if (numeric === true) {
+                              // 数字の場合
+                              return (<TableCell key={col.name} align='right' className={classes.cellPadding}>{common.toNumComma(n[col.name])}</TableCell>);
+                            } else {
+                              return (
+                                <TableCell key={col.name} className={classes.cellPadding}>
+                                  <Typography noWrap style={{ maxWidth: 200, }}>
+                                    { (col.urlField && n[col.urlField]) ? (<Link to={n[col.urlField]}>{n[col.name]}</Link>) : n[col.name] }
+                                  </Typography>
+                                </TableCell>
+                              );
+                            }
+                          })}
+                        </TableRow>
+                      );
+                    })
+                  }
+                </React.Fragment>
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={ isSelectable ? columns.length + 1 : columns.length }>
+                    { constant.INFO.NO_DATA }
+                  </TableCell>
+                </TableRow>
+              )}
               {/* {emptyRows > 0 && (
                 <TableRow style={{ height: 49 * emptyRows }}>
                   <TableCell colSpan={ isSelectable ? columns.length + 1 : columns.length } />

@@ -29,7 +29,7 @@ class DataProvider extends Component {
     this.state = {
       url: this.props.endpoint,
       summaryUrl: this.props.summaryUrl,
-      data: [],
+      data: {},
       summary: {},
       filters: [],
       limit: config.rowsPerPage,  // PageSize

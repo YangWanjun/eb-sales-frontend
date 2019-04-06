@@ -63,14 +63,14 @@ class ProjectDetail extends React.Component {
     const { params } = this.props.match;
     const url_project_detail = common.formatStr(config.api.project_detail, params.project_id) + '?schema=1';
     common.fetchGet(url_project_detail).then(data => {
-      this.setState({ 
+      this.setState({
         project_detail: data,
         columns: data.columns,
       });
     });
     common.fetchOptions(config.api.project_member_list).then(data => {
       this.setState({ 
-        project_member_schema: data.actions.POST,
+        project_member_schema: data.columns,
       });
     });
   }

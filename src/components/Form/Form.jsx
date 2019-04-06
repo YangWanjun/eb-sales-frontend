@@ -72,19 +72,18 @@ class FormComponent extends React.Component {
               </CardHeader>
               <CardBody className={classes.cardBody}>
                 <GridContainer>
-                  { Object.keys(schema).map(key => {
-                    const col = schema[key];
+                  { schema.map(col => {
                     if (col.read_only) {
-                      return <React.Fragment key={'tableRow_' + key} />;
+                      return <React.Fragment key={'tableRow_' + col.name} />;
                     } else {
                       return (
-                        <GridItem key={'item_' + key} xs={12} sm={12} md={12}>
+                        <GridItem key={'item_' + col.name} xs={12} sm={12} md={12}>
                           <ControlCreateor
-                            name={key} 
+                            name={col.name} 
                             column={col} 
-                            value={data[key]}
+                            value={data[col.name]}
                             label={col.label}
-                            handleDateChange={this.handleDateChange(key)} 
+                            handleDateChange={this.handleDateChange(col.name)} 
                             handleChange={this.handleChange}
                           />
                         </GridItem>
@@ -113,7 +112,7 @@ class FormComponent extends React.Component {
 
 FormComponent.propTypes = {
   classes: PropTypes.object.isRequired,
-  schema: PropTypes.object.isRequired,
+  schema: PropTypes.array.isRequired,
 };
 
 export default FormComponent;
