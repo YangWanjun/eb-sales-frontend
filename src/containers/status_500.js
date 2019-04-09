@@ -1,8 +1,8 @@
 import { connect } from 'react-redux';
-import NotAllowed from '../pages/not_allowed';
+import Status500 from '../pages/status_500';
 
 const mapStateToProps = (state, ownProps) => ({
   statusCode: state.status.httpStatusCode,
 });
 
-export default connect(mapStateToProps, null)(NotAllowed);
+export default connect(mapStateToProps, null)(Status500);

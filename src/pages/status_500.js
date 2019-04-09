@@ -12,7 +12,7 @@ const styles = theme => ({
   },
 });
 
-class NotFound extends React.Component {
+class Status500 extends React.Component {
 
   render () {
     const { statusCode, classes } = this.props;
@@ -33,4 +33,4 @@ class NotFound extends React.Component {
   }
 }
 
-export default withStyles(styles)(NotFound);
+export default withStyles(styles)(Status500);

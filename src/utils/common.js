@@ -203,6 +203,9 @@ export const common = {
       } else if (response.status === 404) {
         // Page Not Found
         store.dispatch(replace('/notfound'));
+      } else if (response.status === 500) {
+        // Internal Server Error
+        store.dispatch(replace('/error'));
       }
       const error = response.statusText;
       return Promise.reject(error);

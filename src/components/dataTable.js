@@ -640,7 +640,7 @@ class EnhancedTable extends React.Component {
                               return (
                                 <TableCell key={col.name} className={classes.cellPadding}>
                                   <Typography noWrap style={{ maxWidth: 200, }}>
-                                    { (col.urlField && n[col.urlField]) ? (<Link to={n[col.urlField]}>{n[col.name]}</Link>) : n[col.name] }
+                                    { (col.url_field && n[col.url_field]) ? (<Link to={n[col.url_field]}>{n[col.name]}</Link>) : n[col.name] }
                                   </Typography>
                                 </TableCell>
                               );

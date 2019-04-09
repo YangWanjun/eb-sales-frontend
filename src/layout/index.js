@@ -11,8 +11,9 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import { HomeListItems, MemberListItems, ProjectListItems, TurnoverListItems } from '../layout/sideMenu';
 import TopBar from '../containers/topBar';
-import NotAllowed from '../containers/notAllowed';
-import NotFound from '../containers/notFound';
+import Status405 from '../containers/status_405';
+import Status404 from '../containers/status_404';
+import Status500 from '../containers/status_500';
 import MemberList from '../pages/member_list';
 import PartnerList from '../pages/partner_list';
 import ProjectList from '../pages/project_list';
@@ -164,8 +165,9 @@ class Layout extends React.Component {
             <Route path='/turnover/monthly/:ym' component={TurnoverMonthlyDetail} />
             <Route path='/turnover/monthly' component={TurnoverMonthlyList} />
             <Route path='/turnover' component={TurnoverDashboard} />
-            <Route exact path='/forbidden' component={NotAllowed} />
-            <Route exact path='/notfound' component={NotFound} />
+            <Route exact path='/forbidden' component={Status405} />
+            <Route exact path='/notfound' component={Status404} />
+            <Route exact path='/error' component={Status500} />
           </Switch>
         </main>
       </div>
