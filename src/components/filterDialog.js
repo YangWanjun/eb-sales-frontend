@@ -42,32 +42,19 @@ class FilterDialog extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.state = {
       open: false,
-      filters: this.convertPropToFilter(props.filters),
+      filters: props.filters,
     };
 
   }
 
-  convertPropToFilter(filters) {
-    let result = {};
-    filters.map(i => {
-      return result[i.id] = {'value': i.value, 'choices': i.choices};
-    });
-    return result;
-  }
-
   handleClickOpen = () => {
-    this.setState({ open: true, filters: this.convertPropToFilter(this.props.filters) });
+    this.setState({ open: true, filters: this.props.filters });
   };
 
   handleOk = (event) => {
     event.preventDefault();
     this.setState({ open: false });
-    let filters = [];
-    for (var k in this.state.filters) {
-      let vals = this.state.filters[k];
-      filters.push({id: k, value: vals.value, 'choices': vals.choices, 'name': vals.name});
-    }
-    this.props.onChangeFilter(filters);
+    this.props.onChangeFilter(this.state.filters);
   };
 
   handleClose = () => {
@@ -76,13 +63,8 @@ class FilterDialog extends React.Component {
 
   handleChange(event) {
     let value = event.target.value;
-    let id = event.target.name;
-    let col = common.getColumnByName(this.props.columns, id);
-    let choices = null;
-    const name = col.label;
-    if (col) {
-      choices = col.choices;
-    }
+    let name = event.target.name;
+    let col = common.getColumnByName(this.props.columns, name, 'name');
     if (col.boolean === true) {
       if (value === 'true') {
         value = true;
@@ -96,16 +78,16 @@ class FilterDialog extends React.Component {
     this.setState((state) => {
       let filters = state.filters;
       if (value === '' || value === null) {
-        delete filters[id];
+        delete filters[name];
       } else {
-        filters[id] = {value: value, choices: choices, name: name};
+        filters[name] = value;
       }
       return {filters: filters};
     });
   }
 
   get_field_name(col) {
-    return col.id + (col.searchType ? '__' + col.searchType : '');
+    return col.name + (col.search_type ? '__' + col.search_type : '');
   }
 
   render() {
@@ -127,29 +109,29 @@ class FilterDialog extends React.Component {
             <DialogTitle id="form-dialog-title">{filterTitle}を検索</DialogTitle>
             <DialogContent>
               {columns.map(col => {
-                let field_id = this.get_field_name(col);
-                let value = (typeof(filters[field_id] || '') === 'object') ? filters[field_id].value : '';
+                let field_name = this.get_field_name(col);
+                let value = filters[field_name] || '';
                 if (col.searchable) {
                   if (col.choices && !common.isEmpty(col.choices)) {
                     // 選択肢が存在する場合
                     return (
-                      <FormControl key={'form_contral_' + field_id} className={classes.formControl}>
-                        <InputLabel htmlFor={field_id}>{col.label}</InputLabel>
-                        <Select value={value} inputProps={{ name: field_id, value: value }} onChange={this.handleChange}>
+                      <FormControl key={'form_contral_' + field_name} className={classes.formControl}>
+                        <InputLabel htmlFor={field_name}>{col.label}</InputLabel>
+                        <Select value={value} inputProps={{ name: field_name, value: value }} onChange={this.handleChange}>
                           <MenuItem value=""><em>None</em></MenuItem>
-                          {Object.keys(col.choices).map(key => {
-                            return <MenuItem key={key} value={key}>{col.choices[key]}</MenuItem>;
+                          {col.choices.map(item => {
+                            return <MenuItem key={item.value} value={item.value}>{item.display_name}</MenuItem>;
                           })}
                         </Select>
                       </FormControl>
                     );
                   } else if (col.boolean === true) {
                     // チェックボックスを表示
-                    return (<FormControlLabel key={'form_contral_' + field_id} className={classes.formControl}
+                    return (<FormControlLabel key={'form_contral_' + field_name} className={classes.formControl}
                       control={
                         <Checkbox 
-                          key={field_id} 
-                          name={field_id} 
+                          key={field_name} 
+                          name={field_name} 
                           color="primary" 
                           checked={value} 
                           onChange={this.handleChange}
@@ -159,10 +141,10 @@ class FilterDialog extends React.Component {
                     />);
                   } else {
                     return (
-                      <FormControl key={'form_contral_' + field_id} className={classes.formControl}>
+                      <FormControl key={'form_contral_' + field_name} className={classes.formControl}>
                         <TextField 
-                          key={field_id}
-                          name={field_id}
+                          key={field_name}
+                          name={field_name}
                           label={col.label}
                           value={value}
                           onChange={this.handleChange}
@@ -171,7 +153,7 @@ class FilterDialog extends React.Component {
                     );
                   }
                 } else {
-                  return <React.Fragment key={field_id}/>;
+                  return <React.Fragment key={field_name}/>;
                 }
               })}
             </DialogContent>
@@ -192,6 +174,8 @@ class FilterDialog extends React.Component {
 
 FilterDialog.propTypes = {
   classes: PropTypes.object.isRequired,
+  filters: PropTypes.object.isRequired,
+  columns: PropTypes.array.isRequired,
 };
 
 export default withStyles(styles)(FilterDialog);

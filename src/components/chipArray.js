@@ -24,43 +24,46 @@ class ChipsArray extends React.Component {
     this.handleDelete = this.handleDelete.bind(this);
   }
 
-  handleDelete = data => () => {
+  handleDelete = key => () => {
     const chipData = this.props.chipData;
-    const chipToDelete = chipData.indexOf(data);
-    chipData.splice(chipToDelete, 1);
+    delete chipData[key];
     this.props.onChangeFilter(chipData);
   };
 
   render() {
-    const { classes, chipData } = this.props;
+    const { classes, chipData, columns } = this.props;
 
     return (
       <Paper className={classes.root}>
-        {chipData.map(data => {
+        {Object.keys(chipData).map(key => {
           let icon = null;
+          const col = common.getColumnByName(columns, key, 'name');
+          const value = chipData[key];
 
-          if (data.value || data.value === false) {
-            let label = data.value;
-            if (data.choices && !common.isEmpty(data.choices)) {
-              if (data.value === true) {
-                label = data.name;
-              } else if (data.value === false) {
-                label = data.name + 'ではない';
+          if (value || value === false) {
+            let label = value;
+            if (col.choices && !common.isEmpty(col.choices)) {
+              if (value === true) {
+              } else if (value === false) {
+                label = col.label + 'ではない';
               } else {
-                label = data.choices[data.value];
+                let item = common.getColumnByName(col.choices, value, 'value');
+                if (item) {
+                  label = item.display_name;
+                }
               }
             }
             return (
               <Chip
-                key={data.id}
+                key={key}
                 icon={icon}
                 label={label}
-                onDelete={this.handleDelete(data)}
+                onDelete={this.handleDelete(key)}
                 className={classes.chip}
               />
             );
           } else {
-            return <React.Fragment></React.Fragment>
+            return <React.Fragment/>
           }
         })}
       </Paper>
@@ -70,6 +73,7 @@ class ChipsArray extends React.Component {
 
 ChipsArray.propTypes = {
   classes: PropTypes.object.isRequired,
+  chipData: PropTypes.object.isRequired,
 };
 
 export default withStyles(styles)(ChipsArray);

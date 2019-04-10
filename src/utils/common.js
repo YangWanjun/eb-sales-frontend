@@ -108,6 +108,27 @@ export const common = {
   },
 
   /**
+   * URLの引数をJSONに変換する
+   * @param {String} text QueryString
+   * @param {String} sep 
+   * @param {String} eq 
+   * @param {Boolean} isDecode 
+   */
+  parseQuerystring: function(text, sep, eq, isDecode) {
+    if (!text) {
+      return {};
+    }
+    sep = sep || '&';
+    eq = eq || '=';
+    var decode = (isDecode) ? decodeURIComponent : function(a) { return a; };
+    return this.trim(text, '?').split(sep).reduce(function(obj, v) {
+      var pair = v.split(eq);
+      obj[pair[0]] = decode(pair[1]);
+      return obj;
+    }, {});
+  },
+
+  /**
    * 二つのＵＲＬを結合する
    * @param {String} url1 ＵＲＬ
    * @param {String} url2 ＵＲＬ

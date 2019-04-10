@@ -27,12 +27,13 @@ import { lighten } from '@material-ui/core/styles/colorManipulator';
 import FilterDialog from '../components/filterDialog';
 import ChipsArray from '../components/chipArray';
 import BadgeLabel from '../components/badgeLabel';
-import { common } from '../utils/common';
-import { config } from '../utils/config';
-import { constant } from '../utils/constants';
 import GridContainer from './Grid/GridContainer';
 import GridItem from './Grid/GridItem';
 import FormDialog from './Form/index'
+import { common } from '../utils/common';
+import { config } from '../utils/config';
+import { constant } from '../utils/constants';
+import { history } from '../utils/store';
 
 function stableSort(array, cmp) {
   const stabilizedThis = array.map((el, index) => [el, index]);
@@ -78,12 +79,6 @@ function stableFilter(array, filters) {
   });
   return array;
 }
-
-const headerStyles = theme => ({
-  cellPadding: {
-    paddingRight: 0,
-  },
-});
 
 class EnhancedTableHead extends React.Component {
   createSortHandler = (property, isNumeric) => event => {
@@ -156,11 +151,9 @@ EnhancedTableHead.propTypes = {
   rowCount: PropTypes.number.isRequired,
 };
 
-EnhancedTableHead = withStyles(headerStyles)(EnhancedTableHead);
-
 class EnhancedTableFooter extends React.Component {
   render() {
-    const { onSelectAllClick, numSelected, rowCount, columnData, isSelectable, summary } = this.props;
+    const { classes, onSelectAllClick, numSelected, rowCount, columnData, isSelectable, summary } = this.props;
     const chkCell = isSelectable ? (
       <TableCell padding="none">
         <Checkbox
@@ -180,7 +173,7 @@ class EnhancedTableFooter extends React.Component {
             if (!col.visible) {
               return <React.Fragment  key={col.name}/>;
             } else if (numeric === true) {
-              return (<TableCell key={col.name} align='right'>{common.toNumComma(summary[col.name])}</TableCell>);
+              return (<TableCell key={col.name} align='right' className={classes.cellPadding}>{common.toNumComma(summary[col.name])}</TableCell>);
             } else {
               return (<TableCell key={col.name} padding="default"></TableCell>);
             }
@@ -229,6 +222,12 @@ class EnhancedTableToolbar extends React.Component {
 
   handleDeleteFilter(filters) {
     this.props.onChangeFilter(filters);
+    if (this.props.endpoint) {
+      history.push({
+        'pathname': this.props.endpoint,
+        'search': common.jsonToUrlParameters(filters),
+      })
+    }
   }
 
   onShowAddDialog = () => {
@@ -241,14 +240,14 @@ class EnhancedTableToolbar extends React.Component {
     const { numSelected, classes, tableTitle, columns, filters, addComponentProps } = this.props;
     let toolComponent = null;
 
-    if (numSelected > 0 && filters.length > 0) {
+    if (numSelected > 0 && !common.isEmpty(filters)) {
       // 行が選択され、且つ検索のフィルター項目あり
       toolComponent = (
         <Typography color="inherit" variant="subheading">
           <GridContainer>
             <GridItem style={{lineHeight: '45px'}}>{numSelected} selected</GridItem>
             <GridItem>
-              <ChipsArray chipData={filters} onChangeFilter={this.handleDeleteFilter} />
+              <ChipsArray chipData={filters} columns={columns} onChangeFilter={this.handleDeleteFilter} />
             </GridItem>
           </GridContainer>
         </Typography>
@@ -260,9 +259,9 @@ class EnhancedTableToolbar extends React.Component {
             {numSelected} selected
         </Typography>
       );
-    } else if (filters.length > 0) {
+    } else if (!common.isEmpty(filters)) {
       // 検索のフィルター項目あり
-      toolComponent = <ChipsArray chipData={filters} onChangeFilter={this.handleDeleteFilter} />;
+      toolComponent = <ChipsArray chipData={filters} columns={columns} onChangeFilter={this.handleDeleteFilter} />;
     } else {
       toolComponent = (
         <Typography variant="title" id="tableTitle">
@@ -303,7 +302,7 @@ class EnhancedTableToolbar extends React.Component {
     return (
       <Toolbar
         className={classNames(classes.root, {
-          [classes.highlight]: (numSelected > 0 || filters.length > 0),
+          [classes.highlight]: (numSelected > 0 || !common.isEmpty(filters)),
         })}
       >
         <div className={classes.title}>
@@ -455,7 +454,7 @@ class EnhancedTable extends React.Component {
       // columns: props.data.columns,
       page: 0,
       rowsPerPage: config.rowsPerPage,
-      clientFilters: [],
+      clientFilters: {},
     };
   }
 
@@ -541,7 +540,7 @@ class EnhancedTable extends React.Component {
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
   render() {
-    const { data, classes, tableTitle, isSelectable, filters, summary, isClientSide, addComponentProps } = this.props;
+    const { data, classes, tableTitle, isSelectable, filters, summary, isClientSide, endpoint, addComponentProps } = this.props;
     const { order, orderBy, orderNumeric, selected, rowsPerPage, page, clientFilters } = this.state;
     let dataLength = data.count;
     const columns = data.columns;
@@ -551,7 +550,7 @@ class EnhancedTable extends React.Component {
       // 並び替え
       results = stableSort(data.results, getSorting(order, orderBy, orderNumeric));
       // 検索
-      if (clientFilters && clientFilters.length > 0) {
+      if (clientFilters && !common.isEmpty(clientFilters)) {
         results = stableFilter(results, clientFilters);
         dataLength = results.length;
       }
@@ -566,13 +565,15 @@ class EnhancedTable extends React.Component {
           columns={columns} 
           tableTitle={tableTitle} 
           isSelectable={isSelectable} 
-          filters={filters.length > 0 ? filters : clientFilters} 
+          filters={!common.isEmpty(filters) ? filters : clientFilters} 
           onChangeFilter={this.handleChangeFilter}
           addComponentProps={addComponentProps}
+          endpoint={endpoint}
         />
         <div className={classes.tableWrapper}>
           <Table className={classes.table} aria-labelledby="tableTitle">
             <EnhancedTableHead
+              classes={classes}
               numSelected={selected.length}
               order={order}
               columnData={columns}
@@ -664,8 +665,9 @@ class EnhancedTable extends React.Component {
                 </TableRow>
               )} */}
             </TableBody>
-            {summary ? 
+            {!common.isEmpty(summary) ? 
             <EnhancedTableFooter 
+              classes={classes}
               numSelected={selected.length}
               columnData={columns}
               rowCount={dataLength}
@@ -697,6 +699,21 @@ class EnhancedTable extends React.Component {
 
 EnhancedTable.propTypes = {
   classes: PropTypes.object.isRequired,
+  data: PropTypes.object.isRequired,
+  tableTitle: PropTypes.string,
+  filters: PropTypes.object,
+  isSelectable: PropTypes.bool,
+  isClientSide: PropTypes.bool,
+  summary: PropTypes.object,
+  endpoint: PropTypes.string,
+};
+
+EnhancedTable.defaultProps = {
+  tableTitle: '',
+  filters: {},
+  isSelectable: false,
+  isClientSide: false,
+  summary: {},
 };
 
 export default withStyles(styles)(EnhancedTable);

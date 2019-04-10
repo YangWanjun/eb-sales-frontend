@@ -18,10 +18,6 @@ const styles = theme => ({
 });
 
 class DataProvider extends Component {
-  static propTypes = {
-    endpoint: PropTypes.string.isRequired,
-    render: PropTypes.func.isRequired,
-  };
 
   constructor(props) {
     super(props);
@@ -31,7 +27,7 @@ class DataProvider extends Component {
       summaryUrl: this.props.summaryUrl,
       data: {},
       summary: {},
-      filters: [],
+      filters: {},
       limit: config.rowsPerPage,  // PageSize
       offset: 0,
       loaded: false,
@@ -40,7 +36,7 @@ class DataProvider extends Component {
   }
 
   componentDidMount() {
-    this.handleDataRedraw(this.state.limit, this.state.offset)
+    this.handleDataRedraw(this.state.limit, this.state.offset, null, this.props.params);
 
     if (this.state.summaryUrl) {
       common.fetchGet(this.state.summaryUrl).then(data => {
@@ -57,14 +53,14 @@ class DataProvider extends Component {
       url += '?';
     }
     url += "limit=" + limit + "&offset=" + page * limit + (order_by ? ('&ordering=' + order_by) : '');
-    if (filters) {
-      filters.map(item => {
-        if (item.value) {
-          return url += '&' + item.id + '=' + item.value;
+    if (!common.isEmpty(filters)) {
+      Object.keys(filters).map(key => {
+        if (filters[key]) {
+          return url += '&' + key + '=' + filters[key];
         } else {
           return url;
         }
-      })
+      });
     } else {
       filters = this.state.filters;
     }
@@ -89,5 +85,10 @@ class DataProvider extends Component {
     }
   }
 }
+
+DataProvider.propTypes = {
+  endpoint: PropTypes.string.isRequired,
+  render: PropTypes.func.isRequired,
+};
 
 export default withStyles(styles)(DataProvider);
