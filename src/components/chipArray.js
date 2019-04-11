@@ -37,10 +37,11 @@ class ChipsArray extends React.Component {
       <Paper className={classes.root}>
         {Object.keys(chipData).map(key => {
           let icon = null;
-          const col = common.getColumnByName(columns, key, 'name');
           const value = chipData[key];
-
-          if (value || value === false) {
+          const col = common.getColumnByName(columns, key, 'name');
+          if (!col) {
+            return (<React.Fragment/>);
+          } else if (value || value === false) {
             let label = value;
             if (col.choices && !common.isEmpty(col.choices)) {
               if (value === true) {
@@ -63,7 +64,7 @@ class ChipsArray extends React.Component {
               />
             );
           } else {
-            return <React.Fragment/>
+            return (<React.Fragment/>);
           }
         })}
       </Paper>

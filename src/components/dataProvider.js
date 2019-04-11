@@ -28,15 +28,19 @@ class DataProvider extends Component {
       data: {},
       summary: {},
       filters: {},
+      order: 'asc',  // asc or desc
+      orderBy: 'id',  // field name
       limit: config.rowsPerPage,  // PageSize
       offset: 0,
       loaded: false,
       placeholder: "Loading..."
     };
+    this.initialize();
   }
 
-  componentDidMount() {
-    this.handleDataRedraw(this.state.limit, this.state.offset, null, this.props.params);
+  initialize() {
+    const { ordering, ...otherParams } = this.props.params;
+    this.handleDataRedraw(this.state.limit, this.state.offset, ordering, otherParams);
 
     if (this.state.summaryUrl) {
       common.fetchGet(this.state.summaryUrl).then(data => {
@@ -64,15 +68,47 @@ class DataProvider extends Component {
     } else {
       filters = this.state.filters;
     }
+    let order = 'asc';
+    let orderBy = '';
+    if (order_by) {
+      if (order_by.substr(0, 1) === '-') {
+        order = 'desc';
+        orderBy = order_by.substr(1);
+      } else {
+        order = 'asc';
+        orderBy = order_by;
+      }
+    }
     common.fetchGet(url)
-      .then(data => this.setState({ data: data, loaded: true, filters: filters }));
+      .then(data => this.setState({
+        data: data,
+        loaded: true,
+        filters: filters,
+        order: order,
+        orderBy: orderBy,
+      }));
   }
 
   render() {
     const { classes } = this.props;
-    const { data, loaded, placeholder, filters, summary } = this.state;
+    const { data, loaded, placeholder, filters, order, orderBy, summary } = this.state;
+    console.log('data provider render:' + order + ',' + orderBy);
+    
     if (loaded) {
-      return this.props.render(data, filters, this.handleDataRedraw, summary);
+        // フィルター項目はColumnsに存在しないなら除外する
+        for (var key in filters) {
+          if (!common.getColumnByName(data.columns, key, 'name')) {
+            delete filters[key];
+          }
+        }
+      return this.props.render({
+        data,
+        filters,
+        summary,
+        order,
+        orderBy,
+        onDataRedraw: this.handleDataRedraw,
+      });
     } else {
       return (
         <Paper className={classes.paper}>

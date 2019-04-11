@@ -13,12 +13,10 @@ class ProjectList extends React.Component {
       <DataProvider
         endpoint={ config.api.project_list }
         params={params}
-        render={ (data, filters, handleDataRedraw) => (
+        render={ (initData) => (
           <EnhancedTable
             tableTitle='案件一覧'
-            data={data}
-            filters={filters}
-            onDataRedraw={handleDataRedraw}
+            { ...initData }
             isSelectable={false}
             endpoint={ this.props.location.pathname }
           />

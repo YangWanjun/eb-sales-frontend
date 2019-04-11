@@ -3,20 +3,15 @@ import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TablePagination from '@material-ui/core/TablePagination';
-import TableRow from '@material-ui/core/TableRow';
-import TableFooter from '@material-ui/core/TableFooter';
-import TableSortLabel from '@material-ui/core/TableSortLabel';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import Paper from '@material-ui/core/Paper';
-import Checkbox from '@material-ui/core/Checkbox';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
+import { 
+  Table, TableBody, TableRow, TableCell, TableHead, TableFooter, TablePagination, TableSortLabel,
+  Toolbar,
+  Typography,
+  Paper,
+  Checkbox,
+  IconButton,
+  Tooltip,
+} from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/Add';
 import FirstPageIcon from '@material-ui/icons/FirstPage';
@@ -75,7 +70,7 @@ function stableFilter(array, filters) {
         return false;
       }
     })
-    return array
+    return array;
   });
   return array;
 }
@@ -222,12 +217,6 @@ class EnhancedTableToolbar extends React.Component {
 
   handleDeleteFilter(filters) {
     this.props.onChangeFilter(filters);
-    if (this.props.endpoint) {
-      history.push({
-        'pathname': this.props.endpoint,
-        'search': common.jsonToUrlParameters(filters),
-      })
-    }
   }
 
   onShowAddDialog = () => {
@@ -445,8 +434,8 @@ class EnhancedTable extends React.Component {
     this.handleRequestSort = this.handleRequestSort.bind(this);
     this.handleChangeFilter = this.handleChangeFilter.bind(this);
     this.state = {
-      order: 'asc',
-      orderBy: 'id',
+      order: props.order,
+      orderBy: props.orderBy,
       orderNumeric: false,  // 並び替え項目が数字かどうか
       selected: [],
       // data: props.data.results,
@@ -474,6 +463,15 @@ class EnhancedTable extends React.Component {
     const {isClientSide} = this.props;
     if (!isClientSide) {
       this.props.onDataRedraw(this.state.rowsPerPage, this.state.page, order_by, this.props.filters);
+    }
+    // ソート時ＵＲＬも変更する
+    if (this.props.endpoint) {
+      let params = this.props.filters;
+      params['ordering'] = order_by;
+      history.push({
+        'pathname': this.props.endpoint,
+        'search': common.jsonToUrlParameters(params),
+      });
     }
   };
 
@@ -535,12 +533,19 @@ class EnhancedTable extends React.Component {
     } else {
       this.setState({ clientFilters: filters});
     }
+    // 検索時ＵＲＬも変更する
+    if (this.props.endpoint) {
+      history.push({
+        'pathname': this.props.endpoint,
+        'search': common.jsonToUrlParameters(filters),
+      });
+    }
   };
 
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
   render() {
-    const { data, classes, tableTitle, isSelectable, filters, summary, isClientSide, endpoint, addComponentProps } = this.props;
+    const { data, classes, tableTitle, isSelectable, filters, summary, isClientSide, addComponentProps } = this.props;
     const { order, orderBy, orderNumeric, selected, rowsPerPage, page, clientFilters } = this.state;
     let dataLength = data.count;
     const columns = data.columns;
@@ -568,7 +573,6 @@ class EnhancedTable extends React.Component {
           filters={!common.isEmpty(filters) ? filters : clientFilters} 
           onChangeFilter={this.handleChangeFilter}
           addComponentProps={addComponentProps}
-          endpoint={endpoint}
         />
         <div className={classes.tableWrapper}>
           <Table className={classes.table} aria-labelledby="tableTitle">
@@ -636,12 +640,18 @@ class EnhancedTable extends React.Component {
                               }
                             } else if (numeric === true) {
                               // 数字の場合
-                              return (<TableCell key={col.name} align='right' className={classes.cellPadding}>{common.toNumComma(n[col.name])}</TableCell>);
+                              return (
+                                <TableCell key={col.name} align='right' className={classes.cellPadding}>
+                                  {common.toNumComma(n[col.name])}
+                                </TableCell>
+                              );
                             } else {
                               return (
                                 <TableCell key={col.name} className={classes.cellPadding}>
                                   <Typography noWrap style={{ maxWidth: 200, }}>
-                                    { (col.url_field && n[col.url_field]) ? (<Link to={n[col.url_field]}>{n[col.name]}</Link>) : n[col.name] }
+                                    {(col.url_field && n[col.url_field]) ? (
+                                      <Link to={n[col.url_field]}>{n[col.name]}</Link>
+                                    ) : n[col.name] }
                                   </Typography>
                                 </TableCell>
                               );
