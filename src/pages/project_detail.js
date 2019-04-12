@@ -1,11 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom'
 import withStyles from "@material-ui/core/styles/withStyles";
-import Typography from '@material-ui/core/Typography';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableRow from '@material-ui/core/TableRow';
+import {
+  Typography,
+  Table,
+  TableBody,
+  TableCell,
+  TableRow,
+} from '@material-ui/core';
 import CustomBreadcrumbs from '../components/customBreadcrumbs';
 import GridContainer from '../components/Grid/GridContainer';
 import GridItem from '../components/Grid/GridItem';
@@ -54,7 +56,8 @@ class ProjectDetail extends React.Component {
     this.state = { 
       project_detail: {},
       columns: [],
-      project_member_schema: {},
+      project_member_schema: [],
+      project_member_layout: [],
     };
     this.initialize();
 　}
@@ -71,13 +74,14 @@ class ProjectDetail extends React.Component {
     common.fetchOptions(config.api.project_member_list).then(data => {
       this.setState({ 
         project_member_schema: data.columns,
+        project_member_layout: data.fieldsets,
       });
     });
   }
 
   render () {
     const { classes } = this.props;
-    const { project_detail, columns, project_member_schema } = this.state;
+    const { project_detail, columns, project_member_schema, project_member_layout } = this.state;
     const { params } = this.props.match;
     const col_business_type = common.getColumnByName(columns, 'business_type');
     const col_status = common.getColumnByName(columns, 'status');
@@ -89,6 +93,7 @@ class ProjectDetail extends React.Component {
 
     const addProps = {
       schema: project_member_schema,
+      layout: project_member_layout,
       title: project_detail.name + 'にメンバー追加',
     };
 

@@ -8,6 +8,7 @@ import CardHeader from "../Card/CardHeader.jsx";
 import CardBody from "../Card/CardBody.jsx";
 import CardFooter from '../Card/CardFooter';
 import ControlCreateor from './ControlCreator';
+import { common } from "../../utils/common";
 
 function getModalStyle() {
   const top = 50;
@@ -57,9 +58,66 @@ class FormComponent extends React.Component {
     
   }
 
+  getFormLayout(data, schema, layout) {
+    let control = null;
+    if (common.isEmpty(layout)) {
+      control = (
+        <GridContainer>
+          {schema.map(col => {
+            if (col.read_only) {
+              return <React.Fragment key={'tableRow_' + col.name} />;
+            } else {
+              return (
+                <GridItem key={'item_' + col.name} xs={12} sm={12} md={12}>
+                  <ControlCreateor
+                    name={col.name} 
+                    column={col} 
+                    value={data[col.name]}
+                    label={col.label}
+                    placeholder={col.help_text}
+                    handleDateChange={this.handleDateChange(col.name)} 
+                    handleChange={this.handleChange}
+                  />
+                </GridItem>
+              );
+            }
+          })}
+        </GridContainer>
+      );
+    } else {
+      control = (
+        <GridContainer>
+          {}
+        </GridContainer>
+      );
+    }
+    return control;
+  }
+
+  getRowLayout(data, columns) {
+    const colSpan = Math.floor(12 / columns.length);
+    return (
+      <React.Fragment>
+        {columns.map(col => (
+          <GridItem key={'item_' + col.name} xs={12} sm={12} md={colSpan}>
+            <ControlCreateor
+              name={col.name}
+              column={col} 
+              value={data[col.name]}
+              label={col.label}
+              handleDateChange={this.handleDateChange(col.name)}
+              handleChange={this.handleChange}
+            />
+          </GridItem>
+        ))}
+      </React.Fragment>
+    )
+  }
+
   render() {
-    const { classes, schema, title } = this.props;
+    const { classes, schema, layout, title } = this.props;
     const { data } = this.state;
+    const formLayout = this.getFormLayout(data, schema, layout);
 
     return (
       <div style={getModalStyle()} className={classes.paper}>
@@ -71,26 +129,7 @@ class FormComponent extends React.Component {
                 {/* <p className={classes.cardCategoryWhite}>{project_detail.name}</p> */}
               </CardHeader>
               <CardBody className={classes.cardBody}>
-                <GridContainer>
-                  { schema.map(col => {
-                    if (col.read_only) {
-                      return <React.Fragment key={'tableRow_' + col.name} />;
-                    } else {
-                      return (
-                        <GridItem key={'item_' + col.name} xs={12} sm={12} md={12}>
-                          <ControlCreateor
-                            name={col.name} 
-                            column={col} 
-                            value={data[col.name]}
-                            label={col.label}
-                            handleDateChange={this.handleDateChange(col.name)} 
-                            handleChange={this.handleChange}
-                          />
-                        </GridItem>
-                      );
-                    }
-                  }) }
-                </GridContainer>
+                { formLayout }
               </CardBody>
               <CardFooter chart>
                 <div className={classes.rightAlign}>

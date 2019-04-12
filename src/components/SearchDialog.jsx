@@ -73,13 +73,11 @@ class SearchDialog extends React.Component {
         { url ? (
           <DataProvider 
             endpoint={ search_url } 
-            render={ (data, filters, handleDataRedraw) => {
+            render={ (initData) => {
               return (
                 <EnhancedTable
                   tableTitle={title.replace('を検索', '').replace('（*）', '') + '一覧'}
-                  data={data}
-                  filters={filters}
-                  onDataRedraw={handleDataRedraw}
+                  { ...initData }
                   isClientSide={true}
                   isSelectable={true}
                 />

@@ -49,12 +49,18 @@ class ModelChoice extends React.Component {
 
   render () {
     const { classes, url } = this.props;
+    let placeholderProps = {};
+    if (this.props.placeholder) {
+      placeholderProps['placeholder'] = this.props.placeholder;
+      placeholderProps['InputLabelProps'] = {shrink: true};
+    }
 
     return (
       <div className={classes.root}>
         <ChipInput className={classes.input}
           name={this.props.name}
           label={this.props.label}
+          {...placeholderProps}
         />
         <Divider className={classes.divider} />
         <IconButton className={classes.iconButton} aria-label="Search" onClick={ this.onShowSearchDialog }>

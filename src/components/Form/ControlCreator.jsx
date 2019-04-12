@@ -46,6 +46,8 @@ class ControlCreateor extends React.Component {
             type='number'
             value={value}
             label={label}
+            placeholder={this.props.placeholder}
+            InputLabelProps={this.props.placeholder ? { shrink: true,} : null}
             onChange={this.props.handleChange}
           />
         </FormControl>
@@ -58,6 +60,8 @@ class ControlCreateor extends React.Component {
             type='number'
             value={value}
             label={label}
+            placeholder={this.props.placeholder}
+            InputLabelProps={this.props.placeholder ? { shrink: true,} : null}
             onChange={this.props.handleChange}
           />
         </FormControl>
@@ -81,6 +85,7 @@ class ControlCreateor extends React.Component {
           name={name}
           label={label}
           url={column.search_url}
+          placeholder={this.props.placeholder}
         />
       )
     }
