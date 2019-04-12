@@ -10,7 +10,7 @@ export const common = {
    * 数字をカンマ区切りで表示
    * @param {Integer} num 数字
    */
-  toNumComma: function (num) {
+  toNumComma: function(num) {
     if (num) {
       const int_comma = (num + "").replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
       return int_comma;
@@ -20,12 +20,21 @@ export const common = {
   },
 
   /**
+   * 整数に変更する
+   * @param {String} num 
+   */
+  toInteger: function(num, radix=10) {
+    let val = parseInt(num, radix);
+    return isNaN(val) ? 0 : val;
+  },
+
+  /**
    * 文字列をフォーマットする
    * @param {String} format 
    *
    * 使用方法：utils.format('This is argument: %s', arg1);
    */
-  formatStr: function (format) {
+  formatStr: function(format) {
     var i = 0,
         j = 0,
         r = "",
@@ -61,6 +70,25 @@ export const common = {
         return false;
     }
     return true;
+  },
+
+  /**
+   * QueryStringから並び替えの項目名と昇順／降順を取得
+   * @param {String} order_by 例：-nameの場合は「name」項目の降順
+   */
+  getOrderParams: function(order_by) {
+    let order = 'asc';
+    let orderBy = '';
+    if (order_by) {
+      if (order_by.substr(0, 1) === '-') {
+        order = 'desc';
+        orderBy = order_by.substr(1);
+      } else {
+        order = 'asc';
+        orderBy = order_by;
+      }
+    }
+    return {orderBy, order};
   },
 
   /**
@@ -211,8 +239,8 @@ export const common = {
   },
 
   handleStatus: function(response) {
-    store.dispatch(changeStatusCode(response.status));
     if (!response.ok) {
+      store.dispatch(changeStatusCode(response.status));
       if (response.status === 401) {
         // auto logout if 401 response returned from api
         store.dispatch(logoutAndRedirect());

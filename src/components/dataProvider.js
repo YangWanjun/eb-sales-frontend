@@ -30,8 +30,8 @@ class DataProvider extends Component {
       filters: {},
       order: 'asc',  // asc or desc
       orderBy: 'id',  // field name
-      limit: config.rowsPerPage,  // PageSize
-      offset: 0,
+      rowsPerPage: config.rowsPerPage,  // PageSize
+      page: 0,
       loaded: false,
       placeholder: "Loading..."
     };
@@ -39,8 +39,8 @@ class DataProvider extends Component {
   }
 
   initialize() {
-    const { ordering, ...otherParams } = this.props.params;
-    this.handleDataRedraw(this.state.limit, this.state.offset, ordering, otherParams);
+    const { ordering, page, limit, ...otherParams } = this.props.params;
+    this.handleDataRedraw(limit, page, ordering, otherParams);
 
     if (this.state.summaryUrl) {
       common.fetchGet(this.state.summaryUrl).then(data => {
@@ -49,50 +49,39 @@ class DataProvider extends Component {
     }
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (JSON.stringify(nextProps.params) !== JSON.stringify(this.props.params)) {
+      const { ordering, page, limit, ...otherParams } = nextProps.params;
+      this.handleDataRedraw(limit, page, ordering, otherParams);
+    }
+  }
+
   handleDataRedraw(limit, page, order_by, filters) {
-    let url = this.props.endpoint;
-    if (url.indexOf('?') > 0) {
-      url += '&';
-    } else {
-      url += '?';
-    }
-    url += "limit=" + limit + "&offset=" + page * limit + (order_by ? ('&ordering=' + order_by) : '');
-    if (!common.isEmpty(filters)) {
-      Object.keys(filters).map(key => {
-        if (filters[key]) {
-          return url += '&' + key + '=' + filters[key];
-        } else {
-          return url;
-        }
-      });
-    } else {
-      filters = this.state.filters;
-    }
-    let order = 'asc';
-    let orderBy = '';
-    if (order_by) {
-      if (order_by.substr(0, 1) === '-') {
-        order = 'desc';
-        orderBy = order_by.substr(1);
-      } else {
-        order = 'asc';
-        orderBy = order_by;
-      }
-    }
+    limit = common.toInteger(limit);
+    page = common.toInteger(page);
+    order_by = order_by || '';
+    let url = common.addUrlParameter(this.props.endpoint, {
+      limit: limit,
+      offset: page * limit,
+      ordering: order_by,
+      ...filters
+    });
+
+    const orderParams = common.getOrderParams(order_by);
     common.fetchGet(url)
       .then(data => this.setState({
         data: data,
         loaded: true,
         filters: filters,
-        order: order,
-        orderBy: orderBy,
+        ...orderParams,
+        page: page,
+        rowsPerPage: limit,
       }));
   }
 
   render() {
     const { classes } = this.props;
-    const { data, loaded, placeholder, filters, order, orderBy, summary } = this.state;
-    console.log('data provider render:' + order + ',' + orderBy);
+    const { data, loaded, placeholder, filters, order, orderBy, page, rowsPerPage, summary } = this.state;
     
     if (loaded) {
         // フィルター項目はColumnsに存在しないなら除外する
@@ -107,7 +96,8 @@ class DataProvider extends Component {
         summary,
         order,
         orderBy,
-        onDataRedraw: this.handleDataRedraw,
+        page,
+        rowsPerPage,
       });
     } else {
       return (
@@ -125,6 +115,11 @@ class DataProvider extends Component {
 DataProvider.propTypes = {
   endpoint: PropTypes.string.isRequired,
   render: PropTypes.func.isRequired,
+  params: PropTypes.object,
 };
+
+DataProvider.defaultProps = {
+  params: {},
+}
 
 export default withStyles(styles)(DataProvider);

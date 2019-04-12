@@ -5,17 +5,29 @@ import EnhancedTable from '../components/dataTable';
 import DataProvider from '../components/dataProvider';
 import CustomBreadcrumbs from '../components/customBreadcrumbs';
 import { config } from '../utils/config';
+import { common } from '../utils/common';
 
 class TurnoverMonthlyList extends React.Component {
   render () {
+    const params = common.parseQuerystring(this.props.location.search, '&', '=', true);
+
     return (
       <div>
         <CustomBreadcrumbs>
           <Link to="/turnover" >売上情報</Link>
           <Typography color="textPrimary">月別売上一覧</Typography>
         </CustomBreadcrumbs>
-        <DataProvider endpoint={ config.api.turnover_monthly_list } 
-                      render={ (data, filters, handleDataRedraw) => <EnhancedTable tableTitle='月別売上一覧' data={data} filters={filters} onDataRedraw={handleDataRedraw} isSelectable={false} /> } />
+        <DataProvider
+          endpoint={ config.api.turnover_monthly_list }
+          params={params}
+          render={ (initData) => (
+            <EnhancedTable
+              tableTitle='月別売上一覧'
+              { ...initData }
+              endpoint={ this.props.location.pathname }
+            />
+          ) } 
+        />
       </div>
     );
   }

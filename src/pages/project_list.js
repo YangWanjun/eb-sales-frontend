@@ -17,7 +17,6 @@ class ProjectList extends React.Component {
           <EnhancedTable
             tableTitle='案件一覧'
             { ...initData }
-            isSelectable={false}
             endpoint={ this.props.location.pathname }
           />
         ) } 

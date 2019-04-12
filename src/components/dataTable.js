@@ -59,13 +59,13 @@ function getSorting(order, orderBy, isNumeric) {
 }
 
 function stableFilter(array, filters) {
-  filters.map( f => {
+  Object.keys(filters).map( key => {
     array = array.filter(function(item) {
-      let item_value = item[f.id];
+      let item_value = item[key];
       if (item_value === true || item_value === false) {
-        return (f.value === true || f.value === false) ? item_value === f.value : true;
+        return (filters[key] === true || filters[key] === false) ? item_value === filters[key] : true;
       } else if (item_value) {
-        return item_value.indexOf(f.value) >= 0;
+        return item_value.indexOf(filters[key]) >= 0;
       } else {
         return false;
       }
@@ -88,6 +88,7 @@ class EnhancedTableHead extends React.Component {
           indeterminate={numSelected > 0 && numSelected < rowCount}
           checked={numSelected === rowCount}
           onChange={onSelectAllClick}
+          disabled={rowCount === 0}
         />
       </TableCell>
     ) : (<React.Fragment></React.Fragment>);
@@ -99,7 +100,7 @@ class EnhancedTableHead extends React.Component {
           {columnData.map(column => {
             const numeric = column.type === 'integer' || column.type === 'decimal';
             const cell = column.visible ? (
-              (isClientSide || column.sortable) ? (
+              ((isClientSide || column.sortable) && rowCount > 0) ? (
                 <TableCell
                   key={column.name}
                   align={numeric ? 'right' : 'inherit'}
@@ -213,6 +214,15 @@ class EnhancedTableToolbar extends React.Component {
 
     this.handleDeleteFilter = this.handleDeleteFilter.bind(this);
     this.onShowAddDialog = this.onShowAddDialog.bind(this);
+    this.state = {
+      filters: props.filters,
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (JSON.stringify(nextProps.filters) !== JSON.stringify(this.props.filters)) {
+      this.setState({filters: nextProps.filters});
+    }
   }
 
   handleDeleteFilter(filters) {
@@ -226,7 +236,8 @@ class EnhancedTableToolbar extends React.Component {
   }
 
   render () {
-    const { numSelected, classes, tableTitle, columns, filters, addComponentProps } = this.props;
+    const { numSelected, classes, tableTitle, columns, addComponentProps } = this.props;
+    const { filters } = this.state;
     let toolComponent = null;
 
     if (numSelected > 0 && !common.isEmpty(filters)) {
@@ -438,13 +449,40 @@ class EnhancedTable extends React.Component {
       orderBy: props.orderBy,
       orderNumeric: false,  // 並び替え項目が数字かどうか
       selected: [],
-      // data: props.data.results,
-      // dataLength: props.data.count,
-      // columns: props.data.columns,
-      page: 0,
+      filters: props.filters,
+      page: props.page,
       rowsPerPage: config.rowsPerPage,
-      clientFilters: {},
     };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    let newState = {};
+    if (nextProps.order !== this.props.order) {
+      newState['order'] = nextProps.order;
+    }
+    if (nextProps.orderBy !== this.props.orderBy) {
+      newState['orderBy'] = nextProps.orderBy;
+    }
+    if (nextProps.page !== this.props.page) {
+      newState['page'] = nextProps.page;
+    }
+    if (nextProps.rowsPerPage !== this.props.rowsPerPage) {
+      newState['rowsPerPage'] = nextProps.rowsPerPage;
+    }
+    if (JSON.stringify(nextProps.filters) !== JSON.stringify(this.props.filters)) {
+      newState['filters'] = nextProps.filters;
+    }
+    if (!common.isEmpty(newState)) {
+      this.setState(newState);
+    }
+  }
+
+  combineParams(filters) {
+    let params = Object.assign({}, filters);
+    params['ordering'] = (this.state.order === 'desc' ? '-': '') + this.state.orderBy;
+    params['page'] = this.state.page;
+    params['limit'] = this.state.rowsPerPage;
+    return params;
   }
 
   handleRequestSort = (event, property, orderNumeric) => {
@@ -458,15 +496,10 @@ class EnhancedTable extends React.Component {
       order_by = '-' + order_by;
     }
 
-    this.setState({ order, orderBy, orderNumeric });
-
-    const {isClientSide} = this.props;
-    if (!isClientSide) {
-      this.props.onDataRedraw(this.state.rowsPerPage, this.state.page, order_by, this.props.filters);
-    }
-    // ソート時ＵＲＬも変更する
-    if (this.props.endpoint) {
-      let params = this.props.filters;
+    if (this.props.isClientSide) {
+      this.setState({ order, orderBy, orderNumeric });
+    } else if (this.props.endpoint) {
+      let params = this.combineParams(this.state.filters);
       params['ordering'] = order_by;
       history.push({
         'pathname': this.props.endpoint,
@@ -508,36 +541,40 @@ class EnhancedTable extends React.Component {
   };
 
   handleChangePage = (event, page) => {
-    this.setState({ page });
-    const {isClientSide} = this.props;
-    if (!isClientSide) {
-      const order_by = (this.state.order === 'desc' ? '-': '') + this.state.orderBy;
-      this.props.onDataRedraw(this.state.rowsPerPage, page, order_by, this.props.filters);
+    if (this.props.isClientSide) {
+      this.setState({ page });
+    } else if (this.props.endpoint) {
+      let params = this.combineParams(this.state.filters);
+      params['page'] = page;
+      history.push({
+        'pathname': this.props.endpoint,
+        'search': common.jsonToUrlParameters(params),
+      });
     }
   };
 
   handleChangeRowsPerPage = event => {
-    this.setState({ rowsPerPage: event.target.value });
-    const {isClientSide} = this.props;
-    if (!isClientSide) {
-      const order_by = (this.state.order === 'desc' ? '-': '') + this.state.orderBy;
-      this.props.onDataRedraw(event.target.value, 0, order_by, this.props.filters);
+    if (this.props.isClientSide) {
+      this.setState({ rowsPerPage: event.target.value });
+    } else if (this.props.endpoint) {
+      let params = this.combineParams(this.state.filters);
+      params['limit'] = event.target.value;
+      history.push({
+        'pathname': this.props.endpoint,
+        'search': common.jsonToUrlParameters(params),
+      });
     }
   };
 
   handleChangeFilter = filters => {
-    const {isClientSide} = this.props;
-    if (!isClientSide) {
-      const order_by = (this.state.order === 'desc' ? '-': '') + this.state.orderBy;
-      this.props.onDataRedraw(this.state.rowsPerPage, 0, order_by, filters);
-    } else {
-      this.setState({ clientFilters: filters});
-    }
-    // 検索時ＵＲＬも変更する
-    if (this.props.endpoint) {
+    if (this.props.isClientSide) {
+      this.setState({ filters });
+    } else if (this.props.endpoint) {
+      let params = this.combineParams(filters);
+      params['page'] = 0;
       history.push({
         'pathname': this.props.endpoint,
-        'search': common.jsonToUrlParameters(filters),
+        'search': common.jsonToUrlParameters(params),
       });
     }
   };
@@ -545,18 +582,18 @@ class EnhancedTable extends React.Component {
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
   render() {
-    const { data, classes, tableTitle, isSelectable, filters, summary, isClientSide, addComponentProps } = this.props;
-    const { order, orderBy, orderNumeric, selected, rowsPerPage, page, clientFilters } = this.state;
+    const { data, classes, tableTitle, isSelectable, summary, addComponentProps } = this.props;
+    const { order, orderBy, orderNumeric, filters, selected, rowsPerPage, page } = this.state;
     let dataLength = data.count;
     const columns = data.columns;
     // const emptyRows = rowsPerPage - Math.min(rowsPerPage, dataLength - page * rowsPerPage);
     let results = data.results;
-    if (isClientSide) {
+    if (this.props.isClientSide) {
       // 並び替え
       results = stableSort(data.results, getSorting(order, orderBy, orderNumeric));
       // 検索
-      if (clientFilters && !common.isEmpty(clientFilters)) {
-        results = stableFilter(results, clientFilters);
+      if (!common.isEmpty(filters)) {
+        results = stableFilter(results, filters);
         dataLength = results.length;
       }
       // ページング
@@ -570,7 +607,7 @@ class EnhancedTable extends React.Component {
           columns={columns} 
           tableTitle={tableTitle} 
           isSelectable={isSelectable} 
-          filters={!common.isEmpty(filters) ? filters : clientFilters} 
+          filters={filters} 
           onChangeFilter={this.handleChangeFilter}
           addComponentProps={addComponentProps}
         />
@@ -586,7 +623,7 @@ class EnhancedTable extends React.Component {
               onRequestSort={this.handleRequestSort}
               rowCount={dataLength}
               isSelectable={isSelectable}
-              isClientSide={isClientSide || false}
+              isClientSide={this.props.isClientSide || false}
             />
             <TableBody>
               {dataLength > 0 ? (

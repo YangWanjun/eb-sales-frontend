@@ -196,10 +196,10 @@ class ProjectDetail extends React.Component {
         </GridContainer>
         <DataProvider 
           endpoint={ config.api.project_member_list + '?project=' + params.project_id } 
-          render={ (data, filters, handleDataRedraw) => {
+          render={ (initData) => {
             // 検索できる項目を設定
-            data.columns.map(col => {
-              if (col.id === 'member_name' || col.id === 'contract_type' || col.id === 'status' || col.id === 'is_working') {
+            initData.data.columns.map(col => {
+              if (col.name === 'member_name' || col.name === 'contract_type' || col.name === 'status' || col.name === 'is_working') {
                 col.searchable = true;
                 return col;
               } else {
@@ -209,9 +209,7 @@ class ProjectDetail extends React.Component {
             return (
               <EnhancedTable
                 tableTitle='メンバー一覧'
-                data={data}
-                filters={filters}
-                onDataRedraw={handleDataRedraw}
+                { ...initData }
                 isClientSide={true}
                 isSelectable={true}
                 addComponentProps={addProps}

@@ -7,7 +7,6 @@ import CustomBreadcrumbs from '../components/customBreadcrumbs';
 import { config } from '../utils/config';
 import { common } from '../utils/common';
 
-
 class TurnoverMonthlyProjectDetail extends React.Component {
 
   constructor(props) {
@@ -25,6 +24,7 @@ class TurnoverMonthlyProjectDetail extends React.Component {
   }
 
   render () {
+    const urlParams = common.parseQuerystring(this.props.location.search, '&', '=', true);
     const { project_detail } = this.state;
     const { params } = this.props.match;
     const tableTitle = project_detail.name;
@@ -36,7 +36,8 @@ class TurnoverMonthlyProjectDetail extends React.Component {
     const summaryUrl = common.formatStr(config.api.turnover_client_by_month_detail, params.project_id)
       + '?year=' + params.ym.substring(0, 4) 
       + '&month=' + params.ym.substring(4, 6);
-  return (
+
+    return (
       <div>
         <CustomBreadcrumbs>
           <Link to="/turnover" >売上情報</Link>
@@ -45,8 +46,18 @@ class TurnoverMonthlyProjectDetail extends React.Component {
           <Link to={"/turnover/month/" + params.ym + '/client/' + project_detail.client.id} >{project_detail.client.name}</Link>
           <Typography color="textPrimary">{tableTitle}</Typography>
         </CustomBreadcrumbs>
-        <DataProvider endpoint={ api_url } summaryUrl={ summaryUrl }
-                      render={ (data, filters, handleDataRedraw, summary) => <EnhancedTable tableTitle={tableTitle} data={data} summary={summary} filters={filters} onDataRedraw={handleDataRedraw} isSelectable={false} /> } />
+        <DataProvider
+          endpoint={ api_url }
+          params={urlParams}
+          summaryUrl={ summaryUrl }
+          render={ (initData) => (
+            <EnhancedTable
+              tableTitle={tableTitle}
+              { ...initData }
+              endpoint={ this.props.location.pathname }
+            />
+          ) } 
+        />
       </div>
     );
   }

@@ -44,14 +44,15 @@ class ChipsArray extends React.Component {
           } else if (value || value === false) {
             let label = value;
             if (col.choices && !common.isEmpty(col.choices)) {
+              let item = common.getColumnByName(col.choices, value, 'value');
+              if (item) {
+                label = item.display_name;
+              }
+            } else if (col.type === 'boolean') {
               if (value === true) {
+                label = col.label
               } else if (value === false) {
                 label = col.label + 'ではない';
-              } else {
-                let item = common.getColumnByName(col.choices, value, 'value');
-                if (item) {
-                  label = item.display_name;
-                }
               }
             }
             return (
