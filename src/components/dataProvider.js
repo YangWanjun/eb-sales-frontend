@@ -57,7 +57,7 @@ class DataProvider extends Component {
   }
 
   handleDataRedraw(limit, page, order_by, filters) {
-    limit = common.toInteger(limit);
+    limit = common.toInteger(limit) || config.rowsPerPage;
     page = common.toInteger(page);
     order_by = order_by || '';
     let url = common.addUrlParameter(this.props.endpoint, {

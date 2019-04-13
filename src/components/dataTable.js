@@ -53,8 +53,8 @@ function getSorting(order, orderBy, isNumeric) {
     : (a, b) => (a[orderBy] - b[orderBy]);
   } else {
     return order === 'desc'
-    ? (a, b) => (b[orderBy] < a[orderBy] ? -1 : 1)
-    : (a, b) => (a[orderBy] < b[orderBy] ? -1 : 1);
+    ? (a, b) => ((b[orderBy] || '') < (a[orderBy] || '') ? -1 : 1)
+    : (a, b) => ((a[orderBy] || '') < (b[orderBy] || '') ? -1 : 1);
   }
 }
 
