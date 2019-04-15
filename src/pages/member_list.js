@@ -7,8 +7,15 @@ import { config } from '../utils/config';
 class MemberList extends React.Component {
   render () {
     return (
-      <DataProvider endpoint={ config.api.member_list } 
-                    render={ (data, filters, handleDataRedraw) => <EnhancedTable tableTitle='社員一覧' data={data} filters={filters} onDataRedraw={handleDataRedraw} isSelectable={false} /> } />
+      <DataProvider
+        endpoint={ config.api.member_list }
+        render={ (initData) => (
+          <EnhancedTable
+            tableTitle='社員一覧'
+            { ...initData }
+          />
+        ) } 
+      />
     );
   }
 }

@@ -216,7 +216,7 @@ class ProjectDetail extends React.Component {
                 tableTitle='メンバー一覧'
                 { ...initData }
                 isClientSide={true}
-                isSelectable={true}
+                selectable='multiple'
                 addComponentProps={addProps}
               />
             );

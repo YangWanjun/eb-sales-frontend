@@ -79,7 +79,7 @@ class SearchDialog extends React.Component {
                   tableTitle={title.replace('を検索', '').replace('（*）', '') + '一覧'}
                   { ...initData }
                   isClientSide={true}
-                  isSelectable={true}
+                  selectable='single'
                 />
               );
             } }

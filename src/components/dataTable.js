@@ -8,6 +8,7 @@ import {
   Toolbar,
   Typography,
   Paper,
+  Radio,
   Checkbox,
   IconButton,
   Tooltip,
@@ -81,17 +82,24 @@ class EnhancedTableHead extends React.Component {
   };
 
   render() {
-    const { onSelectAllClick, order, orderBy, numSelected, rowCount, columnData, isSelectable, isClientSide, classes } = this.props;
-    const chkCell = isSelectable ? (
-      <TableCell padding="none">
-        <Checkbox
-          indeterminate={numSelected > 0 && numSelected < rowCount}
-          checked={numSelected === rowCount}
-          onChange={onSelectAllClick}
-          disabled={rowCount === 0}
-        />
-      </TableCell>
-    ) : (<React.Fragment></React.Fragment>);
+    const { onSelectAllClick, order, orderBy, numSelected, rowCount, columnData, selectable, isClientSide, classes } = this.props;
+    let chkCell = <React.Fragment/>;
+    if (selectable === 'multiple') {
+      chkCell = (
+        <TableCell padding="none">
+          <Checkbox
+            indeterminate={numSelected > 0 && numSelected < rowCount}
+            checked={numSelected === rowCount}
+            onChange={onSelectAllClick}
+            disabled={rowCount === 0}
+          />
+        </TableCell>
+      );
+    } else if (selectable === 'single') {
+      chkCell = (
+        <TableCell padding="none"></TableCell>
+      );
+    }
 
     return (
       <TableHead>
@@ -145,12 +153,13 @@ EnhancedTableHead.propTypes = {
   order: PropTypes.string.isRequired,
   orderBy: PropTypes.string.isRequired,
   rowCount: PropTypes.number.isRequired,
+  selectable: PropTypes.oneOf(['none', 'single', 'multiple']),
 };
 
 class EnhancedTableFooter extends React.Component {
   render() {
-    const { classes, onSelectAllClick, numSelected, rowCount, columnData, isSelectable, summary } = this.props;
-    const chkCell = isSelectable ? (
+    const { classes, onSelectAllClick, numSelected, rowCount, columnData, selectable, summary } = this.props;
+    const chkCell = selectable === 'multiple' ? (
       <TableCell padding="none">
         <Checkbox
           indeterminate={numSelected > 0 && numSelected < rowCount}
@@ -517,24 +526,27 @@ class EnhancedTable extends React.Component {
   };
 
   handleClick = (event, id) => {
-    if (this.props.isSelectable === false) {
+    if (this.props.selectable === 'none') {
       return;
     }
     const { selected } = this.state;
     const selectedIndex = selected.indexOf(id);
     let newSelected = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
-      );
+    if (this.props.selectable === 'multiple') {
+      if (selectedIndex === -1) {
+        newSelected = newSelected.concat(selected, id);
+      } else if (selectedIndex === 0) {
+        newSelected = newSelected.concat(selected.slice(1));
+      } else if (selectedIndex === selected.length - 1) {
+        newSelected = newSelected.concat(selected.slice(0, -1));
+      } else if (selectedIndex > 0) {
+        newSelected = newSelected.concat(
+          selected.slice(0, selectedIndex),
+          selected.slice(selectedIndex + 1),
+        );
+      }
+    } else if (this.props.selectable === 'single') {
+      newSelected = [id];
     }
 
     this.setState({ selected: newSelected });
@@ -582,7 +594,7 @@ class EnhancedTable extends React.Component {
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
   render() {
-    const { data, classes, tableTitle, isSelectable, summary, addComponentProps } = this.props;
+    const { data, classes, tableTitle, selectable, summary, addComponentProps } = this.props;
     const { order, orderBy, orderNumeric, filters, selected, rowsPerPage, page } = this.state;
     let dataLength = data.count;
     const columns = data.columns;
@@ -605,8 +617,7 @@ class EnhancedTable extends React.Component {
         <EnhancedTableToolbar 
           numSelected={selected.length} 
           columns={columns} 
-          tableTitle={tableTitle} 
-          isSelectable={isSelectable} 
+          tableTitle={tableTitle}
           filters={filters} 
           onChangeFilter={this.handleChangeFilter}
           addComponentProps={addComponentProps}
@@ -622,7 +633,7 @@ class EnhancedTable extends React.Component {
               onSelectAllClick={this.handleSelectAllClick}
               onRequestSort={this.handleRequestSort}
               rowCount={dataLength}
-              isSelectable={isSelectable}
+              selectable={selectable}
               isClientSide={this.props.isClientSide || false}
             />
             <TableBody>
@@ -631,11 +642,20 @@ class EnhancedTable extends React.Component {
                   {results
                     .map(n => {
                       const isSelected = this.isSelected(n.id);
-                      const chkCell = isSelectable ? (
-                        <TableCell padding="none">
-                          <Checkbox checked={isSelected} />
-                        </TableCell>
-                      ) : (<React.Fragment></React.Fragment>);
+                      let chkCell = <React.Fragment/>;
+                      if (selectable === 'multiple') {
+                        chkCell = (
+                          <TableCell padding="none">
+                            <Checkbox checked={isSelected} />
+                          </TableCell>
+                        );
+                      } else if (selectable === 'single') {
+                        chkCell = (
+                          <TableCell padding="none">
+                            <Radio checked={isSelected} />
+                          </TableCell>
+                        );
+                      }
                       return (
                         <TableRow
                           hover
@@ -701,14 +721,14 @@ class EnhancedTable extends React.Component {
                 </React.Fragment>
               ) : (
                 <TableRow>
-                  <TableCell colSpan={ isSelectable ? columns.length + 1 : columns.length }>
+                  <TableCell colSpan={ selectable === 'multiple' ? columns.length + 1 : columns.length }>
                     { constant.INFO.NO_DATA }
                   </TableCell>
                 </TableRow>
               )}
               {/* {emptyRows > 0 && (
                 <TableRow style={{ height: 49 * emptyRows }}>
-                  <TableCell colSpan={ isSelectable ? columns.length + 1 : columns.length } />
+                  <TableCell colSpan={ selectable === 'multiple' ? columns.length + 1 : columns.length } />
                 </TableRow>
               )} */}
             </TableBody>
@@ -749,7 +769,7 @@ EnhancedTable.propTypes = {
   data: PropTypes.object.isRequired,
   tableTitle: PropTypes.string,
   filters: PropTypes.object,
-  isSelectable: PropTypes.bool,
+  selectable: PropTypes.oneOf(['none', 'single', 'multiple']),
   isClientSide: PropTypes.bool,
   summary: PropTypes.object,
   endpoint: PropTypes.string,
@@ -758,7 +778,7 @@ EnhancedTable.propTypes = {
 EnhancedTable.defaultProps = {
   tableTitle: '',
   filters: {},
-  isSelectable: false,
+  selectable: 'none',
   isClientSide: false,
   summary: {},
 };
