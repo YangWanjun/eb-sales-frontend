@@ -40,7 +40,7 @@ class DataProvider extends Component {
 
   initialize() {
     const { ordering, page, limit, ...otherParams } = this.props.params;
-    this.handleDataRedraw(limit, page, ordering, otherParams);
+    this.handleDataRedraw(this.props.endpoint, limit, page, ordering, otherParams);
 
     if (this.state.summaryUrl) {
       common.fetchGet(this.state.summaryUrl).then(data => {
@@ -50,17 +50,17 @@ class DataProvider extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (JSON.stringify(nextProps.params) !== JSON.stringify(this.props.params)) {
+    if (JSON.stringify(nextProps.params) !== JSON.stringify(this.props.params) || nextProps.endpoint !== this.props.endpoint) {
       const { ordering, page, limit, ...otherParams } = nextProps.params;
-      this.handleDataRedraw(limit, page, ordering, otherParams);
+      this.handleDataRedraw(nextProps.endpoint, limit, page, ordering, otherParams);
     }
   }
 
-  handleDataRedraw(limit, page, order_by, filters) {
+  handleDataRedraw(endpoint, limit, page, order_by, filters) {
     limit = common.toInteger(limit) || config.rowsPerPage;
     page = common.toInteger(page);
     order_by = order_by || '';
-    let url = common.addUrlParameter(this.props.endpoint, {
+    let url = common.addUrlParameter(endpoint, {
       limit: limit,
       offset: page * limit,
       ordering: order_by,
@@ -70,6 +70,7 @@ class DataProvider extends Component {
     const orderParams = common.getOrderParams(order_by);
     common.fetchGet(url)
       .then(data => this.setState({
+        url: endpoint,
         data: data,
         loaded: true,
         filters: filters,

@@ -5,4 +5,7 @@ export const constant = {
   INFO: {
     NO_DATA: 'データはありません。',
   },
+  ERROR: {
+    REQUIRE_SELECTED_DATA: 'データを選択してください。'
+  },
 };

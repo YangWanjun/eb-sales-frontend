@@ -12,6 +12,7 @@ import IconButton from '@material-ui/core/IconButton';
 import WarningIcon from '@material-ui/icons/Warning';
 import green from '@material-ui/core/colors/green';
 import amber from '@material-ui/core/colors/amber';
+import { config } from '../../utils/config';
 
 const variantIcon = {
   success: CheckCircleIcon,
@@ -118,11 +119,11 @@ class SimpleSnackbar extends React.Component {
       <div>
         <Snackbar
           anchorOrigin={{
-            vertical: 'top',
-            horizontal: 'right',
+            vertical: this.props.vertical,
+            horizontal: this.props.horizontal,
           }}
           open={open}
-          autoHideDuration={6000}
+          autoHideDuration={config.toastHideDuration}
           onClose={this.handleClose}
         >
           <MySnackbarContentWrapper
@@ -139,6 +140,13 @@ class SimpleSnackbar extends React.Component {
 SimpleSnackbar.propTypes = {
   variant: PropTypes.oneOf(['success', 'warning', 'error', 'info']).isRequired,
   message: PropTypes.node,
+  horizontal: PropTypes.oneOf(['left', 'center', 'right']),
+  vertical: PropTypes.oneOf(['top', 'bottom']),
+};
+
+SimpleSnackbar.defaultProps = {
+  horizontal: 'right',
+  vertical: 'top',
 };
 
 export default SimpleSnackbar;

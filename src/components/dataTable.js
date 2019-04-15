@@ -549,6 +549,10 @@ class EnhancedTable extends React.Component {
       newSelected = [id];
     }
 
+    if (this.props.handleSelect) {
+      // 検索ダイアログの場合
+      this.props.handleSelect(this.props.data.results.filter(col => newSelected.indexOf(col.id) > -1));
+    }
     this.setState({ selected: newSelected });
   };
 
@@ -773,6 +777,7 @@ EnhancedTable.propTypes = {
   isClientSide: PropTypes.bool,
   summary: PropTypes.object,
   endpoint: PropTypes.string,
+  handleSelect: PropTypes.func,
 };
 
 EnhancedTable.defaultProps = {

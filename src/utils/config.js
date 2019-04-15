@@ -22,4 +22,5 @@ export const config = {
     turnover_project_by_month: hostApi + '/api/turnover/member/',
   },
   rowsPerPage: 15,
+  toastHideDuration: 6000,
 };

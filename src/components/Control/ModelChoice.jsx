@@ -35,6 +35,10 @@ class ModelChoice extends React.Component {
     super(props);
 
     this.onShowSearchDialog = this.onShowSearchDialog.bind(this);
+    this.handleChangeChips = this.handleChangeChips.bind(this);
+    this.state = {
+      data: [],
+    }
   }
 
   onShowSearchDialog = () => {
@@ -47,12 +51,33 @@ class ModelChoice extends React.Component {
     }
   }
 
+  handleChangeChips(chips) {
+    let data = [];
+    chips.map(row => (
+      data.push({value: row.id, display_name: row.name})
+    ));
+    this.setState({data});
+  }
+
+  handleDeleteChip(chip, index) {
+    let { data } = this.state;
+    data.splice(index, 1);
+    this.setState({data});
+  }
+
   render () {
     const { classes, url } = this.props;
+    const { data } = this.state;
     let placeholderProps = {};
     if (this.props.placeholder) {
       placeholderProps['placeholder'] = this.props.placeholder;
       placeholderProps['InputLabelProps'] = {shrink: true};
+    }
+    let displayNames = [];
+    if (data && data.length > 0) {
+      data.map(row => (
+        displayNames.push(row.display_name)
+      ));
     }
 
     return (
@@ -60,7 +85,10 @@ class ModelChoice extends React.Component {
         <ChipInput className={classes.input}
           name={this.props.name}
           label={this.props.label}
+          value={displayNames}
           {...placeholderProps}
+          onChange={(chips) => this.handleChangeChips(chips)}
+          onDelete={(chip, index) => this.handleDeleteChip(chip, index)}
         />
         <Divider className={classes.divider} />
         <IconButton className={classes.iconButton} aria-label="Search" onClick={ this.onShowSearchDialog }>
@@ -70,6 +98,7 @@ class ModelChoice extends React.Component {
           innerRef={(dialog) => { this.showModel = dialog && dialog.handleOpen }}
           title={this.props.label + 'を検索'}
           url={url}
+          handleDataSelected={this.handleChangeChips}
         />
         <SimpleSnackbar
           ref={(dialog) => {
