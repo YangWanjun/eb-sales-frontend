@@ -54,9 +54,17 @@ class FormComponent extends React.Component {
     });
   };
 
+  handleFieldChange = (name, value) => {
+    this.setState((state) => {
+      let data = state.data;
+      data[name] = value
+      return {data: data};
+    });
+  };
+
   handleOk = () => {
     
-  }
+  };
 
   getFormLayout(data, schema, layout) {
     let control = null;
@@ -77,6 +85,7 @@ class FormComponent extends React.Component {
                     placeholder={col.help_text}
                     handleDateChange={this.handleDateChange(col.name)} 
                     handleChange={this.handleChange}
+                    handleFieldChange={this.handleFieldChange}
                   />
                 </GridItem>
               );

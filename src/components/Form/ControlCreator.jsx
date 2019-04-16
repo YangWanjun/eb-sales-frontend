@@ -86,6 +86,7 @@ class ControlCreateor extends React.Component {
           label={label}
           url={column.search_url}
           placeholder={this.props.placeholder}
+          handleFieldChange={this.props.handleFieldChange}
         />
       )
     }

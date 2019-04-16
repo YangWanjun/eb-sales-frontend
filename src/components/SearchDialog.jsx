@@ -79,6 +79,8 @@ class SearchDialog extends React.Component {
 
     this.handleKeywordChange = this.handleKeywordChange.bind(this);
     this.handleEnter = this.handleEnter.bind(this);
+    this.handleClose = this.handleClose.bind(this);
+    this.handleOk = this.handleOk.bind(this);
     this.state = {
       open: false,
       inputValue: '',
@@ -92,11 +94,11 @@ class SearchDialog extends React.Component {
   }
 
   handleOpen = () => {
-    this.setState({open: true});
+    this.setState({open: true, keyworad: '', inputValue: '', data: []});
   };
 
   handleClose = () => {
-    this.setState({open: false});
+    this.setState({open: false, keyworad: '', inputValue: '', data: []});
   };
 
   handleOk = () => {
@@ -182,7 +184,7 @@ class SearchDialog extends React.Component {
         )}
         <SimpleSnackbar
           ref={(dialog) => {
-            this.showSnackbar = dialog && dialog.handleOpen 
+            this.showSnackbar = dialog && dialog.handleOpen;
           }}
           variant='error'
           horizontal='center'

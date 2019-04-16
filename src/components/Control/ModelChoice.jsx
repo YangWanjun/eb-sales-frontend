@@ -57,6 +57,9 @@ class ModelChoice extends React.Component {
       data.push({value: row.id, display_name: row.name})
     ));
     this.setState({data});
+    if (this.props.handleFieldChange) {
+      this.props.handleFieldChange(this.props.name, data);
+    }
   }
 
   handleDeleteChip(chip, index) {
