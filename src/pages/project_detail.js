@@ -17,6 +17,7 @@ import CardFooter from "../components/Card/CardFooter.jsx";
 import EnhancedTable from '../components/dataTable';
 import DataProvider from '../components/dataProvider';
 import BadgeLabel from '../components/badgeLabel';
+import { add_schema, add_layout } from '../layout/project_member';
 import { config } from '../utils/config';
 import { common } from '../utils/common';
 
@@ -56,8 +57,6 @@ class ProjectDetail extends React.Component {
     this.state = { 
       project_detail: {},
       columns: [],
-      project_member_schema: [],
-      project_member_layout: [],
     };
     this.initialize();
 　}
@@ -71,17 +70,11 @@ class ProjectDetail extends React.Component {
         columns: data.columns,
       });
     });
-    common.fetchOptions(config.api.project_member_list).then(data => {
-      this.setState({ 
-        project_member_schema: data.columns,
-        project_member_layout: data.fieldsets,
-      });
-    });
   }
 
   render () {
     const { classes } = this.props;
-    const { project_detail, columns, project_member_schema, project_member_layout } = this.state;
+    const { project_detail, columns } = this.state;
     const { params } = this.props.match;
     const col_business_type = common.getColumnByName(columns, 'business_type');
     const col_status = common.getColumnByName(columns, 'status');
@@ -92,8 +85,8 @@ class ProjectDetail extends React.Component {
     const attendance_type = col_attendance_type ? col_attendance_type.choices[project_detail.attendance_type] : '';
 
     const addProps = {
-      schema: project_member_schema,
-      layout: project_member_layout,
+      schema: add_schema,
+      layout: add_layout,
       title: project_detail.name + 'にメンバー追加',
     };
 

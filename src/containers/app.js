@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import Layout from '../layout';
+import Layout from '../pages/main';
 import { logoutAndRedirect } from '../actions/auth.actions';
 import { getMe, clearMe } from '../actions/user.actions';
 
