@@ -82,8 +82,9 @@ class EnhancedTableHead extends React.Component {
   };
 
   render() {
-    const { onSelectAllClick, order, orderBy, numSelected, rowCount, columnData, selectable, isClientSide, classes } = this.props;
+    const { onSelectAllClick, order, orderBy, numSelected, rowCount, columnData, selectable, isClientSide, classes, colsWidth } = this.props;
     let chkCell = <React.Fragment/>;
+    let idx = 0;
     if (selectable === 'multiple') {
       chkCell = (
         <TableCell padding="none">
@@ -95,10 +96,12 @@ class EnhancedTableHead extends React.Component {
           />
         </TableCell>
       );
+      idx += 1;
     } else if (selectable === 'single') {
       chkCell = (
         <TableCell padding="none"></TableCell>
       );
+      idx += 1;
     }
 
     return (
@@ -107,10 +110,16 @@ class EnhancedTableHead extends React.Component {
           { chkCell }
           {columnData.map(column => {
             const numeric = column.type === 'integer' || column.type === 'decimal';
+            let width = 'inherit';
+            if (column.visible && colsWidth && colsWidth.length >= idx) {
+              width = colsWidth[idx];
+              idx += 1;
+            }
             const cell = column.visible ? (
               ((isClientSide || column.sortable) && rowCount > 0) ? (
                 <TableCell
                   key={column.name}
+                  style={{width}}
                   align={numeric ? 'right' : 'inherit'}
                   className={classes.cellPadding}
                   sortDirection={orderBy === column.name ? order : false}
@@ -132,11 +141,12 @@ class EnhancedTableHead extends React.Component {
               ) : (
                 <TableCell
                   key={column.name}
+                  style={{width}}
                   align={column.numeric ? 'right' : 'inherit'}
                   className={classes.cellPadding}
                 >{column.label}</TableCell>
               )
-            ) : (<React.Fragment key={column.name}/>)
+            ) : (<React.Fragment key={column.name}/>);
             return cell;
           }, this)}
         </TableRow>
@@ -461,7 +471,41 @@ class EnhancedTable extends React.Component {
       filters: props.filters,
       page: props.page,
       rowsPerPage: config.rowsPerPage,
+      showFixedHeader: false,
+      fixedHeaderPosition: {
+        left: 0,
+        width: 0,
+        top: 0,
+      },
+      fixedHeaderColsWidth: [],
     };
+  }
+
+  handleScroll = () => {
+    const tableHeader = document.querySelector('table[aria-labelledby=tableHeader]');
+    const {left, width, top, height} = tableHeader.getBoundingClientRect();
+    let fixedHeaderColsWidth = [];
+    let colWidth = 0;
+    Array.prototype.forEach.call(tableHeader.firstChild.firstChild.children, function(ele, idx) {
+      colWidth = ele.getBoundingClientRect().width - 24;
+      if (tableHeader.firstChild.firstChild.children.length === (idx) + 1) {
+        colWidth -= 24;
+      }
+      fixedHeaderColsWidth.push(colWidth);
+    });
+
+    if (top < 64 && top > (64 - height)) {
+      this.setState({showFixedHeader: true, fixedHeaderPosition: {left, width, top: 64}, fixedHeaderColsWidth});
+    } else {
+      this.setState({showFixedHeader: false});
+    }
+  }
+
+  componentDidMount() {
+    window.addEventListener('scroll', this.handleScroll); // PropsにUpdater渡してあるので呼べる
+  }
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this.handleScroll); // Unmount時に外してあげる
   }
 
   componentWillReceiveProps(nextProps) {
@@ -599,7 +643,7 @@ class EnhancedTable extends React.Component {
 
   render() {
     const { data, classes, tableTitle, selectable, summary, addComponentProps } = this.props;
-    const { order, orderBy, orderNumeric, filters, selected, rowsPerPage, page } = this.state;
+    const { order, orderBy, orderNumeric, filters, selected, rowsPerPage, page, showFixedHeader, fixedHeaderPosition, fixedHeaderColsWidth } = this.state;
     let dataLength = data.count;
     const columns = data.columns;
     // const emptyRows = rowsPerPage - Math.min(rowsPerPage, dataLength - page * rowsPerPage);
@@ -616,6 +660,19 @@ class EnhancedTable extends React.Component {
       results = results.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
     }
 
+    const tableHeaderParams = {
+      classes: classes,
+      numSelected: selected.length,
+      order: order,
+      columnData: columns,
+      orderBy: orderBy,
+      onSelectAllClick: this.handleSelectAllClick,
+      onRequestSort: this.handleRequestSort,
+      rowCount: dataLength,
+      selectable: selectable,
+      isClientSide: this.props.isClientSide || false,
+    };
+
     return (
       <Paper className={classes.root}>
         <EnhancedTableToolbar 
@@ -627,19 +684,8 @@ class EnhancedTable extends React.Component {
           addComponentProps={addComponentProps}
         />
         <div className={classes.tableWrapper}>
-          <Table className={classes.table} aria-labelledby="tableTitle">
-            <EnhancedTableHead
-              classes={classes}
-              numSelected={selected.length}
-              order={order}
-              columnData={columns}
-              orderBy={orderBy}
-              onSelectAllClick={this.handleSelectAllClick}
-              onRequestSort={this.handleRequestSort}
-              rowCount={dataLength}
-              selectable={selectable}
-              isClientSide={this.props.isClientSide || false}
-            />
+          <Table className={classes.table} aria-labelledby="tableHeader">
+            <EnhancedTableHead {...tableHeaderParams} />
             <TableBody>
               {dataLength > 0 ? (
                 <React.Fragment>
@@ -763,6 +809,23 @@ class EnhancedTable extends React.Component {
           onChangeRowsPerPage={this.handleChangeRowsPerPage}
           ActionsComponent={TablePaginationActionsWrapped}
         />
+        { showFixedHeader ? (
+          <Table
+            className={classes.table}
+            aria-labelledby="fixedHeader"
+            style={{
+              position: "fixed",
+              backgroundColor: 'white', 
+              ...fixedHeaderPosition,
+              tableLayout: 'fixed'
+            }}
+          >
+            <EnhancedTableHead
+              {...tableHeaderParams}
+              colsWidth={fixedHeaderColsWidth} 
+            />
+          </Table>
+        ) : <React.Fragment />}
       </Paper>
     );
   }
