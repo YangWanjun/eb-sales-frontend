@@ -1,6 +1,7 @@
 import React from 'react';
 import EnhancedTable from '../components/dataTable';
 import DataProvider from '../components/dataProvider';
+import { list_schema} from '../layout/project_list';
 import { config } from '../utils/config';
 import { common } from '../utils/common';
 
@@ -17,6 +18,7 @@ class ProjectList extends React.Component {
           <EnhancedTable
             tableTitle='案件一覧'
             { ...initData }
+            columns={list_schema}
             endpoint={ this.props.location.pathname }
           />
         ) } 

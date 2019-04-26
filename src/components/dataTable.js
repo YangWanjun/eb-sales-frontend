@@ -641,11 +641,20 @@ class EnhancedTable extends React.Component {
 
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
+  getExtraStyles(row) {
+    let extraStyles = {};
+    const columns = this.props.columns.filter(col => col.hasOwnProperty('styles'));
+    columns.map(col => {
+      let styles = col.styles[row[col.name]];
+      return Object.assign(extraStyles, styles);
+    });
+    return extraStyles;
+  }
+
   render() {
-    const { data, classes, tableTitle, selectable, summary, addComponentProps } = this.props;
+    const { data, columns, classes, tableTitle, selectable, summary, addComponentProps } = this.props;
     const { order, orderBy, orderNumeric, filters, selected, rowsPerPage, page, showFixedHeader, fixedHeaderPosition, fixedHeaderColsWidth } = this.state;
     let dataLength = data.count;
-    const columns = data.columns;
     // const emptyRows = rowsPerPage - Math.min(rowsPerPage, dataLength - page * rowsPerPage);
     let results = data.results;
     if (this.props.isClientSide) {
@@ -706,6 +715,7 @@ class EnhancedTable extends React.Component {
                           </TableCell>
                         );
                       }
+                      const styles = this.getExtraStyles(n)
                       return (
                         <TableRow
                           hover
@@ -715,6 +725,7 @@ class EnhancedTable extends React.Component {
                           tabIndex={-1}
                           key={n.id}
                           selected={isSelected}
+                          style={{...styles}}
                         >
                           {chkCell}
                           {columns.map(col => {
@@ -834,6 +845,7 @@ class EnhancedTable extends React.Component {
 EnhancedTable.propTypes = {
   classes: PropTypes.object.isRequired,
   data: PropTypes.object.isRequired,
+  columns: PropTypes.array.isRequired,
   tableTitle: PropTypes.string,
   filters: PropTypes.object,
   selectable: PropTypes.oneOf(['none', 'single', 'multiple']),

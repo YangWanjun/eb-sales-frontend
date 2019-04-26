@@ -17,7 +17,7 @@ import CardFooter from "../components/Card/CardFooter.jsx";
 import EnhancedTable from '../components/dataTable';
 import DataProvider from '../components/dataProvider';
 import BadgeLabel from '../components/badgeLabel';
-import { add_schema, add_layout } from '../layout/project_member';
+import { list_schema, add_schema, add_layout } from '../layout/project_member';
 import { config } from '../utils/config';
 import { common } from '../utils/common';
 
@@ -195,19 +195,11 @@ class ProjectDetail extends React.Component {
         <DataProvider 
           endpoint={ config.api.project_member_list + '?project=' + params.project_id } 
           render={ (initData) => {
-            // 検索できる項目を設定
-            initData.data.columns.map(col => {
-              if (col.name === 'member_name' || col.name === 'contract_type' || col.name === 'status' || col.name === 'is_working') {
-                col.searchable = true;
-                return col;
-              } else {
-                return col;
-              }
-            });
             return (
               <EnhancedTable
                 tableTitle='メンバー一覧'
                 { ...initData }
+                columns={list_schema}
                 isClientSide={true}
                 selectable='multiple'
                 addComponentProps={addProps}

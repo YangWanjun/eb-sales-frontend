@@ -1,3 +1,166 @@
+export const list_schema = [
+  {
+    "name": "id",
+    "type": "integer",
+    "label": "ID",
+    "visible": false,
+  },
+  {
+    "name": "member_name",
+    "type": "string",
+    "label": "名前",
+    "visible": true,
+    "url_field": null
+  },
+  {
+    "name": "start_date",
+    "type": "date",
+    "label": "開始日",
+    "visible": true,
+  },
+  {
+    "name": "end_date",
+    "type": "date",
+    "label": "終了日",
+    "visible": true,
+  },
+  {
+    "name": "price",
+    "type": "integer",
+    "label": "単価",
+    "visible": true,
+  },
+  {
+    "name": "min_hours",
+    "type": "decimal",
+    "label": "基準時間",
+    "visible": true,
+  },
+  {
+    "name": "max_hours",
+    "type": "decimal",
+    "label": "最大時間",
+    "visible": true,
+  },
+  {
+    "name": "plus_per_hour",
+    "type": "integer",
+    "label": "増（円）",
+    "visible": true,
+  },
+  {
+    "name": "minus_per_hour",
+    "type": "integer",
+    "label": "減（円）",
+    "visible": true,
+  },
+  {
+    "name": "hourly_pay",
+    "type": "integer",
+    "label": "時給",
+    "visible": true,
+  },
+  {
+    "name": "role",
+    "type": "choice",
+    "label": "作業区分",
+    "choices": [
+      {
+        "value": "OP",
+        "display_name": "OP：ｵﾍﾟﾚｰﾀｰ"
+      },
+      {
+        "value": "PG",
+        "display_name": "PG：ﾌﾟﾛｸﾞﾗﾏｰ"
+      },
+      {
+        "value": "SP",
+        "display_name": "SP：ｼｽﾃﾑﾌﾟﾛｸﾞﾗﾏｰ"
+      },
+      {
+        "value": "SE",
+        "display_name": "SE：ｼｽﾃﾑｴﾝｼﾞﾆｱ"
+      },
+      {
+        "value": "SL",
+        "display_name": "SL：ｻﾌﾞﾘｰﾀﾞｰ"
+      },
+      {
+        "value": "L",
+        "display_name": "L：ﾘｰﾀﾞｰ"
+      },
+      {
+        "value": "M",
+        "display_name": "M：ﾏﾈｰｼﾞｬｰ"
+      }
+    ],
+    "visible": false,
+  },
+  {
+    "name": "contract_type",
+    "type": "choice",
+    "label": "契約形態",
+    "choices": [
+      {
+        "value": "01",
+        "display_name": "業務委託"
+      },
+      {
+        "value": "02",
+        "display_name": "準委任"
+      },
+      {
+        "value": "03",
+        "display_name": "派遣"
+      },
+      {
+        "value": "04",
+        "display_name": "一括"
+      },
+      {
+        "value": "10",
+        "display_name": "出向"
+      },
+      {
+        "value": "99",
+        "display_name": "その他"
+      }
+    ],
+    "visible": true,
+  },
+  {
+    "name": "status",
+    "type": "choice",
+    "label": "ステータス",
+    "choices": [
+      {
+        "value": "1",
+        "display_name": "提案中"
+      },
+      {
+        "value": "2",
+        "display_name": "作業確定"
+      }
+    ],
+    "visible": true,
+  },
+  {
+    "name": "is_working",
+    "type": "boolean",
+    "label": "稼働中",
+    "visible": false,
+    "styles": {
+      false: {'backgroundColor': 'lightgray'}
+    },
+  },
+  {
+    "name": "stages",
+    "type": "field",
+    "label": "作業工程",
+    "visible": false,
+  }
+];
+
 export const add_schema = [
   {
     "type": "integer",
