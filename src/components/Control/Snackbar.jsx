@@ -95,8 +95,21 @@ class SimpleSnackbar extends React.Component {
 
     this.state = {
       open: false,
+      variant: 'info',
       message: '',
     };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.warningMessages) {
+      if (nextProps.warningMessages.length !== this.props.warningMessages.length) {
+        this.setState({
+          open: true,
+          variant: 'warning',
+          message: nextProps.warningMessages.slice(-1)[0]
+        });
+      }
+    }
   }
 
   handleOpen = (message) => {
@@ -112,8 +125,7 @@ class SimpleSnackbar extends React.Component {
   };
 
   render() {
-    const { variant } = this.props;
-    const { open, message } = this.state;
+    const { open, variant, message } = this.state;
 
     return (
       <div>
@@ -138,8 +150,8 @@ class SimpleSnackbar extends React.Component {
 }
 
 SimpleSnackbar.propTypes = {
-  variant: PropTypes.oneOf(['success', 'warning', 'error', 'info']).isRequired,
-  message: PropTypes.node,
+  // variant: PropTypes.oneOf(['success', 'warning', 'error', 'info']),
+  // message: PropTypes.node,
   horizontal: PropTypes.oneOf(['left', 'center', 'right']),
   vertical: PropTypes.oneOf(['top', 'bottom']),
 };

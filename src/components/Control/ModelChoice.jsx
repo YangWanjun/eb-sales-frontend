@@ -6,7 +6,6 @@ import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
 import SearchDialog from '../SearchDialog';
-import SimpleSnackbar from './Snackbar';
 import {constant} from '../../utils/constants';
 
 const styles = {
@@ -46,8 +45,8 @@ class ModelChoice extends React.Component {
       if (this.showModel) {
         this.showModel();
       }
-    } else if (this.showSnackbar) {
-      this.showSnackbar(constant.SETTING.REQUIRE_SEARCH_URL);
+    } else if (this.props.showWarningMsg) {
+      this.props.showWarningMsg(constant.SETTING.REQUIRE_SEARCH_URL);
     }
   }
 
@@ -102,13 +101,6 @@ class ModelChoice extends React.Component {
           title={this.props.label + 'を検索'}
           url={url}
           handleDataSelected={this.handleChangeChips}
-        />
-        <SimpleSnackbar
-          ref={(dialog) => {
-            this.showSnackbar = dialog && dialog.handleOpen 
-          }}
-          variant='warning'
-          message={'asdf'}
         />
       </div>
     );

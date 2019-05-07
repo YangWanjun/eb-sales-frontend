@@ -23,6 +23,7 @@ import TurnoverMonthlyList from './turnover_monthly';
 import TurnoverMonthlyDetail from './turnover_monthly_detail';
 import TurnoverMonthlyClientDetail from './turnover_monthly_client_detail';
 import TurnoverMonthlyProjectDetail from './turnover_monthly_project_detail';
+import SimpleSnackbar from '../containers/snackBar';
 
 const drawerWidth = 240;
 
@@ -99,6 +100,7 @@ const styles = theme => ({
 class Layout extends React.Component {
   state = {
     open: false,
+    showMessage: false,
   };
 
   componentWillMount() {
@@ -168,6 +170,7 @@ class Layout extends React.Component {
             <Route exact path='/error' component={Status500} />
           </Switch>
         </main>
+        <SimpleSnackbar />
       </div>
     );
   }
