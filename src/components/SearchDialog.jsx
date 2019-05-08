@@ -16,7 +16,6 @@ import SearchIcon from '@material-ui/icons/Search';
 import { fade } from '@material-ui/core/styles/colorManipulator';
 import EnhancedTable from './dataTable';
 import DataProvider from './dataProvider';
-import SimpleSnackbar from './Control/Snackbar';
 import {common} from '../utils/common';
 import {constant} from '../utils/constants';
 import {hostApi} from '../utils/config';
@@ -104,7 +103,7 @@ class SearchDialog extends React.Component {
   handleOk = () => {
     const { data } = this.state;
     if (common.isEmpty(data)) {
-      this.showSnackbar(constant.ERROR.REQUIRE_SELECTED_DATA);
+      this.props.showErrorMsg(constant.ERROR.REQUIRE_SELECTED_DATA);
     } else if (this.props.handleDataSelected) {
       this.props.handleDataSelected(data);
       this.handleClose();
@@ -129,7 +128,6 @@ class SearchDialog extends React.Component {
     const { classes, title, url } = this.props;
     let search_url = url ? common.joinUrl(hostApi, url) : null;
     search_url = search_url ? common.addUrlParameter(search_url, {search: keyworad}) : null;
-    console.log(search_url);
 
     return (
       <Dialog
@@ -182,13 +180,6 @@ class SearchDialog extends React.Component {
             検索キーワードを入力して、エンターキーを押下してください。
           </div>
         )}
-        <SimpleSnackbar
-          ref={(dialog) => {
-            this.showSnackbar = dialog && dialog.handleOpen;
-          }}
-          variant='error'
-          horizontal='center'
-        />
       </Dialog>
     );
   }

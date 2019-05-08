@@ -10,7 +10,7 @@ const initialState = {
 export function msg(state = initialState, action) {
   switch (action.type) {
     case msgConstants.ERROR_MESSAGE:
-      let { errorMessages } = state;
+      let errorMessages = [].concat(state.errorMessages);
       errorMessages.push(action.message);
       return {
         ...state,
@@ -24,14 +24,14 @@ export function msg(state = initialState, action) {
         warningMessages: warningMessages,
       };
     case msgConstants.SUCCESS_MESSAGE:
-      let { successMessages } = state;
+      let successMessages = [].concat(state.successMessages);
       successMessages.push(action.message);
       return {
         ...state,
         successMessages: successMessages,
       };
     case msgConstants.INFO_MESSAGE:
-      let { infoMessages } = state;
+      let infoMessages = [].concat(state.infoMessages);
       infoMessages.push(action.message);
       return {
         ...state,

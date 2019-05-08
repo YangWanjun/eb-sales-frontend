@@ -5,7 +5,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
-import SearchDialog from '../SearchDialog';
+import SearchDialog from '../../containers/searchDialog';
 import {constant} from '../../utils/constants';
 
 const styles = {

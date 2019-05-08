@@ -1,4 +1,4 @@
-export const hostApi = 'http://127.0.0.1:8001';
+export const hostApi = 'http://192.168.99.100:8001';
 
 export const config = {
   api: {

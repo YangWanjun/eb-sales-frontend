@@ -1,4 +1,5 @@
 import React from 'react';
+import { createPortal } from "react-dom";
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
@@ -110,6 +111,22 @@ class SimpleSnackbar extends React.Component {
         });
       }
     }
+    if (nextProps.errorMessages) {
+      if (nextProps.errorMessages.length !== this.props.errorMessages.length) {
+        this.setState({
+          open: true,
+          variant: 'error',
+          message: nextProps.errorMessages.slice(-1)[0]
+        });
+      }
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.defaultNode) {
+      document.body.removeChild(this.defaultNode);
+    }
+    this.defaultNode = null;
   }
 
   handleOpen = (message) => {
@@ -124,7 +141,7 @@ class SimpleSnackbar extends React.Component {
     this.setState({ open: false, message: '' });
   };
 
-  render() {
+  _render() {
     const { open, variant, message } = this.state;
 
     return (
@@ -146,6 +163,15 @@ class SimpleSnackbar extends React.Component {
         </Snackbar>
       </div>
     );
+  }
+
+  render() {
+    if (!this.defaultNode) {
+      this.defaultNode = document.createElement("div");
+      document.body.appendChild(this.defaultNode);
+    }
+
+    return createPortal(this._render(), this.defaultNode);
   }
 }
 
