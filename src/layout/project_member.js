@@ -163,140 +163,65 @@ export const list_schema = [
 
 export const add_schema = [
   {
-    "type": "integer",
-    "required": false,
-    "read_only": true,
-    "label": "ID",
-    "name": "id",
-    "visible": false,
-    "url_field": null,
-    "sortable": true,
-    "sort_field": "id"
-  },
-  {
-    "type": "field",
-    "required": true,
-    "read_only": false,
-    "label": "案件",
-    "name": "project",
-    "visible": false,
-    "url_field": null,
-    "sortable": true,
-    "sort_field": "project"
-  },
-  {
-    "type": "field",
-    "required": true,
-    "read_only": false,
-    "label": "メンバー",
     "name": "member",
-    "visible": false,
-    "url_field": null,
-    "sortable": true,
-    "sort_field": "member",
+    "type": "field",
+    "required": true,
+    "label": "メンバー",
     "search_url": "/api/member/search?schema=1"
   },
   {
-    "type": "date",
-    "required": false,
-    "read_only": false,
-    "label": "開始日",
     "name": "start_date",
-    "visible": true,
-    "url_field": null,
-    "sortable": true,
-    "sort_field": "start_date"
-  },
-  {
     "type": "date",
-    "required": false,
-    "read_only": false,
-    "label": "終了日",
+    "required": true,
+    "label": "開始日",
+  },
+  {
     "name": "end_date",
-    "visible": true,
-    "url_field": null,
-    "sortable": true,
-    "sort_field": "end_date"
+    "type": "date",
+    "required": true,
+    "label": "終了日",
   },
   {
-    "type": "integer",
-    "required": false,
-    "read_only": false,
-    "label": "単価",
-    "min_value": -2147483648,
-    "max_value": 2147483647,
     "name": "price",
-    "visible": true,
-    "url_field": null,
-    "sortable": true,
-    "sort_field": "price"
+    "type": "integer",
+    "required": false,
+    "label": "単価",
   },
   {
-    "type": "decimal",
-    "required": false,
-    "read_only": false,
-    "label": "基準時間",
     "name": "min_hours",
-    "visible": true,
-    "url_field": null,
-    "sortable": true,
-    "sort_field": "min_hours"
-  },
-  {
     "type": "decimal",
     "required": false,
-    "read_only": false,
-    "label": "最大時間",
+    "label": "基準時間",
+  },
+  {
     "name": "max_hours",
-    "visible": true,
-    "url_field": null,
-    "sortable": true,
-    "sort_field": "max_hours"
+    "type": "decimal",
+    "required": false,
+    "label": "最大時間",
   },
   {
-    "type": "integer",
-    "required": false,
-    "read_only": false,
-    "label": "増（円）",
-    "min_value": -2147483648,
-    "max_value": 2147483647,
     "name": "plus_per_hour",
-    "visible": true,
-    "url_field": null,
-    "sortable": true,
-    "sort_field": "plus_per_hour"
-  },
-  {
     "type": "integer",
     "required": false,
-    "read_only": false,
-    "label": "減（円）",
-    "min_value": -2147483648,
-    "max_value": 2147483647,
+    "label": "増（円）",
+  },
+  {
     "name": "minus_per_hour",
-    "visible": true,
-    "url_field": null,
-    "sortable": true,
-    "sort_field": "minus_per_hour"
-  },
-  {
     "type": "integer",
     "required": false,
-    "read_only": false,
+    "label": "減（円）",
+  },
+  {
+    "name": "hourly_pay",
+    "type": "integer",
+    "required": false,
     "label": "時給",
     "help_text": "時給が設定したら、単価などの精算条件が無視される",
-    "min_value": -2147483648,
-    "max_value": 2147483647,
-    "name": "hourly_pay",
-    "visible": true,
-    "url_field": null,
-    "sortable": true,
-    "sort_field": "hourly_pay"
   },
   {
+    "name": "role",
     "type": "choice",
     "required": false,
-    "read_only": false,
     "label": "作業区分",
     "choices": [
       {
@@ -328,16 +253,11 @@ export const add_schema = [
         "display_name": "M：ﾏﾈｰｼﾞｬｰ"
       }
     ],
-    "name": "role",
-    "visible": false,
-    "url_field": null,
-    "sortable": true,
-    "sort_field": "role"
   },
   {
+    "name": "contract_type",
     "type": "choice",
     "required": false,
-    "read_only": false,
     "label": "契約形態",
     "choices": [
       {
@@ -365,16 +285,11 @@ export const add_schema = [
         "display_name": "その他"
       }
     ],
-    "name": "contract_type",
-    "visible": true,
-    "url_field": null,
-    "sortable": true,
-    "sort_field": "contract_type"
   },
   {
+    "name": "status",
     "type": "choice",
     "required": false,
-    "read_only": false,
     "label": "ステータス",
     "choices": [
       {
@@ -386,69 +301,12 @@ export const add_schema = [
         "display_name": "作業確定"
       }
     ],
-    "name": "status",
-    "visible": true,
-    "url_field": null,
-    "sortable": true,
-    "sort_field": "status"
   },
   {
-    "type": "datetime",
-    "required": false,
-    "read_only": true,
-    "label": "作成日時",
-    "name": "created_dt",
-    "visible": false,
-    "url_field": null,
-    "sortable": true,
-    "sort_field": "created_dt"
-  },
-  {
-    "type": "datetime",
-    "required": false,
-    "read_only": true,
-    "label": "更新日時",
-    "name": "updated_dt",
-    "visible": false,
-    "url_field": null,
-    "sortable": true,
-    "sort_field": "updated_dt"
-  },
-  {
-    "type": "string",
-    "required": false,
-    "read_only": true,
-    "label": "名前",
-    "name": "member_name",
-    "visible": true,
-    "url_field": null
-  },
-  {
-    "type": "string",
-    "required": false,
-    "read_only": true,
-    "label": "案件名称",
-    "name": "project__name",
-    "visible": false,
-    "url_field": null
-  },
-  {
-    "type": "boolean",
-    "required": false,
-    "read_only": true,
-    "label": "稼働中",
-    "name": "is_working",
-    "visible": false,
-    "url_field": null
-  },
-  {
+    "name": "stages",
     "type": "field",
     "required": false,
-    "read_only": false,
     "label": "作業工程",
-    "name": "stages",
-    "visible": false,
-    "url_field": null
   }
 ];
 

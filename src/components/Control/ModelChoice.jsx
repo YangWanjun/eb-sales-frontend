@@ -2,8 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ChipInput from 'material-ui-chip-input'
 import { withStyles } from '@material-ui/core/styles';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
+import {
+  Divider,
+  IconButton,
+} from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import SearchDialog from '../../containers/searchDialog';
 import {constant} from '../../utils/constants';
@@ -68,7 +70,7 @@ class ModelChoice extends React.Component {
   }
 
   render () {
-    const { classes, url } = this.props;
+    const { classes, url, message } = this.props;
     const { data } = this.state;
     let placeholderProps = {};
     if (this.props.placeholder) {
@@ -88,6 +90,8 @@ class ModelChoice extends React.Component {
           name={this.props.name}
           label={this.props.label}
           value={displayNames}
+          error={message ? true : false}
+          helperText={message}
           {...placeholderProps}
           onChange={(chips) => this.handleChangeChips(chips)}
           onDelete={(chip, index) => this.handleDeleteChip(chip, index)}

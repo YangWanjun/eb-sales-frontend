@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core';
 import Modal from '@material-ui/core/Modal';
-import FormComponent from './Form';
+import FormComponent from '../../containers/form';
 
 const styles = theme => ({
   root: {

@@ -168,6 +168,7 @@ class SearchDialog extends React.Component {
               return (
                 <EnhancedTable
                   { ...initData }
+                  columns={initData.data.columns}
                   isClientSide={true}
                   selectable='single'
                   handleSelect={this.handleSelect}
@@ -177,7 +178,7 @@ class SearchDialog extends React.Component {
           />
         ) : (
           <div className={classes.noData}>
-            検索キーワードを入力して、エンターキーを押下してください。
+            { constant.INFO.INPUT_KEYWORD }
           </div>
         )}
       </Dialog>

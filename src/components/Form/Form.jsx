@@ -9,6 +9,7 @@ import CardBody from "../Card/CardBody.jsx";
 import CardFooter from '../Card/CardFooter';
 import ControlCreateor from './ControlCreator';
 import { common } from "../../utils/common";
+import { constant } from "../../utils/constants";
 
 function getModalStyle() {
   const top = 50;
@@ -29,6 +30,7 @@ class FormComponent extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.state = { 
       data: this.props.data || {},
+      errors: {},
     };
 　}
 
@@ -63,18 +65,34 @@ class FormComponent extends React.Component {
   };
 
   handleOk = () => {
-    
+    let hasError = false;
+    let errors = {};
+    this.props.schema.map(col => {
+      if (col.required === true && !this.state.data[col.name]) {
+        hasError = true;
+        errors[col.name] = common.formatStr(constant.ERROR.REQUIRE_FIELD, col.label);
+      }
+      return true;
+    });
+    if (hasError === true) {
+      this.setState({errors});
+      this.props.showErrorMsg(constant.ERROR.FORM_CHECK_ERROR);
+    } else {
+
+    }
   };
 
   getFormLayout(data, schema, layout) {
     let control = null;
+    const { errors } = this.state;
     if (common.isEmpty(layout)) {
       control = (
         <GridContainer>
           {schema.map(col => {
-            if (col.read_only) {
+            if (col.read_only === true) {
               return <React.Fragment key={'tableRow_' + col.name} />;
             } else {
+              const message = errors[col.name] || null;
               return (
                 <GridItem key={'item_' + col.name} xs={12} sm={12} md={12}>
                   <ControlCreateor
@@ -83,6 +101,7 @@ class FormComponent extends React.Component {
                     value={data[col.name]}
                     label={col.label}
                     placeholder={col.help_text}
+                    message={message}
                     handleDateChange={this.handleDateChange(col.name)} 
                     handleChange={this.handleChange}
                     handleFieldChange={this.handleFieldChange}

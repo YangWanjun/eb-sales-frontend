@@ -1,10 +1,13 @@
 import React from "react";
-import { withStyles } from '@material-ui/core';
-import { TextField } from "@material-ui/core";
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
+import { 
+  withStyles,
+  TextField,
+  FormControl,
+  FormHelperText,
+  InputLabel,
+  Select,
+  MenuItem,
+} from '@material-ui/core';
 import MyDatePicker from '../Control/DatePicker';
 import ModelChoice from '../../containers/modelChoice';
 
@@ -22,26 +25,32 @@ const styles = theme => ({
 
 class ControlCreateor extends React.Component {
   render() {
-    const { classes, name, column } = this.props;
+    const { classes, name, column, message } = this.props;
     let { value, label } = this.props;
+    const error = message ? {error: true} : {};
+    const errorNode = message ? (<FormHelperText>{message}</FormHelperText>) : <React.Fragment />;
 
     if (column.required) {
       label = label + '（*）';
     }
 
     let control = null;
-    if (column.type === 'date') {
+    if (column.visible === false) {
+    } else if (column.type === 'date') {
       control = (
         <MyDatePicker
           value={value}
           label={label}
+          message={message}
           onChange={this.props.handleDateChange}
         />
       );
     } else if (column.type === 'integer') {
+      value = value || '';
       control = (
-        <FormControl className={classes.formControl}>
+        <FormControl className={classes.formControl} { ...error }>
           <TextField
+            { ...error }
             name={name}
             type='number'
             value={value}
@@ -50,12 +59,15 @@ class ControlCreateor extends React.Component {
             InputLabelProps={this.props.placeholder ? { shrink: true,} : null}
             onChange={this.props.handleChange}
           />
+          { errorNode }
         </FormControl>
       );
     } else if (column.type === 'decimal') {
+      value = value || '';
       control = (
-        <FormControl className={classes.formControl}>
+        <FormControl className={classes.formControl} { ...error }>
           <TextField
+            { ...error }
             name={name}
             type='number'
             value={value}
@@ -64,12 +76,13 @@ class ControlCreateor extends React.Component {
             InputLabelProps={this.props.placeholder ? { shrink: true,} : null}
             onChange={this.props.handleChange}
           />
+          { errorNode }
         </FormControl>
       );
     } else if (column.type === 'choice') {
       value = value || '';
       control = (
-        <FormControl className={classes.formControl}>
+        <FormControl className={classes.formControl} { ...error }>
           <InputLabel htmlFor={name}>{label}</InputLabel>
           <Select value={value} inputProps={{ name: name, value: value }} onChange={this.props.handleChange}>
             <MenuItem key='none' value=""><em>None</em></MenuItem>
@@ -77,18 +90,21 @@ class ControlCreateor extends React.Component {
               return <MenuItem key={item.value} value={item.value}>{item.display_name}</MenuItem>;
             })}
           </Select>
+          { errorNode }
         </FormControl>
       );
     } else if (column.type === 'field') {
+      console.log(message);
       control = (
         <ModelChoice
           name={name}
           label={label}
           url={column.search_url}
           placeholder={this.props.placeholder}
+          message={message}
           handleFieldChange={this.props.handleFieldChange}
         />
-      )
+      );
     }
 
     return (
