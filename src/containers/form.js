@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import FormComponent from '../components/Form/Form';
-import { warningMessage, errorMessage } from '../actions/msg.actions';
+import { warningMessage, errorMessage, successMessage } from '../actions/msg.actions';
 
 const mapStateToProps = (state, ownProps) => ({
   errorMessages: state.msg.errorMessages,
@@ -15,6 +15,9 @@ const mapDispatchToProps = dispatch => ({
   },
   showErrorMsg(message) {
     dispatch(errorMessage(message));
+  },
+  showSuccessMsg(message) {
+    dispatch(successMessage(message));
   }
 });
 

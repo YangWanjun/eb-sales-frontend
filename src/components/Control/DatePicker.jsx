@@ -23,7 +23,7 @@ class MyDatePicker extends React.Component {
     const errorNode = message ? (<FormHelperText>{message}</FormHelperText>) : <React.Fragment />;
 
     return (
-      <FormControl className={classes.formControl}>
+      <FormControl className={classes.formControl} {...error}>
         <MuiPickersUtilsProvider utils={DateFnsUtils} locale={jaLocale}>
           <DatePicker
             margin="normal"

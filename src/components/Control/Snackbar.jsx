@@ -107,7 +107,7 @@ class SimpleSnackbar extends React.Component {
         this.setState({
           open: true,
           variant: 'warning',
-          message: nextProps.warningMessages.slice(-1)[0]
+          message: nextProps.warningMessages.slice(-1)[0],
         });
       }
     }
@@ -116,7 +116,25 @@ class SimpleSnackbar extends React.Component {
         this.setState({
           open: true,
           variant: 'error',
-          message: nextProps.errorMessages.slice(-1)[0]
+          message: nextProps.errorMessages.slice(-1)[0],
+        });
+      }
+    }
+    if (nextProps.successMessages) {
+      if (nextProps.successMessages.length !== this.props.successMessages.length) {
+        this.setState({
+          open: true,
+          variant: 'success',
+          message: nextProps.successMessages.slice(-1)[0],
+        });
+      }
+    }
+    if (nextProps.infoMessages) {
+      if (nextProps.infoMessages.length !== this.props.infoMessages.length) {
+        this.setState({
+          open: true,
+          variant: 'info',
+          message: nextProps.infoMessages.slice(-1)[0],
         });
       }
     }

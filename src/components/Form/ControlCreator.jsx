@@ -6,10 +6,14 @@ import {
   FormHelperText,
   InputLabel,
   Select,
+  Checkbox,
   MenuItem,
+  ListItemText,
+  Chip,
 } from '@material-ui/core';
 import MyDatePicker from '../Control/DatePicker';
 import ModelChoice from '../../containers/modelChoice';
+import { common } from "../../utils/common";
 
 const styles = theme => ({
   root: {
@@ -55,6 +59,7 @@ class ControlCreateor extends React.Component {
             type='number'
             value={value}
             label={label}
+            inputProps={{min: column.min_value, step: column.step || 1}}
             placeholder={this.props.placeholder}
             InputLabelProps={this.props.placeholder ? { shrink: true,} : null}
             onChange={this.props.handleChange}
@@ -72,6 +77,7 @@ class ControlCreateor extends React.Component {
             type='number'
             value={value}
             label={label}
+            inputProps={{min: column.min_value, step: column.step}}
             placeholder={this.props.placeholder}
             InputLabelProps={this.props.placeholder ? { shrink: true,} : null}
             onChange={this.props.handleChange}
@@ -93,8 +99,37 @@ class ControlCreateor extends React.Component {
           { errorNode }
         </FormControl>
       );
+    } else if (column.type === 'choices') {
+      value = value || [];
+      control = (
+        <FormControl className={classes.formControl} { ...error }>
+          <InputLabel htmlFor={name}>{label}</InputLabel>
+          <Select
+            multiple
+            value={value}
+            inputProps={{ name: name, value: value }}
+            onChange={this.props.handleChange}
+            renderValue={selected => (
+              <div className={classes.chips}>
+                {selected.map(value => (
+                  <Chip key={value} label={common.getColumnByName(column.choices, value, 'value').display_name} className={classes.chip} />
+                ))}
+              </div>
+            )}
+          >
+            {column.choices.map(item => {
+              return (
+                <MenuItem key={item.value} value={item.value}>
+                  <Checkbox checked={value.indexOf(item.value) > -1} />
+                  <ListItemText primary={item.display_name} />
+                </MenuItem>
+              );
+            })}
+          </Select>
+          { errorNode }
+        </FormControl>
+      );
     } else if (column.type === 'field') {
-      console.log(message);
       control = (
         <ModelChoice
           name={name}

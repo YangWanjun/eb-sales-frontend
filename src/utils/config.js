@@ -11,6 +11,7 @@ export const config = {
     project_list: hostApi + '/api/vproject/',
     project_detail: hostApi + '/api/project/%s/',
     project_member_list: hostApi + '/api/project_member/',
+    project_stage_list: hostApi + '/api/project-stage/',
     turnover_monthly_list: hostApi + '/api/turnover/monthly',
     turnover_monthly_chart: hostApi + '/api/turnover/monthly/chart',
     turnover_yearly_chart: hostApi + '/api/turnover/yearly/chart',

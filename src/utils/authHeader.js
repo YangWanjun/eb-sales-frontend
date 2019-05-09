@@ -6,8 +6,12 @@ export function authHeader() {
     return {
       'Accept': 'application/json',
       'Authorization': 'JWT ' + token,
+      "Content-Type": "application/json; charset=utf-8",
     };
   } else {
-    return { 'Accept': 'application/json', };
+    return {
+      'Accept': 'application/json',
+      "Content-Type": "application/json; charset=utf-8",
+    };
   }
 }

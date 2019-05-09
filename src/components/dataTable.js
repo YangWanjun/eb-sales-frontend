@@ -463,7 +463,9 @@ class EnhancedTable extends React.Component {
     this.handleChangeRowsPerPage = this.handleChangeRowsPerPage.bind(this);
     this.handleRequestSort = this.handleRequestSort.bind(this);
     this.handleChangeFilter = this.handleChangeFilter.bind(this);
+    this.handleRowAdded = this.handleRowAdded.bind(this);
     this.state = {
+      data: props.data,
       order: props.order,
       orderBy: props.orderBy,
       orderNumeric: false,  // 並び替え項目が数字かどうか
@@ -639,6 +641,16 @@ class EnhancedTable extends React.Component {
     }
   };
 
+  handleRowAdded(row) {
+    let { data } = this.state;
+    data.results.push(row);
+    data.count += 1;
+    this.setState({
+      data,
+      selected: [],
+    });
+  }
+
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
   getExtraStyles(row) {
@@ -652,8 +664,8 @@ class EnhancedTable extends React.Component {
   }
 
   render() {
-    const { data, columns, classes, tableTitle, selectable, summary, addComponentProps } = this.props;
-    const { order, orderBy, orderNumeric, filters, selected, rowsPerPage, page, showFixedHeader, fixedHeaderPosition, fixedHeaderColsWidth } = this.state;
+    const { columns, classes, tableTitle, selectable, summary, addComponentProps } = this.props;
+    const { data, order, orderBy, orderNumeric, filters, selected, rowsPerPage, page, showFixedHeader, fixedHeaderPosition, fixedHeaderColsWidth } = this.state;
     let dataLength = data.count;
     // const emptyRows = rowsPerPage - Math.min(rowsPerPage, dataLength - page * rowsPerPage);
     let results = data.results;
@@ -690,7 +702,7 @@ class EnhancedTable extends React.Component {
           tableTitle={tableTitle}
           filters={filters} 
           onChangeFilter={this.handleChangeFilter}
-          addComponentProps={addComponentProps}
+          addComponentProps={{...addComponentProps, onRowAdded: this.handleRowAdded}}
         />
         <div className={classes.tableWrapper}>
           <Table className={classes.table} aria-labelledby="tableHeader">

@@ -40,13 +40,26 @@ class FormComponent extends React.Component {
 
     this.setState((state) => {
       let data = state.data;
-      data[id] = value
+      data[id] = value;
       return {data: data};
+    });
+
+    this.props.onChanges.map(method => {
+      let data = this.state.data;
+      data[id] = value;
+      const retVal = method(id, data);
+      if (retVal) {
+        this.setState((state) => {
+          let data = Object.assign({}, state.data, retVal);
+          return {data: data};
+        });
+      }
+      return true;
     });
   }
 
   handleDateChange = key => date => {
-    let value = date;
+    let value = common.formatDate(date, 'YYYY-MM-DD');
     let id = key;
 
     this.setState((state) => {
@@ -67,6 +80,7 @@ class FormComponent extends React.Component {
   handleOk = () => {
     let hasError = false;
     let errors = {};
+    // 必須項目チェック
     this.props.schema.map(col => {
       if (col.required === true && !this.state.data[col.name]) {
         hasError = true;
@@ -74,13 +88,51 @@ class FormComponent extends React.Component {
       }
       return true;
     });
+    // カスタマイズのチェック
+    this.props.checker.map(method => {
+      const retVal = method(this.state.data);
+      if (retVal !== true) {
+        hasError = true;
+        retVal.map(item => (
+          errors[item.name] = item.message
+        ));
+      }
+      return true;
+    });
+
     if (hasError === true) {
       this.setState({errors});
       this.props.showErrorMsg(constant.ERROR.FORM_CHECK_ERROR);
-    } else {
-
+    } else if (this.props.url) {
+      // データを保存する
+      const formData = this.clean(this.state.data);
+      common.fetchPost(this.props.url, formData).then(data => {
+        this.props.showSuccessMsg(constant.SUCCESS.SAVED);
+        this.props.handleClose();
+        if (this.props.onRowAdded) {
+          this.props.onRowAdded(data);
+        }
+      }).catch(errors => {
+        this.setState({errors});
+        this.props.showErrorMsg(constant.ERROR.FORM_CHECK_ERROR);
+      });
     }
   };
+
+  clean() {
+    let { data } = this.state;
+    this.props.schema.map(col => {
+      if (col.type === 'field') {
+        const value = data[col.name];
+        if (Array.isArray(value) && value.length > 0) {
+          const item = value[0];
+          data[col.name] = item.value;
+        }
+      }
+      return true;
+    });
+    return data;
+  }
 
   getFormLayout(data, schema, layout) {
     let control = null;

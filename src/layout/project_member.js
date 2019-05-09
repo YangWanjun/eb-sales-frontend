@@ -43,15 +43,15 @@ export const list_schema = [
     "visible": true,
   },
   {
-    "name": "plus_per_hour",
-    "type": "integer",
-    "label": "増（円）",
-    "visible": true,
-  },
-  {
     "name": "minus_per_hour",
     "type": "integer",
     "label": "減（円）",
+    "visible": true,
+  },
+  {
+    "name": "plus_per_hour",
+    "type": "integer",
+    "label": "増（円）",
     "visible": true,
   },
   {
@@ -143,6 +143,9 @@ export const list_schema = [
       }
     ],
     "visible": true,
+    "styles": {
+      '1': {'backgroundColor': '#fff9c4'}
+    },
   },
   {
     "name": "is_working",
@@ -158,7 +161,7 @@ export const list_schema = [
     "type": "field",
     "label": "作業工程",
     "visible": false,
-  }
+  },
 ];
 
 export const add_schema = [
@@ -186,30 +189,37 @@ export const add_schema = [
     "type": "integer",
     "required": false,
     "label": "単価",
+    'min_value': 0,
   },
   {
     "name": "min_hours",
     "type": "decimal",
     "required": false,
     "label": "基準時間",
+    'min_value': 0,
+    'step': 0.25,
   },
   {
     "name": "max_hours",
     "type": "decimal",
     "required": false,
     "label": "最大時間",
+    'min_value': 0,
+    'step': 0.25,
   },
   {
     "name": "plus_per_hour",
     "type": "integer",
     "required": false,
     "label": "増（円）",
+    'min_value': 0,
   },
   {
     "name": "minus_per_hour",
     "type": "integer",
     "required": false,
     "label": "減（円）",
+    'min_value': 0,
   },
   {
     "name": "hourly_pay",
@@ -217,6 +227,7 @@ export const add_schema = [
     "required": false,
     "label": "時給",
     "help_text": "時給が設定したら、単価などの精算条件が無視される",
+    'min_value': 0,
   },
   {
     "name": "role",
@@ -257,7 +268,7 @@ export const add_schema = [
   {
     "name": "contract_type",
     "type": "choice",
-    "required": false,
+    "required": true,
     "label": "契約形態",
     "choices": [
       {
@@ -287,9 +298,18 @@ export const add_schema = [
     ],
   },
   {
+    "name": "stages",
+    "type": "choices",
+    "required": false,
+    "label": "作業工程",
+    "choices": [
+      // 画面で設定
+    ],
+  },
+  {
     "name": "status",
     "type": "choice",
-    "required": false,
+    "required": true,
     "label": "ステータス",
     "choices": [
       {
@@ -302,12 +322,6 @@ export const add_schema = [
       }
     ],
   },
-  {
-    "name": "stages",
-    "type": "field",
-    "required": false,
-    "label": "作業工程",
-  }
 ];
 
 export const add_layout = [];

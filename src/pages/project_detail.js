@@ -20,6 +20,7 @@ import BadgeLabel from '../components/badgeLabel';
 import { list_schema, add_schema, add_layout } from '../layout/project_member';
 import { config } from '../utils/config';
 import { common } from '../utils/common';
+import { constant } from '../utils/constants';
 
 const styles = theme => ({
   cardCategoryWhite: {
@@ -57,6 +58,7 @@ class ProjectDetail extends React.Component {
     this.state = { 
       project_detail: {},
       columns: [],
+      project_stages: [],
     };
     this.initialize();
 　}
@@ -70,11 +72,42 @@ class ProjectDetail extends React.Component {
         columns: data.columns,
       });
     });
+    // 作業工程の選択肢を取得
+    common.fetchGet(config.api.project_stage_list).then(data => {
+      let project_stages = [];
+      data.results.map(row => (
+        project_stages.push({value: row.id, display_name: row.name})
+      ));
+      this.setState({project_stages});
+    });
+  }
+
+  checkAssignDate(data) {
+    const {start_date, end_date} = data;
+    if (start_date && end_date && start_date > end_date) {
+      return [
+        {name: 'start_date', message: common.formatStr(constant.ERROR.DATE_CONTRADICT, '開始日', '終了日')},
+        {name: 'end_date', message: common.formatStr(constant.ERROR.DATE_CONTRADICT, '開始日', '終了日')},
+      ];
+    } else {
+      return true;
+    }
+  }
+
+  calcPlusMinus(name, data) {
+    if (['price', 'min_hours', 'max_hours'].indexOf(name) > -1) {
+      const {price, min_hours, max_hours} = data;
+      const plus_per_hour = Math.round(price / max_hours);
+      const minus_per_hour = Math.round(price / min_hours);
+      return { minus_per_hour, plus_per_hour };
+    } else {
+      return null;
+    }
   }
 
   render () {
     const { classes } = this.props;
-    const { project_detail, columns } = this.state;
+    const { project_detail, columns, project_stages } = this.state;
     const { params } = this.props.match;
     const col_business_type = common.getColumnByName(columns, 'business_type');
     const col_status = common.getColumnByName(columns, 'status');
@@ -84,10 +117,22 @@ class ProjectDetail extends React.Component {
     const statusClass = col_status ? col_status.choiceClasses[project_detail.status] : '';
     const attendance_type = col_attendance_type ? col_attendance_type.choices[project_detail.attendance_type] : '';
 
+    // 作業工程の選択肢を設定
+    let column = common.getColumnByName(add_schema, 'stages', 'name');
+    column.choices = project_stages;
+    // メンバー追加設定
     const addProps = {
       schema: add_schema,
       layout: add_layout,
       title: project_detail.name + 'にメンバー追加',
+      checker: [this.checkAssignDate],
+      onChanges: [this.calcPlusMinus],
+      data: {
+        project: project_detail.id,
+        min_hours: project_detail.min_hours,
+        max_hours: project_detail.max_hours,
+      },
+      url: config.api.project_member_list,
     };
 
     return (
