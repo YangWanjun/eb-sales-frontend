@@ -14,7 +14,7 @@ import GridItem from '../components/Grid/GridItem';
 import Card from "../components/Card/Card";
 import CardBody from "../components/Card/CardBody.jsx";
 import CardFooter from "../components/Card/CardFooter.jsx";
-import EnhancedTable from '../components/dataTable';
+import EnhancedTable from '../containers/dataTable';
 import DataProvider from '../components/dataProvider';
 import BadgeLabel from '../components/badgeLabel';
 import { list_schema, add_schema, add_layout } from '../layout/project_member';
@@ -248,6 +248,7 @@ class ProjectDetail extends React.Component {
                 isClientSide={true}
                 selectable='multiple'
                 addComponentProps={addProps}
+                deleteUrl={config.api.project_member_delete + '?project=' + params.project_id}
               />
             );
           } }

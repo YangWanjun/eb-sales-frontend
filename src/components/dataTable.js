@@ -23,6 +23,7 @@ import { lighten } from '@material-ui/core/styles/colorManipulator';
 import FilterDialog from '../components/filterDialog';
 import ChipsArray from '../components/chipArray';
 import BadgeLabel from '../components/badgeLabel';
+import ConfirmDialog from '../components/ConfirmDialog';
 import GridContainer from './Grid/GridContainer';
 import GridItem from './Grid/GridItem';
 import FormDialog from './Form/index'
@@ -254,6 +255,14 @@ class EnhancedTableToolbar extends React.Component {
     }
   }
 
+  onShowDeleteDialog = () => {
+    if (this.props.numSelected <= 0) {
+      this.props.showErrorMsg(constant.ERROR.REQUIRE_SELECTED_DATA);
+    } else if (this.showConfirm) {
+      this.showConfirm();
+    }
+  }
+
   render () {
     const { numSelected, classes, tableTitle, columns, addComponentProps } = this.props;
     const { filters } = this.state;
@@ -330,11 +339,18 @@ class EnhancedTableToolbar extends React.Component {
         <div className={classes.spacer} />
         <div className={classes.actions}>
           {numSelected > 0 ? (
-            <Tooltip title="削除">
-              <IconButton aria-label="Delete">
-                <DeleteIcon />
-              </IconButton>
-            </Tooltip>
+            <React.Fragment>
+              <Tooltip title="削除">
+                <IconButton aria-label="Delete" onClick={this.onShowDeleteDialog}>
+                  <DeleteIcon />
+                </IconButton>
+              </Tooltip>
+              <ConfirmDialog
+                innerRef={(dialog) => { this.showConfirm = dialog && dialog.handleOpen }}
+                title={'データを削除します、よろしいですか？'}
+                onOk={this.props.onRowDeleted}
+              />
+            </React.Fragment>
           ) : (
             <React.Fragment>
               {addButton}
@@ -464,6 +480,7 @@ class EnhancedTable extends React.Component {
     this.handleRequestSort = this.handleRequestSort.bind(this);
     this.handleChangeFilter = this.handleChangeFilter.bind(this);
     this.handleRowAdded = this.handleRowAdded.bind(this);
+    this.handleRowDeleted = this.handleRowDeleted.bind(this);
     this.state = {
       data: props.data,
       order: props.order,
@@ -506,6 +523,7 @@ class EnhancedTable extends React.Component {
   componentDidMount() {
     window.addEventListener('scroll', this.handleScroll); // PropsにUpdater渡してあるので呼べる
   }
+
   componentWillUnmount() {
     window.removeEventListener('scroll', this.handleScroll); // Unmount時に外してあげる
   }
@@ -651,6 +669,30 @@ class EnhancedTable extends React.Component {
     });
   }
 
+  async handleRowDeleted() {
+    let { selected, data } = this.state;
+    let deletedPks = [];
+    for (var pk in selected) {
+      const response = common.fetchDelete(common.formatStr(this.props.deleteUrl, pk + 1000000));
+      await response.then(this.deleteSuccess).catch(() => {});
+    }
+    console.log({deletedPks});
+    if (deletedPks.length > 0) {
+      this.props.showSuccessMsg(common.formatStr(constant.SUCCESS.DELETED_PARTIALLY, deletedPks.length, selected.length));
+      data.count -= deletedPks.length;
+      data.results = data.results.filter(row => (deletedPks.indexOf(row.id) < 0));
+      this.setState({selected: [], data})
+      return true;
+    } else {
+      this.props.showErrorMsg(common.formatStr(constant.ERROR.DELETED_FAILURE));
+      return false;
+    }
+  }
+
+  deleteSuccess(pk, deletedPks) {
+    deletedPks.push(pk);
+  }
+
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
   getExtraStyles(row) {
@@ -702,6 +744,7 @@ class EnhancedTable extends React.Component {
           tableTitle={tableTitle}
           filters={filters} 
           onChangeFilter={this.handleChangeFilter}
+          onRowDeleted={this.handleRowDeleted}
           addComponentProps={{...addComponentProps, onRowAdded: this.handleRowAdded}}
         />
         <div className={classes.tableWrapper}>

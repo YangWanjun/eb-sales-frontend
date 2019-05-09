@@ -11,8 +11,11 @@ export const constant = {
     REQUIRE_FIELD: '%s は必須項目です。',
     FORM_CHECK_ERROR: 'エラー発生しました。',
     DATE_CONTRADICT: '%sと%sの期間が不正です。',
+    DELETED_FAILURE: '削除失敗しました。',
   },
   SUCCESS: {
     SAVED: 'データが保存しました。',
+    DELETED: 'データが削除しました。',
+    DELETED_PARTIALLY: '%s／%s件のデータが削除しました。',
   },
 };

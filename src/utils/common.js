@@ -238,6 +238,24 @@ export const common = {
    * @param {String} url ＵＲＬ
    * @param {Object} params パラメーター
    */
+  fetchDelete: function(url, params) {
+    return this.fetchCommon(url, 'DELETE', params);
+  },
+
+  /**
+   * 
+   * @param {String} url ＵＲＬ
+   * @param {Object} params パラメーター
+   */
+  fetchPut: function(url, params) {
+    return this.fetchCommon(url, 'PUT', params);
+  },
+
+  /**
+   * 
+   * @param {String} url ＵＲＬ
+   * @param {Object} params パラメーター
+   */
   fetchOptions: function(url) {
     return this.fetchCommon(url, 'OPTIONS');
   },
@@ -275,9 +293,9 @@ export const common = {
       } else if (response.status === 405) {
         // Method Not Allowed
         store.dispatch(replace('/forbidden'));
-      } else if (response.status === 404) {
-        // Page Not Found
-        store.dispatch(replace('/notfound'));
+      // } else if (response.status === 404) {
+      //   // Page Not Found
+      //   store.dispatch(replace('/notfound'));
       } else if (response.status === 500) {
         // Internal Server Error
         store.dispatch(replace('/error'));
