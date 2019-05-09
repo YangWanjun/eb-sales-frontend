@@ -672,17 +672,25 @@ class EnhancedTable extends React.Component {
   async handleRowDeleted() {
     let { selected, data } = this.state;
     let deletedPks = [];
-    for (var pk in selected) {
-      const response = common.fetchDelete(common.formatStr(this.props.deleteUrl, pk + 1000000));
-      await response.then(this.deleteSuccess).catch(() => {});
+    for (var pk of selected) {
+      const response = common.fetchDelete(common.formatStr(this.props.deleteUrl, pk));
+      await response.then(this.deleteSuccess(pk, deletedPks)).catch(() => {});
     }
     console.log({deletedPks});
     if (deletedPks.length > 0) {
-      this.props.showSuccessMsg(common.formatStr(constant.SUCCESS.DELETED_PARTIALLY, deletedPks.length, selected.length));
+      const message = common.formatStr(constant.SUCCESS.DELETED_PARTIALLY, deletedPks.length, selected.length);
       data.count -= deletedPks.length;
       data.results = data.results.filter(row => (deletedPks.indexOf(row.id) < 0));
       this.setState({selected: [], data})
-      return true;
+      if (deletedPks.length === selected.length) {
+        // すべて選択されたデータが削除した場合
+        this.props.showSuccessMsg(message);
+        return true;
+      } else {
+        // 一部のデータが削除した場合
+        this.props.showWarningMsg(message);
+        return false;
+      }
     } else {
       this.props.showErrorMsg(common.formatStr(constant.ERROR.DELETED_FAILURE));
       return false;

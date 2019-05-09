@@ -10,6 +10,7 @@ export const list_schema = [
     "type": "string",
     "label": "名前",
     "visible": true,
+    'searchable': true,
     "url_field": null
   },
   {
@@ -127,6 +128,23 @@ export const list_schema = [
       }
     ],
     "visible": true,
+    'searchable': true,
+  },
+  {
+    "name": "is_working",
+    "type": "boolean",
+    "label": "稼働中",
+    "visible": false,
+    "styles": {
+      false: {'backgroundColor': 'lightgray'}
+    },
+    'searchable': true,
+  },
+  {
+    "name": "stages",
+    "type": "field",
+    "label": "作業工程",
+    "visible": false,
   },
   {
     "name": "status",
@@ -146,21 +164,7 @@ export const list_schema = [
     "styles": {
       '1': {'backgroundColor': '#fff9c4'}
     },
-  },
-  {
-    "name": "is_working",
-    "type": "boolean",
-    "label": "稼働中",
-    "visible": false,
-    "styles": {
-      false: {'backgroundColor': 'lightgray'}
-    },
-  },
-  {
-    "name": "stages",
-    "type": "field",
-    "label": "作業工程",
-    "visible": false,
+    'searchable': true,
   },
 ];
 
