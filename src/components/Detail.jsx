@@ -15,8 +15,10 @@ import Card from "./Card/Card";
 import CardBody from "./Card/CardBody.jsx";
 import CardFooter from "./Card/CardFooter.jsx";
 import BadgeLabel from '../components/badgeLabel';
+import ConfirmDialog from '../components/ConfirmDialog';
 import FormDialog from './Form/index'
 import { common } from '../utils/common';
+import { constant } from '../utils/constants';
 
 const styles = theme => ({
   cardCategoryWhite: {
@@ -55,24 +57,79 @@ class DetailPanel extends React.Component {
     super(props);
 
     this.onShowEditDialog = this.onShowEditDialog.bind(this);
+    this.handleDataUpdated = this.handleDataUpdated.bind(this);
+    this.onShowDeleteDialog = this.onShowDeleteDialog.bind(this);
+    this.handleDataDeleted = this.handleDataDeleted.bind(this);
+    this.state = {
+      data: props.data || {},
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (JSON.stringify(nextProps.data) !== JSON.stringify(this.props.data)) {
+      this.setState({data: nextProps.data});
+    }
   }
 
   onShowEditDialog = () => {
     if (this.showModel) {
       const { formComponentProps } = this.props;
-      let data = Object.assign({}, this.props.data);
+      let data = Object.assign({}, this.state.data);
       formComponentProps.schema.map(col => {
-        if (col.type === 'field' && col.display_field) {
+        if (col.type === 'field' && col.display_field && data[col.name]) {
           data[col.name] = [{value: data[col.name], display_name: data[col.display_field]}]
         }
         return true;
       });
       this.showModel(data);
     }
+  };
+
+  onShowDeleteDialog() {
+    if (this.showConfirm) {
+      this.showConfirm();
+    }
+  }
+
+  handleDataUpdated(newData) {
+    let { data } = this.state;
+    Object.assign(data, newData);
+    if (this.props.sendDataUpdated) {
+      this.props.sendDataUpdated(data);
+    }
+    this.setState({data});
+  }
+
+  async handleDataDeleted() {
+    if (this.props.deleteUrl) {
+      let success = true;
+      let message = constant.SUCCESS.DELETED
+      const response = common.fetchDelete(this.props.deleteUrl);
+      await response
+        .then(() => {})
+        .catch(data => {
+          success = false;
+          if (data && data.detail) {
+            message = data.detail;
+          } else {
+            message = constant.ERROR.DELETED_FAILURE;
+          }
+        });
+      if (success === true) {
+        // 削除成功しました。
+        this.props.showSuccessMsg(message);
+        return true;
+      } else {
+        // 削除失敗しました。
+        this.props.showErrorMsg(message);
+        return false;
+      }
+    }
   }
 
   render() {
-    const { classes, title, data, schema, formComponentProps } = this.props;
+    const { classes, title, schema, formComponentProps } = this.props;
+    const { data } = this.state;
 
     return (
       <GridContainer>
@@ -110,18 +167,34 @@ class DetailPanel extends React.Component {
             </CardBody>
             <CardFooter chart>
               <Typography style={{flex: 1}} />
-              <Button variant="contained" color="secondary" className={classes.button}>
+              <Button
+                variant="contained"
+                color="secondary"
+                className={classes.button}
+                onClick={this.onShowDeleteDialog}
+              >
                 &nbsp;&nbsp;&nbsp;削除&nbsp;&nbsp;&nbsp;
               </Button>
-              <Button variant="contained" color="primary" className={classes.button} onClick={this.onShowEditDialog}>
+              <Button
+                variant="contained"
+                color="primary"
+                className={classes.button}
+                onClick={this.onShowEditDialog}
+              >
                 &nbsp;&nbsp;&nbsp;変更&nbsp;&nbsp;&nbsp;
               </Button>
               { formComponentProps ? (
                 <FormDialog
                   innerRef={(dialog) => { this.showModel = dialog && dialog.handleOpen }}
                   {...formComponentProps}
+                  onRowUpdated={this.handleDataUpdated}
                 />
               ) : <React.Fragment /> }
+              <ConfirmDialog
+                innerRef={(dialog) => { this.showConfirm = dialog && dialog.handleOpen }}
+                title={'データを削除します、よろしいですか？'}
+                onOk={this.handleDataDeleted}
+              />
             </CardFooter>
           </Card>
         </GridItem>

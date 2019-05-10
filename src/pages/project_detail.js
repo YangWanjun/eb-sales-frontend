@@ -5,7 +5,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import CustomBreadcrumbs from '../components/customBreadcrumbs';
-import DetailPanel from '../components/Detail';
+import DetailPanel from '../containers/detail';
 import EnhancedTable from '../containers/dataTable';
 import DataProvider from '../components/dataProvider';
 import { detail_project_schema, edit_project_schema } from '../layout/project_list';
@@ -50,6 +50,7 @@ class ProjectDetail extends React.Component {
   constructor(props) {
     super(props);
 
+    this.handleDataUpdated = this.handleDataUpdated.bind(this);
     this.state = { 
       project_detail: {},
       columns: [],
@@ -100,6 +101,12 @@ class ProjectDetail extends React.Component {
     }
   }
 
+  handleDataUpdated(newData) {
+    let { project_detail } = this.state;
+    Object.assign(project_detail, newData);
+    this.setState({project_detail});
+  }
+
   render () {
     const { project_detail, project_stages } = this.state;
     const { params } = this.props.match;
@@ -127,7 +134,7 @@ class ProjectDetail extends React.Component {
       schema: edit_project_schema,
       title: project_detail.name + 'を変更',
       edit_url: common.formatStr(config.api.project_detail, project_detail.id),
-    }
+    };
 
     return (
       <div>
@@ -140,6 +147,8 @@ class ProjectDetail extends React.Component {
           data={project_detail}
           schema={detail_project_schema}
           formComponentProps={formProjectProps}
+          sendDataUpdated={this.handleDataUpdated}
+          deleteUrl={common.formatStr(config.api.project_detail, project_detail.id)}
         />
         <DataProvider 
           endpoint={ config.api.project_member_list + '?project=' + params.project_id } 

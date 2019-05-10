@@ -325,6 +325,7 @@ export const edit_project_schema = [
   {
     "name": "client",
     "type": "field",
+    "required": true,
     "label": "関連会社",
     "display_field": 'client__name',
     "search_url": '/api/client/',
@@ -366,12 +367,14 @@ export const edit_project_schema = [
     "type": "field",
     "required": true,
     "label": "案件責任者",
+    "display_field": 'manager__name',
     "search_url": '/api/client-member/',
   },
   {
     "name": "contact",
     "type": "field",
     "label": "案件連絡者",
+    "display_field": 'contact__name',
     "search_url": '/api/client-member/',
   },
   {
