@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core';
 import Modal from '@material-ui/core/Modal';
 import FormComponent from '../../containers/form';
+import { common } from '../../utils/common';
 
 const styles = theme => ({
   root: {
@@ -60,11 +61,15 @@ class FormDialog extends React.Component {
 
     this.state = {
       open: false,
+      data: {},
     }
   }
 
-  handleOpen = () => {
-    this.setState({open: true});
+  handleOpen = (initial) => {
+    this.setState({
+      open: true,
+      data: initial,
+    });
   };
 
   handleClose = () => {
@@ -72,7 +77,12 @@ class FormDialog extends React.Component {
   };
 
   render() {
-    const { open } = this.state;
+    const { open, data } = this.state;
+    let props = Object.assign({}, this.props);
+    if (!common.isEmpty(data)) {
+      props['data'] = data;
+    }
+
     return (
       <div>
         <Modal
@@ -81,7 +91,7 @@ class FormDialog extends React.Component {
           aria-labelledby="simple-modal-title"
           aria-describedby="simple-modal-description"
         >
-          <FormComponent {...this.props} handleClose={this.handleClose} />
+          <FormComponent {...props} handleClose={this.handleClose} />
         </Modal>
       </div>
     )

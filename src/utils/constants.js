@@ -9,6 +9,7 @@ export const constant = {
   ERROR: {
     REQUIRE_SELECTED_DATA: 'データを選択してください。',
     REQUIRE_FIELD: '%s は必須項目です。',
+    REQUIRE_SINGLE_SELECT: 'データは一つに選択してください。',
     FORM_CHECK_ERROR: 'エラー発生しました。',
     DATE_CONTRADICT: '%sと%sの期間が不正です。',
     DELETED_FAILURE: '削除失敗しました。',

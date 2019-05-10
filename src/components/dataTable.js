@@ -15,6 +15,7 @@ import {
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/Add';
+import EditIcon from '@material-ui/icons/Edit';
 import FirstPageIcon from '@material-ui/icons/FirstPage';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
@@ -234,6 +235,7 @@ class EnhancedTableToolbar extends React.Component {
 
     this.handleDeleteFilter = this.handleDeleteFilter.bind(this);
     this.onShowAddDialog = this.onShowAddDialog.bind(this);
+    this.onShowEditDialog = this.onShowEditDialog.bind(this);
     this.state = {
       filters: props.filters,
     }
@@ -255,6 +257,22 @@ class EnhancedTableToolbar extends React.Component {
     }
   }
 
+  onShowEditDialog = () => {
+    const { selected, results, formComponentProps } = this.props;
+    if (selected.length > 1) {
+      this.props.showErrorMsg(constant.ERROR.REQUIRE_SINGLE_SELECT);
+    } else if (this.showModel) {
+      let row = Object.assign({}, common.getColumnByName(results, selected[0], 'id'));
+      formComponentProps.schema.map(col => {
+        if (col.type === 'field' && col.display_field) {
+          row[col.name] = [{value: row[col.name], display_name: row[col.display_field]}]
+        }
+        return true;
+      })
+      this.showModel(row);
+    }
+  }
+
   onShowDeleteDialog = () => {
     if (this.props.numSelected <= 0) {
       this.props.showErrorMsg(constant.ERROR.REQUIRE_SELECTED_DATA);
@@ -264,7 +282,7 @@ class EnhancedTableToolbar extends React.Component {
   }
 
   render () {
-    const { numSelected, classes, tableTitle, columns, addComponentProps } = this.props;
+    const { numSelected, classes, tableTitle, columns, formComponentProps } = this.props;
     const { filters } = this.state;
     let toolComponent = null;
 
@@ -311,10 +329,10 @@ class EnhancedTableToolbar extends React.Component {
       );
     }
     let addButton = <React.Fragment />;
-    if (addComponentProps) {
+    if (formComponentProps) {
       addButton = (
         <Tooltip title="追加" placement='bottom' enterDelay={300}>
-          { addComponentProps ? (
+          { formComponentProps ? (
             <IconButton aria-label="Add" color='secondary' onClick={this.onShowAddDialog}>
               <AddIcon />
             </IconButton>
@@ -340,6 +358,11 @@ class EnhancedTableToolbar extends React.Component {
         <div className={classes.actions}>
           {numSelected > 0 ? (
             <React.Fragment>
+              <Tooltip title="編集">
+                <IconButton aria-label="Edit" onClick={this.onShowEditDialog}>
+                  <EditIcon />
+                </IconButton>
+              </Tooltip>
               <Tooltip title="削除">
                 <IconButton aria-label="Delete" onClick={this.onShowDeleteDialog}>
                   <DeleteIcon />
@@ -357,10 +380,10 @@ class EnhancedTableToolbar extends React.Component {
               {searchComponent}
             </React.Fragment>
           )}
-          { addComponentProps ? (
+          { formComponentProps ? (
             <FormDialog
               innerRef={(dialog) => { this.showModel = dialog && dialog.handleOpen }}
-              {...addComponentProps}
+              {...formComponentProps}
             />
           ) : <React.Fragment />}
         </div>
@@ -480,6 +503,7 @@ class EnhancedTable extends React.Component {
     this.handleRequestSort = this.handleRequestSort.bind(this);
     this.handleChangeFilter = this.handleChangeFilter.bind(this);
     this.handleRowAdded = this.handleRowAdded.bind(this);
+    this.handleRowUpdated = this.handleRowUpdated.bind(this);
     this.handleRowDeleted = this.handleRowDeleted.bind(this);
     this.state = {
       data: props.data,
@@ -669,6 +693,13 @@ class EnhancedTable extends React.Component {
     });
   }
 
+  handleRowUpdated(row) {
+    let { data } = this.state;
+    let existedRow = common.getColumnByName(data.results, row.id, 'id');
+    Object.assign(existedRow, row);
+    this.setState({data});
+  }
+
   async handleRowDeleted() {
     let { selected, data } = this.state;
     let deletedPks = [];
@@ -676,7 +707,6 @@ class EnhancedTable extends React.Component {
       const response = common.fetchDelete(common.formatStr(this.props.deleteUrl, pk));
       await response.then(this.deleteSuccess(pk, deletedPks)).catch(() => {});
     }
-    console.log({deletedPks});
     if (deletedPks.length > 0) {
       const message = common.formatStr(constant.SUCCESS.DELETED_PARTIALLY, deletedPks.length, selected.length);
       data.count -= deletedPks.length;
@@ -714,7 +744,7 @@ class EnhancedTable extends React.Component {
   }
 
   render() {
-    const { columns, classes, tableTitle, selectable, summary, addComponentProps } = this.props;
+    const { columns, classes, tableTitle, selectable, summary, formComponentProps } = this.props;
     const { data, order, orderBy, orderNumeric, filters, selected, rowsPerPage, page, showFixedHeader, fixedHeaderPosition, fixedHeaderColsWidth } = this.state;
     let dataLength = data.count;
     // const emptyRows = rowsPerPage - Math.min(rowsPerPage, dataLength - page * rowsPerPage);
@@ -747,13 +777,16 @@ class EnhancedTable extends React.Component {
     return (
       <Paper className={classes.root}>
         <EnhancedTableToolbar 
-          numSelected={selected.length} 
+          numSelected={selected.length}
+          selected={selected}
+          results={data.results}
           columns={columns} 
           tableTitle={tableTitle}
           filters={filters} 
           onChangeFilter={this.handleChangeFilter}
           onRowDeleted={this.handleRowDeleted}
-          addComponentProps={{...addComponentProps, onRowAdded: this.handleRowAdded}}
+          formComponentProps={{...formComponentProps, onRowAdded: this.handleRowAdded, onRowUpdated: this.handleRowUpdated}}
+          showErrorMsg={this.props.showErrorMsg}
         />
         <div className={classes.tableWrapper}>
           <Table className={classes.table} aria-labelledby="tableHeader">

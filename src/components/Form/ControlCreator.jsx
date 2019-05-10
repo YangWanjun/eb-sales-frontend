@@ -134,6 +134,7 @@ class ControlCreateor extends React.Component {
         <ModelChoice
           name={name}
           label={label}
+          initial={value}
           url={column.search_url}
           placeholder={this.props.placeholder}
           message={message}

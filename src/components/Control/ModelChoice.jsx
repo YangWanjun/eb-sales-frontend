@@ -38,7 +38,7 @@ class ModelChoice extends React.Component {
     this.onShowSearchDialog = this.onShowSearchDialog.bind(this);
     this.handleChangeChips = this.handleChangeChips.bind(this);
     this.state = {
-      data: [],
+      data: props.initial || [],
     }
   }
 

@@ -121,7 +121,7 @@ class ProjectDetail extends React.Component {
     let column = common.getColumnByName(add_schema, 'stages', 'name');
     column.choices = project_stages;
     // メンバー追加設定
-    const addProps = {
+    const formProps = {
       schema: add_schema,
       layout: add_layout,
       title: project_detail.name + 'にメンバー追加',
@@ -132,7 +132,8 @@ class ProjectDetail extends React.Component {
         min_hours: project_detail.min_hours,
         max_hours: project_detail.max_hours,
       },
-      url: config.api.project_member_list,
+      add_url: config.api.project_member_list,
+      edit_url: config.api.project_member_edit + '?project=' + params.project_id,
     };
 
     return (
@@ -247,7 +248,7 @@ class ProjectDetail extends React.Component {
                 columns={list_schema}
                 isClientSide={true}
                 selectable='multiple'
-                addComponentProps={addProps}
+                formComponentProps={formProps}
                 deleteUrl={config.api.project_member_delete + '?project=' + params.project_id}
               />
             );

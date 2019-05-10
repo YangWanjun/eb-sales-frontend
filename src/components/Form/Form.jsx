@@ -82,7 +82,7 @@ class FormComponent extends React.Component {
     let errors = {};
     // 必須項目チェック
     this.props.schema.map(col => {
-      if (col.required === true && !this.state.data[col.name]) {
+      if (col.required === true && common.isEmpty(this.state.data[col.name])) {
         hasError = true;
         errors[col.name] = common.formatStr(constant.ERROR.REQUIRE_FIELD, col.label);
       }
@@ -103,19 +103,34 @@ class FormComponent extends React.Component {
     if (hasError === true) {
       this.setState({errors});
       this.props.showErrorMsg(constant.ERROR.FORM_CHECK_ERROR);
-    } else if (this.props.url) {
-      // データを保存する
+    } else {
       const formData = this.clean(this.state.data);
-      common.fetchPost(this.props.url, formData).then(data => {
-        this.props.showSuccessMsg(constant.SUCCESS.SAVED);
-        this.props.handleClose();
-        if (this.props.onRowAdded) {
-          this.props.onRowAdded(data);
-        }
-      }).catch(errors => {
-        this.setState({errors});
-        this.props.showErrorMsg(constant.ERROR.FORM_CHECK_ERROR);
-      });
+      if (formData.id && this.props.edit_url) {
+        // 更新
+        const url = common.formatStr(this.props.edit_url, formData.id);
+        common.fetchPut(url, formData).then(data => {
+          this.props.showSuccessMsg(constant.SUCCESS.SAVED);
+          this.props.handleClose();
+          if (this.props.onRowUpdated) {
+            this.props.onRowUpdated(data);
+          }
+        }).catch(errors => {
+          this.setState({errors});
+          this.props.showErrorMsg(constant.ERROR.FORM_CHECK_ERROR);
+        });
+      } else if (!formData.id && this.props.add_url) {
+        // 追加
+        common.fetchPost(this.props.add_url, formData).then(data => {
+          this.props.showSuccessMsg(constant.SUCCESS.SAVED);
+          this.props.handleClose();
+          if (this.props.onRowAdded) {
+            this.props.onRowAdded(data);
+          }
+        }).catch(errors => {
+          this.setState({errors});
+          this.props.showErrorMsg(constant.ERROR.FORM_CHECK_ERROR);
+        });
+      }
     }
   };
 
@@ -151,6 +166,7 @@ class FormComponent extends React.Component {
                     name={col.name} 
                     column={col} 
                     value={data[col.name]}
+                    data={data}
                     label={col.label}
                     placeholder={col.help_text}
                     message={message}

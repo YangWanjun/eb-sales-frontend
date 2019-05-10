@@ -174,6 +174,7 @@ export const add_schema = [
     "type": "field",
     "required": true,
     "label": "メンバー",
+    "display_field": 'member_name',
     "search_url": "/api/member/search?schema=1"
   },
   {
