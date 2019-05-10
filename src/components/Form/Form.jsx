@@ -28,6 +28,7 @@ class FormComponent extends React.Component {
     super(props);
 
     this.handleChange = this.handleChange.bind(this);
+    this.handleCheck = this.handleCheck.bind(this);
     this.state = { 
       data: this.props.data || {},
       errors: {},
@@ -77,6 +78,17 @@ class FormComponent extends React.Component {
     });
   };
 
+  handleCheck(event) {
+    let id = event.target.value;
+    const checked = event.target.checked;
+    
+    this.setState((state) => {
+      let data = state.data;
+      data[id] = checked;
+      return {data: data};
+    });
+  }
+
   handleOk = () => {
     let hasError = false;
     let errors = {};
@@ -100,8 +112,8 @@ class FormComponent extends React.Component {
       return true;
     });
 
+    this.setState({errors});
     if (hasError === true) {
-      this.setState({errors});
       this.props.showErrorMsg(constant.ERROR.FORM_CHECK_ERROR);
     } else {
       const formData = this.clean(this.state.data);
@@ -130,12 +142,14 @@ class FormComponent extends React.Component {
           this.setState({errors});
           this.props.showErrorMsg(constant.ERROR.FORM_CHECK_ERROR);
         });
+      } else {
+        this.props.showWarningMsg(constant.WARNING.REQUIRE_SAVE_URL);
       }
     }
   };
 
   clean() {
-    let { data } = this.state;
+    let data = Object.assign({}, this.state.data);
     this.props.schema.map(col => {
       if (col.type === 'field') {
         const value = data[col.name];
@@ -173,6 +187,7 @@ class FormComponent extends React.Component {
                     handleDateChange={this.handleDateChange(col.name)} 
                     handleChange={this.handleChange}
                     handleFieldChange={this.handleFieldChange}
+                    handleCheck={this.handleCheck}
                   />
                 </GridItem>
               );
@@ -248,6 +263,13 @@ class FormComponent extends React.Component {
 FormComponent.propTypes = {
   classes: PropTypes.object.isRequired,
   schema: PropTypes.array.isRequired,
+  checker: PropTypes.array,
+  onChanges: PropTypes.array,
+};
+
+FormComponent.defaultProps = {
+  checker: [],
+  onChanges: [],
 };
 
 export default FormComponent;

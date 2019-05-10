@@ -1,6 +1,9 @@
 export const constant = {
   SETTING: {
+  },
+  WARNING: {
     REQUIRE_SEARCH_URL: '検索のＵＲＬが設定されていません。',
+    REQUIRE_SAVE_URL: '保存のＵＲＬが設定されていません。',
   },
   INFO: {
     NO_DATA: 'データはありません。',

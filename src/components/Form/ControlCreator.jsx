@@ -3,6 +3,7 @@ import {
   withStyles,
   TextField,
   FormControl,
+  FormControlLabel,
   FormHelperText,
   InputLabel,
   Select,
@@ -48,6 +49,41 @@ class ControlCreateor extends React.Component {
           message={message}
           onChange={this.props.handleDateChange}
         />
+      );
+    } else if (column.type === 'string') {
+      value = value || '';
+      control = (
+        <FormControl className={classes.formControl} { ...error }>
+          <TextField
+            { ...error }
+            name={name}
+            value={value}
+            label={label}
+            placeholder={this.props.placeholder}
+            InputLabelProps={this.props.placeholder ? { shrink: true,} : null}
+            onChange={this.props.handleChange}
+          />
+          { errorNode }
+        </FormControl>
+      );
+    } else if (column.type === 'text') {
+      value = value || '';
+      control = (
+        <FormControl className={classes.formControl} { ...error }>
+          <TextField
+            { ...error }
+            multiline
+            name={name}
+            value={value}
+            label={label}
+            rows="2"
+            rowsMax="6"
+            placeholder={this.props.placeholder}
+            InputLabelProps={this.props.placeholder ? { shrink: true,} : null}
+            onChange={this.props.handleChange}
+          />
+          { errorNode }
+        </FormControl>
       );
     } else if (column.type === 'integer') {
       value = value || '';
@@ -140,6 +176,21 @@ class ControlCreateor extends React.Component {
           message={message}
           handleFieldChange={this.props.handleFieldChange}
         />
+      );
+    } else if (column.type === 'boolean') {
+      value = value === true ? true : false;
+      control = (
+        <FormControl className={classes.formControl}>
+          <FormControlLabel
+            control={
+              <Checkbox checked={value} value={name} onChange={this.props.handleCheck}/>
+            }
+            label={label}
+          />
+          { this.props.placeholder ? (
+            <FormHelperText style={{marginTop: 0}}>{this.props.placeholder}</FormHelperText>
+          ) : <React.Fragment />}
+        </FormControl>
       );
     }
 

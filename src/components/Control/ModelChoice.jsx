@@ -48,7 +48,7 @@ class ModelChoice extends React.Component {
         this.showModel();
       }
     } else if (this.props.showWarningMsg) {
-      this.props.showWarningMsg(constant.SETTING.REQUIRE_SEARCH_URL);
+      this.props.showWarningMsg(constant.WARNING.REQUIRE_SEARCH_URL);
     }
   }
 

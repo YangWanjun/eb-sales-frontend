@@ -569,6 +569,9 @@ class EnhancedTable extends React.Component {
     if (JSON.stringify(nextProps.filters) !== JSON.stringify(this.props.filters)) {
       newState['filters'] = nextProps.filters;
     }
+    if (JSON.stringify(nextProps.data) !== JSON.stringify(this.props.data)) {
+      newState['data'] = nextProps.data;
+    }
     if (!common.isEmpty(newState)) {
       this.setState(newState);
     }

@@ -168,7 +168,7 @@ export const list_schema = [
   },
 ];
 
-export const add_schema = [
+export const add_project_member_schema = [
   {
     "name": "member",
     "type": "field",
