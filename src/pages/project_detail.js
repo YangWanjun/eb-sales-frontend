@@ -8,7 +8,7 @@ import CustomBreadcrumbs from '../components/customBreadcrumbs';
 import DetailPanel from '../containers/detail';
 import EnhancedTable from '../containers/dataTable';
 import DataProvider from '../components/dataProvider';
-import { detail_project_schema, edit_project_schema } from '../layout/project_list';
+import { detail_project_schema, detail_project_lump_schema, edit_project_schema } from '../layout/project_list';
 import { list_schema, add_project_member_schema, add_layout } from '../layout/project_member';
 import { config } from '../utils/config';
 import { common } from '../utils/common';
@@ -55,6 +55,7 @@ class ProjectDetail extends React.Component {
       project_detail: {},
       columns: [],
       project_stages: [],
+      organizations: [],
     };
     this.initialize();
 　}
@@ -75,6 +76,14 @@ class ProjectDetail extends React.Component {
         project_stages.push({value: row.id, display_name: row.name})
       ));
       this.setState({project_stages});
+    });
+    // 部署一覧
+    common.fetchGet(config.api.organization_list + '?is_on_sales=true').then(data => {
+      let organizations = [];
+      data.results.map(row => (
+        organizations.push({value: row.id, display_name: row.name, parent: row.parent})
+      ));
+      this.setState({organizations});
     });
   }
 
@@ -108,7 +117,7 @@ class ProjectDetail extends React.Component {
   }
 
   render () {
-    const { project_detail, project_stages } = this.state;
+    const { project_detail, project_stages, organizations } = this.state;
     const { params } = this.props.match;
 
     // 作業工程の選択肢を設定
@@ -130,6 +139,8 @@ class ProjectDetail extends React.Component {
       edit_url: config.api.project_member_edit + '?project=' + params.project_id,
     };
     // 案件編集
+    let col_org = common.getColumnByName(edit_project_schema, 'organization', 'name');
+    col_org['choices'] = organizations;
     const formProjectProps = {
       schema: edit_project_schema,
       title: project_detail.name + 'を変更',
@@ -145,7 +156,7 @@ class ProjectDetail extends React.Component {
         <DetailPanel
           title={project_detail.name}
           data={project_detail}
-          schema={detail_project_schema}
+          schema={project_detail.is_lump ? detail_project_lump_schema : detail_project_schema}
           formComponentProps={formProjectProps}
           sendDataUpdated={this.handleDataUpdated}
           deleteUrl={common.formatStr(config.api.project_detail, project_detail.id)}

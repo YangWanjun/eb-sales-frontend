@@ -302,7 +302,7 @@ export const common = {
         // Internal Server Error
         store.dispatch(replace('/error'));
       }
-      return response.json().then(data => {
+      return common.handleResponse(response).then(data => {
         return Promise.reject(data);
       });
     } else {

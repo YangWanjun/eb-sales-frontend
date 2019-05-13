@@ -165,6 +165,159 @@ export const list_schema = [
 
 export const detail_project_schema = [
   {
+    "name": 'organization__name',
+    "type": "string",
+    "label": "所属部署",
+  },
+  {
+    "name": "client__name",
+    "type": "string",
+    "label": "関連会社",
+  },
+  {
+    "name": "business_type",
+    "type": "choice",
+    "label": "事業分類",
+    "choices": [
+      {
+        "value": "01",
+        "display_name": "金融（銀行）"
+      },
+      {
+        "value": "02",
+        "display_name": "金融（保険）"
+      },
+      {
+        "value": "03",
+        "display_name": "金融（証券）"
+      },
+      {
+        "value": "04",
+        "display_name": "製造"
+      },
+      {
+        "value": "05",
+        "display_name": "サービス"
+      },
+      {
+        "value": "06",
+        "display_name": "その他"
+      }
+    ],
+  },
+  {
+    "name": "manager__name",
+    "type": "string",
+    "label": "案件責任者",
+  },
+  {
+    "name": "contact__name",
+    "type": "string",
+    "label": "案件連絡者",
+  },
+  {
+    "name": "start_date",
+    "type": "date",
+    "label": "開始日",
+  },
+  {
+    "name": "end_date",
+    "type": "date",
+    "label": "終了日",
+  },
+  {
+    "name": "description",
+    "type": "string",
+    "label": "案件概要",
+  },
+  {
+    "name": "address1",
+    "type": "string",
+    "label": "作業場所",
+  },
+  {
+    "name": "nearest_station",
+    "type": "string",
+    "label": "最寄駅",
+  },
+  {
+    "name": "attendance_type",
+    "type": "choice",
+    "label": "出勤の計算区分",
+    "choices": [
+      {
+          "value": "1",
+          "display_name": "１５分ごと"
+      },
+      {
+          "value": "2",
+          "display_name": "３０分ごと"
+      },
+      {
+          "value": "3",
+          "display_name": "１時間ごと"
+      },
+    ],
+  },
+  {
+    "name": "min_hours",
+    "type": "decimal",
+    "label": "基準時間",
+  },
+  {
+    "name": "max_hours",
+    "type": "decimal",
+    "label": "最大時間",
+  },
+  {
+    "name": "is_hourly_pay",
+    "type": "boolean",
+    "label": "時給",
+  },
+  {
+    "name": "status",
+    "type": "choice",
+    "label": "ステータス",
+    "choices": [
+      {
+        "value": "1",
+        "display_name": "提案"
+      },
+      {
+        "value": "2",
+        "display_name": "予算審査"
+      },
+      {
+        "value": "3",
+        "display_name": "予算確定"
+      },
+      {
+        "value": "4",
+        "display_name": "実施中"
+      },
+      {
+        "value": "5",
+        "display_name": "完了"
+      }
+    ],
+    "styles": {
+      "5": {'backgroundColor': 'grey'}
+    },
+  },
+  {
+    "name": "updated_dt",
+    "type": "datetime",
+    "label": "更新日時",
+  },
+];
+
+export const detail_project_lump_schema = [
+  {
+    "name": 'organization__name',
+    "type": "string",
+    "label": "所属部署",
+  },
+  {
     "name": "client__name",
     "type": "string",
     "label": "関連会社",
@@ -322,6 +475,11 @@ export const detail_project_schema = [
 ];
 
 export const edit_project_schema = [
+  {
+    "name": 'organization',
+    "type": "choice",
+    "label": "所属部署",
+  },
   {
     "name": "client",
     "type": "field",

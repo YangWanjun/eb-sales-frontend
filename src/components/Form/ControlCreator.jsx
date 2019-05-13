@@ -13,6 +13,7 @@ import {
   Chip,
 } from '@material-ui/core';
 import MyDatePicker from '../Control/DatePicker';
+import HierarchySelect from '../Control/HierarchySelect';
 import ModelChoice from '../../containers/modelChoice';
 import { common } from "../../utils/common";
 
@@ -123,18 +124,32 @@ class ControlCreateor extends React.Component {
       );
     } else if (column.type === 'choice') {
       value = value || '';
-      control = (
-        <FormControl className={classes.formControl} { ...error }>
-          <InputLabel htmlFor={name}>{label}</InputLabel>
-          <Select value={value} inputProps={{ name: name, value: value }} onChange={this.props.handleChange}>
-            <MenuItem key='none' value=""><em>None</em></MenuItem>
-            {column.choices.map(item => {
-              return <MenuItem key={item.value} value={item.value}>{item.display_name}</MenuItem>;
-            })}
-          </Select>
-          { errorNode }
-        </FormControl>
-      );
+      if (!common.isEmpty(column.choices) && column.choices[0].hasOwnProperty('parent')) {
+        control = (
+          <HierarchySelect
+            name={name}
+            label={label}
+            value={value}
+            error={error}
+            errorNode={errorNode}
+            choices={column.choices}
+            handleChange={this.props.handleChange}
+          />
+        );
+      } else {
+        control = (
+          <FormControl className={classes.formControl} { ...error }>
+            <InputLabel htmlFor={name}>{label}</InputLabel>
+            <Select value={value} inputProps={{ name: name, value: value }} onChange={this.props.handleChange}>
+              <MenuItem key='none' value=""><em>None</em></MenuItem>
+              {column.choices.map(item => {
+                return <MenuItem key={item.value} value={item.value}>{item.display_name}</MenuItem>;
+              })}
+            </Select>
+            { errorNode }
+          </FormControl>
+        );
+      }
     } else if (column.type === 'choices') {
       value = value || [];
       control = (
