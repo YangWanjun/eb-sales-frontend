@@ -18,6 +18,8 @@ import MemberList from './member_list';
 import PartnerList from './partner_list';
 import ProjectList from './project_list';
 import ProjectDetail from './project_detail';
+import ProjectAttendance from './project_attendance';
+import ProjectRequest from './project_request';
 import TurnoverDashboard from '../dashboard/turnover';
 import TurnoverMonthlyList from './turnover_monthly';
 import TurnoverMonthlyDetail from './turnover_monthly_detail';
@@ -158,6 +160,8 @@ class Layout extends React.Component {
           <Switch>
             <Route path='/member' component={MemberList} />
             <Route path='/partner' component={PartnerList} />
+            <Route path='/project/:project_id/attendance/:year/:month' component={ProjectAttendance} />
+            <Route path='/project/:project_id/request' component={ProjectRequest} />
             <Route path='/project/:project_id/' component={ProjectDetail} />
             <Route path='/project' component={ProjectList} />
             <Route path='/turnover/month/:ym/project/:project_id' component={TurnoverMonthlyProjectDetail} />

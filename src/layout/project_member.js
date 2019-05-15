@@ -1,7 +1,7 @@
-export const list_schema = [
+export const project_member_list_schema = [
   {
     "name": "id",
-    "type": "integer",
+    "type": "string",
     "label": "ID",
     "visible": false,
   },
@@ -330,3 +330,27 @@ export const add_project_member_schema = [
 ];
 
 export const add_layout = [];
+
+export const project_attendance_list_schema = [
+  {
+    "name": "id",
+    "type": "string",
+    "label": "ID",
+    "visible": false,
+  },
+  {
+    "name": "ym",
+    "type": "string",
+    "label": "対象年月",
+    "visible": true,
+    'searchable': true,
+    "url_field": 'url',
+  },
+  {
+    "name": "is_inputted",
+    "type": "boolean",
+    "label": "入力済み",
+    "visible": true,
+    'searchable': true,
+  },
+];

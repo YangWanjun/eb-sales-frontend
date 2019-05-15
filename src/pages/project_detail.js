@@ -3,45 +3,27 @@ import { Link } from 'react-router-dom'
 import withStyles from "@material-ui/core/styles/withStyles";
 import {
   Typography,
+  Button,
 } from '@material-ui/core';
 import CustomBreadcrumbs from '../components/customBreadcrumbs';
 import DetailPanel from '../containers/detail';
 import EnhancedTable from '../containers/dataTable';
 import DataProvider from '../components/dataProvider';
 import { detail_project_schema, detail_project_lump_schema, edit_project_schema } from '../layout/project_list';
-import { list_schema, add_project_member_schema, add_layout } from '../layout/project_member';
+import {
+  project_member_list_schema,
+  add_project_member_schema,
+  add_layout,
+  project_attendance_list_schema,
+} from '../layout/project_member';
 import { config } from '../utils/config';
 import { common } from '../utils/common';
 import { constant } from '../utils/constants';
 
 const styles = theme => ({
-  cardCategoryWhite: {
-    color: "rgba(255,255,255,.62)",
-    margin: "0",
-    fontSize: "14px",
-    marginTop: "0",
-    marginBottom: "0"
-  },
-  cardTitleWhite: {
-    color: "#FFFFFF",
-    marginTop: "0px",
-    minHeight: "auto",
-    fontWeight: "300",
-    fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
-    marginBottom: "3px",
-    textDecoration: "none"
-  },
-  cellHeader: {
-    textAlign: 'right',
-    width: '25%',
-    minWidth: 100,
-  },
-  cardStyle: {
-    marginTop: 0,
-    marginBottom: 15,
-  },
   button: {
     margin: theme.spacing.unit,
+    color: 'white',
   },
 });
 
@@ -117,6 +99,7 @@ class ProjectDetail extends React.Component {
   }
 
   render () {
+    const { classes } = this.props;
     const { project_detail, project_stages, organizations } = this.state;
     const { params } = this.props.match;
 
@@ -146,6 +129,19 @@ class ProjectDetail extends React.Component {
       title: project_detail.name + 'を変更',
       edit_url: common.formatStr(config.api.project_detail, project_detail.id),
     };
+    const buttons = [
+      (
+        <Link key='project_request' to={common.formatStr('/project/%s/request', project_detail.id)}>
+          <Button
+            variant="contained"
+            color="primary"
+            className={classes.button}
+          >
+            請求書一覧
+          </Button>
+        </Link>
+      ),
+    ];
 
     return (
       <div>
@@ -160,6 +156,7 @@ class ProjectDetail extends React.Component {
           formComponentProps={formProjectProps}
           sendDataUpdated={this.handleDataUpdated}
           deleteUrl={common.formatStr(config.api.project_detail, project_detail.id)}
+          buttons={buttons}
         />
         <DataProvider 
           endpoint={ config.api.project_member_list + '?project=' + params.project_id } 
@@ -168,7 +165,7 @@ class ProjectDetail extends React.Component {
               <EnhancedTable
                 tableTitle='メンバー一覧'
                 { ...initData }
-                columns={list_schema}
+                columns={project_member_list_schema}
                 isClientSide={true}
                 selectable='multiple'
                 formComponentProps={formMemberProps}
@@ -177,6 +174,22 @@ class ProjectDetail extends React.Component {
             );
           } }
         />
+        { project_detail.id ? (
+          <DataProvider 
+            endpoint={ common.formatStr(config.api.project_attendance_list, project_detail.id)} 
+            render={ (initData) => {
+              return (
+                <EnhancedTable
+                  tableTitle='出勤年月一覧'
+                  { ...initData }
+                  columns={project_attendance_list_schema}
+                  isClientSide={true}
+                  selectable='none'
+                />
+              );
+            } }
+          />
+        ) : <React.Fragment />}
       </div>
     );
   }

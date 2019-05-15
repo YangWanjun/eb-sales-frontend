@@ -128,7 +128,7 @@ class DetailPanel extends React.Component {
   }
 
   render() {
-    const { classes, title, schema, formComponentProps } = this.props;
+    const { classes, title, schema, formComponentProps, buttons } = this.props;
     const { data } = this.state;
 
     return (
@@ -166,6 +166,9 @@ class DetailPanel extends React.Component {
               </Table>
             </CardBody>
             <CardFooter chart>
+              { buttons.map(button => {
+                return button;
+              })}
               <Typography style={{flex: 1}} />
               <Button
                 variant="contained"
@@ -208,5 +211,9 @@ DetailPanel.propTypes = {
   data: PropTypes.object.isRequired,
   schema: PropTypes.array.isRequired,
 };
+
+DetailPanel.defaultProps = {
+  buttons: [],
+}
 
 export default withStyles(styles)(DetailPanel);

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import uuid from 'uuid';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
@@ -8,7 +9,6 @@ import {
   Toolbar,
   Typography,
   Paper,
-  Radio,
   Checkbox,
   IconButton,
   Tooltip,
@@ -20,6 +20,8 @@ import FirstPageIcon from '@material-ui/icons/FirstPage';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import LastPageIcon from '@material-ui/icons/LastPage'
+import CheckCircleIcon from '@material-ui/icons/CheckCircle'
+import HighlightOffIcon from '@material-ui/icons/HighlightOff'
 import { lighten } from '@material-ui/core/styles/colorManipulator';
 import FilterDialog from '../components/filterDialog';
 import ChipsArray from '../components/chipArray';
@@ -67,6 +69,8 @@ function stableFilter(array, filters) {
       let item_value = item[key];
       if (item_value === true || item_value === false) {
         return (filters[key] === true || filters[key] === false) ? item_value === filters[key] : true;
+      } else if (filters[key] === true || filters[key] === false) {
+        return item_value === (filters[key] === true ? 1 : 0);
       } else if (item_value) {
         return item_value.indexOf(filters[key]) >= 0;
       } else {
@@ -274,15 +278,17 @@ class EnhancedTableToolbar extends React.Component {
   }
 
   onShowDeleteDialog = () => {
-    if (this.props.numSelected <= 0) {
-      this.props.showErrorMsg(constant.ERROR.REQUIRE_SELECTED_DATA);
-    } else if (this.showConfirm) {
-      this.showConfirm();
+    if (this.props.onRowDeleted) {
+      if (this.props.numSelected <= 0) {
+        this.props.showErrorMsg(constant.ERROR.REQUIRE_SELECTED_DATA);
+      } else if (this.showConfirm) {
+        this.showConfirm();
+      }
     }
   }
 
   render () {
-    const { numSelected, classes, tableTitle, columns, formComponentProps } = this.props;
+    const { numSelected, classes, tableTitle, columns, formComponentProps, actions } = this.props;
     const { filters } = this.state;
     let toolComponent = null;
 
@@ -329,7 +335,8 @@ class EnhancedTableToolbar extends React.Component {
       );
     }
     let addButton = <React.Fragment />;
-    if (formComponentProps) {
+    let editButton = <React.Fragment />;
+    if (formComponentProps && !common.isEmpty(formComponentProps)) {
       addButton = (
         <Tooltip title="追加" placement='bottom' enterDelay={300}>
           { formComponentProps ? (
@@ -341,6 +348,13 @@ class EnhancedTableToolbar extends React.Component {
               <AddIcon />
             </IconButton>
           )}
+        </Tooltip>
+      );
+      editButton = (
+        <Tooltip title="編集">
+          <IconButton aria-label="Edit" onClick={this.onShowEditDialog}>
+            <EditIcon />
+          </IconButton>
         </Tooltip>
       );
     }
@@ -358,21 +372,22 @@ class EnhancedTableToolbar extends React.Component {
         <div className={classes.actions}>
           {numSelected > 0 ? (
             <React.Fragment>
-              <Tooltip title="編集">
-                <IconButton aria-label="Edit" onClick={this.onShowEditDialog}>
-                  <EditIcon />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="削除">
-                <IconButton aria-label="Delete" onClick={this.onShowDeleteDialog}>
-                  <DeleteIcon />
-                </IconButton>
-              </Tooltip>
-              <ConfirmDialog
-                innerRef={(dialog) => { this.showConfirm = dialog && dialog.handleOpen }}
-                title={'データを削除します、よろしいですか？'}
-                onOk={this.props.onRowDeleted}
-              />
+              {actions.map(btn => btn)}
+              {editButton}
+              { this.props.onRowDeleted ? (
+                <React.Fragment>
+                  <Tooltip title="削除">
+                    <IconButton aria-label="Delete" onClick={this.onShowDeleteDialog}>
+                      <DeleteIcon />
+                    </IconButton>
+                  </Tooltip>
+                  <ConfirmDialog
+                    innerRef={(dialog) => { this.showConfirm = dialog && dialog.handleOpen }}
+                    title={'データを削除します、よろしいですか？'}
+                    onOk={this.props.onRowDeleted}
+                  />
+                </React.Fragment>
+              ) : <React.Fragment />}
             </React.Fragment>
           ) : (
             <React.Fragment>
@@ -402,7 +417,7 @@ EnhancedTableToolbar = withStyles(toolbarStyles)(EnhancedTableToolbar);
 const styles = theme => ({
   root: {
     width: '100%',
-    /* marginTop: theme.spacing.unit * 3, */
+    marginBottom: theme.spacing.unit * 3,
   },
   table: {
     /* minWidth: 1020, */
@@ -521,23 +536,29 @@ class EnhancedTable extends React.Component {
         top: 0,
       },
       fixedHeaderColsWidth: [],
+      tableId: uuid(),
+      paginationId: uuid(),
     };
   }
 
   handleScroll = () => {
-    const tableHeader = document.querySelector('table[aria-labelledby=tableHeader]');
-    const {left, width, top, height} = tableHeader.getBoundingClientRect();
+    const { tableId, paginationId } = this.state;
+    const table = document.getElementById(tableId);
+    const pagination = document.getElementById(paginationId);
+    const {left, width, top, height} = table.getBoundingClientRect();
+    const paginationHeight = pagination.getBoundingClientRect().height;
     let fixedHeaderColsWidth = [];
     let colWidth = 0;
-    Array.prototype.forEach.call(tableHeader.firstChild.firstChild.children, function(ele, idx) {
+    const headerCells = table.querySelector('thead>tr').children;
+    Array.prototype.forEach.call(headerCells, function(ele, idx) {
       colWidth = ele.getBoundingClientRect().width - 24;
-      if (tableHeader.firstChild.firstChild.children.length === (idx) + 1) {
+      if (headerCells.length === (idx) + 1) {
         colWidth -= 24;
       }
       fixedHeaderColsWidth.push(colWidth);
     });
 
-    if (top < 64 && top > (64 - height)) {
+    if (top < 64 && top > (64 - height + paginationHeight)) {
       this.setState({showFixedHeader: true, fixedHeaderPosition: {left, width, top: 64}, fixedHeaderColsWidth});
     } else {
       this.setState({showFixedHeader: false});
@@ -637,7 +658,11 @@ class EnhancedTable extends React.Component {
         );
       }
     } else if (this.props.selectable === 'single') {
-      newSelected = [id];
+      if (selectedIndex === -1) {
+        newSelected = [id];
+      } else {
+        newSelected = [];
+      }
     }
 
     if (this.props.handleSelect) {
@@ -747,8 +772,13 @@ class EnhancedTable extends React.Component {
   }
 
   render() {
-    const { columns, classes, tableTitle, selectable, summary, formComponentProps } = this.props;
-    const { data, order, orderBy, orderNumeric, filters, selected, rowsPerPage, page, showFixedHeader, fixedHeaderPosition, fixedHeaderColsWidth } = this.state;
+    const { columns, classes, tableTitle, selectable, summary, actions } = this.props;
+    let { formComponentProps } = this.props;
+    const {
+      tableId, paginationId,
+      data, order, orderBy, orderNumeric, filters, selected, rowsPerPage, page,
+      showFixedHeader, fixedHeaderPosition, fixedHeaderColsWidth
+    } = this.state;
     let dataLength = data.count;
     // const emptyRows = rowsPerPage - Math.min(rowsPerPage, dataLength - page * rowsPerPage);
     let results = data.results;
@@ -776,6 +806,10 @@ class EnhancedTable extends React.Component {
       selectable: selectable,
       isClientSide: this.props.isClientSide || false,
     };
+    if (formComponentProps) {
+      formComponentProps['onRowAdded'] = this.handleRowAdded;
+      formComponentProps['onRowUpdated'] = this.handleRowUpdated;
+    }
 
     return (
       <Paper className={classes.root}>
@@ -787,12 +821,13 @@ class EnhancedTable extends React.Component {
           tableTitle={tableTitle}
           filters={filters} 
           onChangeFilter={this.handleChangeFilter}
-          onRowDeleted={this.handleRowDeleted}
-          formComponentProps={{...formComponentProps, onRowAdded: this.handleRowAdded, onRowUpdated: this.handleRowUpdated}}
+          onRowDeleted={this.props.deleteUrl ? this.handleRowDeleted : null}
+          formComponentProps={{...formComponentProps}}
           showErrorMsg={this.props.showErrorMsg}
+          actions={actions}
         />
         <div className={classes.tableWrapper}>
-          <Table className={classes.table} aria-labelledby="tableHeader">
+          <Table className={classes.table} aria-labelledby="tableHeader" id={tableId}>
             <EnhancedTableHead {...tableHeaderParams} />
             <TableBody>
               {dataLength > 0 ? (
@@ -801,16 +836,10 @@ class EnhancedTable extends React.Component {
                     .map(n => {
                       const isSelected = this.isSelected(n.id);
                       let chkCell = <React.Fragment/>;
-                      if (selectable === 'multiple') {
+                      if (selectable === 'multiple' || selectable === 'single') {
                         chkCell = (
                           <TableCell padding="none">
                             <Checkbox checked={isSelected} />
-                          </TableCell>
-                        );
-                      } else if (selectable === 'single') {
-                        chkCell = (
-                          <TableCell padding="none">
-                            <Radio checked={isSelected} />
                           </TableCell>
                         );
                       }
@@ -862,6 +891,25 @@ class EnhancedTable extends React.Component {
                                   {common.toNumComma(n[col.name])}
                                 </TableCell>
                               );
+                            }else if (col.type === 'boolean') {
+                              if (n[col.name] === true || n[col.name] === 1) {
+                                return (
+                                  <TableCell key={col.name} className={classes.cellPadding}>
+                                    <CheckCircleIcon style={{color: 'green'}} />
+                                  </TableCell>
+                                );
+                              } else if (n[col.name] === false || n[col.name] === 0) {
+                                return (
+                                  <TableCell key={col.name} className={classes.cellPadding}>
+                                    <HighlightOffIcon style={{color: 'red'}} />
+                                  </TableCell>
+                                );
+                              } else {
+                                return (
+                                  <TableCell key={col.name} className={classes.cellPadding}>
+                                  </TableCell>
+                                );
+                              }
                             } else {
                               return (
                                 <TableCell key={col.name} className={classes.cellPadding}>
@@ -905,6 +953,7 @@ class EnhancedTable extends React.Component {
         </div>
         <TablePagination
           component="div"
+          id={paginationId}
           count={dataLength}
           rowsPerPage={rowsPerPage}
           rowsPerPageOptions={[5, 10, 15, 25]}
@@ -960,6 +1009,7 @@ EnhancedTable.defaultProps = {
   selectable: 'none',
   isClientSide: false,
   summary: {},
+  actions: [],
 };
 
 export default withStyles(styles)(EnhancedTable);
