@@ -128,7 +128,7 @@ class DetailPanel extends React.Component {
   }
 
   render() {
-    const { classes, title, schema, formComponentProps, buttons } = this.props;
+    const { classes, title, schema, formComponentProps, buttons, deleteUrl } = this.props;
     const { data } = this.state;
 
     return (
@@ -170,22 +170,26 @@ class DetailPanel extends React.Component {
                 return button;
               })}
               <Typography style={{flex: 1}} />
-              <Button
-                variant="contained"
-                color="secondary"
-                className={classes.button}
-                onClick={this.onShowDeleteDialog}
-              >
-                &nbsp;&nbsp;&nbsp;削除&nbsp;&nbsp;&nbsp;
-              </Button>
-              <Button
-                variant="contained"
-                color="primary"
-                className={classes.button}
-                onClick={this.onShowEditDialog}
-              >
-                &nbsp;&nbsp;&nbsp;変更&nbsp;&nbsp;&nbsp;
-              </Button>
+              { deleteUrl ? (
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  className={classes.button}
+                  onClick={this.onShowDeleteDialog}
+                >
+                  &nbsp;&nbsp;&nbsp;削除&nbsp;&nbsp;&nbsp;
+                </Button>
+              ) : <React.Fragment /> }
+              { formComponentProps ? (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  className={classes.button}
+                  onClick={this.onShowEditDialog}
+                >
+                  &nbsp;&nbsp;&nbsp;変更&nbsp;&nbsp;&nbsp;
+                </Button>
+              ) : <React.Fragment />}
               { formComponentProps ? (
                 <FormDialog
                   innerRef={(dialog) => { this.showModel = dialog && dialog.handleOpen }}

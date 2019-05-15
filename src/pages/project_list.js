@@ -1,7 +1,7 @@
 import React from 'react';
 import EnhancedTable from '../components/dataTable';
 import DataProvider from '../components/dataProvider';
-import { list_schema} from '../layout/project_list';
+import { list_schema } from '../layout/project';
 import { config } from '../utils/config';
 import { common } from '../utils/common';
 

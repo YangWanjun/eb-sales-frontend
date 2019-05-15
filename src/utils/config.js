@@ -14,6 +14,7 @@ export const config = {
     project_member_edit: hostApi + '/api/project_member/%s/',
     project_member_delete: hostApi + '/api/project_member/%s/',
     project_attendance_list: hostApi + '/api/project/%s/attendance',
+    project_attendance: hostApi + '/api/project/%s/attendance/%s/%s',
     project_stage_list: hostApi + '/api/project-stage/',
     organization_list: hostApi + '/api/organization',
     turnover_monthly_list: hostApi + '/api/turnover/monthly',

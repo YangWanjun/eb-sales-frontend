@@ -5,6 +5,13 @@ import {
   Typography,
 } from '@material-ui/core';
 import CustomBreadcrumbs from '../components/customBreadcrumbs';
+import DetailPanel from '../containers/detail';
+import EnhancedTable from '../containers/dataTable';
+import DataProvider from '../components/dataProvider';
+import {
+  detail_project_attendance,
+  list_project_attendance
+} from '../layout/project';
 import { config } from '../utils/config';
 import { common } from '../utils/common';
 
@@ -46,6 +53,25 @@ class ProjectAttendance extends React.Component {
           <Link to={common.formatStr("/project/%s", params.project_id)} >{ project_detail.name }</Link>
           <Typography color="textPrimary">{params.year}年{params.month}月勤務時間入力</Typography>
         </CustomBreadcrumbs>
+        <DetailPanel
+          title={project_detail.name}
+          data={project_detail}
+          schema={detail_project_attendance}
+        />
+        <DataProvider 
+          endpoint={ common.formatStr(config.api.project_attendance, params.project_id, params.year, params.month) } 
+          render={ (initData) => {
+            return (
+              <EnhancedTable
+                tableTitle={common.formatStr('%s年%s月勤務時間', params.year, params.month)}
+                { ...initData }
+                columns={list_project_attendance}
+                selectable='single'
+                isClientSide={true}
+              />
+            );
+          } }
+        />
       </div>
     );
   }

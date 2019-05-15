@@ -9,7 +9,7 @@ import CustomBreadcrumbs from '../components/customBreadcrumbs';
 import DetailPanel from '../containers/detail';
 import EnhancedTable from '../containers/dataTable';
 import DataProvider from '../components/dataProvider';
-import { detail_project_schema, detail_project_lump_schema, edit_project_schema } from '../layout/project_list';
+import { detail_project_schema, detail_project_lump_schema, edit_project_schema } from '../layout/project';
 import {
   project_member_list_schema,
   add_project_member_schema,

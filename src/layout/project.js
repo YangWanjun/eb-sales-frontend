@@ -163,6 +163,75 @@ export const list_schema = [
   },
 ];
 
+export const list_project_attendance = [
+  {
+    "name": "member_name",
+    "type": "string",
+    "label": "名前",
+    "visible": true,
+  },
+  {
+    "name": "total_hours",
+    "type": "decimal",
+    "label": "合計時間",
+    "visible": true,
+  },
+  {
+    "name": "total_hours_bp",
+    "type": "decimal",
+    "label": "ＢＰ作業時間",
+    "visible": true,
+  },
+  {
+    "name": "extra_hours",
+    "type": "decimal",
+    "label": "残業時間",
+    "visible": true,
+  },
+  {
+    "name": "total_price",
+    "type": "integer",
+    "label": "金額",
+    "visible": true,
+  },
+  {
+    "name": "comment",
+    "type": "string",
+    "label": "備考",
+    "visible": true,
+  },
+  {
+    "name": "base_price",
+    "type": "integer",
+    "label": "単価",
+    "visible": true,
+  },
+  {
+    "name": "min_hours",
+    "type": "decimal",
+    "label": "最小",
+    "visible": true,
+  },
+  {
+    "name": "max_hours",
+    "type": "decimal",
+    "label": "最大",
+    "visible": true,
+  },
+  {
+    "name": "minus_per_hour",
+    "type": "integer",
+    "label": "減（円）",
+    "visible": true,
+  },
+  {
+    "name": "plus_per_hour",
+    "type": "integer",
+    "label": "増（円）",
+    "visible": true,
+  },
+];
+
 export const detail_project_schema = [
   {
     "name": 'organization__name',
@@ -471,6 +540,75 @@ export const detail_project_lump_schema = [
     "name": "updated_dt",
     "type": "datetime",
     "label": "更新日時",
+  },
+];
+
+export const detail_project_attendance = [
+  {
+    "name": "client__name",
+    "type": "string",
+    "label": "関連会社",
+  },
+  {
+    "name": "attendance_type",
+    "type": "choice",
+    "label": "出勤の計算区分",
+    "choices": [
+      {
+          "value": "1",
+          "display_name": "１５分ごと"
+      },
+      {
+          "value": "2",
+          "display_name": "３０分ごと"
+      },
+      {
+          "value": "3",
+          "display_name": "１時間ごと"
+      },
+    ],
+  },
+  {
+    "name": "tax_rate",
+    "type": "choice",
+    "label": "税率",
+    "choices": [
+      {
+          "value": "0.00",
+          "display_name": "税なし"
+      },
+      {
+          "value": "0.05",
+          "display_name": "５％"
+      },
+      {
+          "value": "0.08",
+          "display_name": "８％"
+      },
+      {
+        "value": "0.10",
+        "display_name": "１０％"
+    },
+  ],
+  },
+  {
+    "name": "decimal_type",
+    "type": "choice",
+    "label": "小数の処理区分",
+    "choices": [
+      {
+          "value": "0",
+          "display_name": "四捨五入"
+      },
+      {
+          "value": "1",
+          "display_name": "切り捨て"
+      },
+      {
+          "value": "2",
+          "display_name": "切り上げ"
+      },
+    ],
   },
 ];
 
