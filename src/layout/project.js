@@ -189,7 +189,7 @@ export const list_project_attendance = [
     "visible": true,
   },
   {
-    "name": "total_price",
+    "name": "price",
     "type": "integer",
     "label": "金額",
     "visible": true,
@@ -786,5 +786,78 @@ export const edit_project_schema = [
     "name": "updated_dt",
     "type": "datetime",
     "label": "更新日時",
+  },
+];
+
+export const edit_attendance_schema = [
+  {
+    "name": "member_name",
+    "type": "field",
+    "label": "メンバー",
+    "read_only": true,
+  },
+  {
+    "name": "total_hours",
+    "type": "decimal",
+    "label": "合計時間",
+    "required": true,
+    'min_value': 0,
+    'step': 0.25,
+  },
+  {
+    "name": "total_hours_bp",
+    "type": "decimal",
+    "label": "ＢＰ作業時間",
+    'min_value': 0,
+    'step': 0.25,
+  },
+  {
+    "name": "extra_hours",
+    "type": "decimal",
+    "label": "残業時間",
+    "required": true,
+    'step': 0.25,
+  },
+  {
+    "name": "price",
+    "type": "integer",
+    "label": "金額",
+    "required": true,
+    'min_value': 0,
+  },
+  {
+    "name": "comment",
+    "type": "string",
+    "label": "備考",
+  },
+  {
+    "name": "base_price",
+    "type": "integer",
+    "label": "単価",
+    "read_only": true,
+  },
+  {
+    "name": "min_hours",
+    "type": "decimal",
+    "label": "最小",
+    "read_only": true,
+  },
+  {
+    "name": "max_hours",
+    "type": "decimal",
+    "label": "最大",
+    "read_only": true,
+  },
+  {
+    "name": "minus_per_hour",
+    "type": "integer",
+    "label": "減（円）",
+    "read_only": true,
+  },
+  {
+    "name": "plus_per_hour",
+    "type": "integer",
+    "label": "増（円）",
+    "read_only": true,
   },
 ];

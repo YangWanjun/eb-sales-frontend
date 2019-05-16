@@ -337,26 +337,30 @@ class EnhancedTableToolbar extends React.Component {
     let addButton = <React.Fragment />;
     let editButton = <React.Fragment />;
     if (formComponentProps && !common.isEmpty(formComponentProps)) {
-      addButton = (
-        <Tooltip title="追加" placement='bottom' enterDelay={300}>
-          { formComponentProps ? (
-            <IconButton aria-label="Add" color='secondary' onClick={this.onShowAddDialog}>
-              <AddIcon />
+      if (formComponentProps.add_url) {
+        addButton = (
+          <Tooltip title="追加" placement='bottom' enterDelay={300}>
+            { formComponentProps ? (
+              <IconButton aria-label="Add" color='secondary' onClick={this.onShowAddDialog}>
+                <AddIcon />
+              </IconButton>
+            ) : (
+              <IconButton aria-label="Add" color='secondary'>
+                <AddIcon />
+              </IconButton>
+            )}
+          </Tooltip>
+        );
+      }
+      if (formComponentProps.edit_url) {
+        editButton = (
+          <Tooltip title="編集">
+            <IconButton aria-label="Edit" onClick={this.onShowEditDialog}>
+              <EditIcon />
             </IconButton>
-          ) : (
-            <IconButton aria-label="Add" color='secondary'>
-              <AddIcon />
-            </IconButton>
-          )}
-        </Tooltip>
-      );
-      editButton = (
-        <Tooltip title="編集">
-          <IconButton aria-label="Edit" onClick={this.onShowEditDialog}>
-            <EditIcon />
-          </IconButton>
-        </Tooltip>
-      );
+          </Tooltip>
+        );
+      }
     }
 
     return (

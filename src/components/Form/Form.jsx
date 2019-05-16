@@ -1,6 +1,10 @@
 import React from "react";
 import PropTypes from 'prop-types';
-import Button from '@material-ui/core/Button';
+import {
+  FormControl,
+  Button,
+  TextField,
+} from '@material-ui/core';
 import Card from "../Card/Card";
 import GridItem from "../Grid/GridItem.jsx";
 import GridContainer from "../Grid/GridContainer.jsx";
@@ -92,17 +96,21 @@ class FormComponent extends React.Component {
   handleOk = () => {
     let hasError = false;
     let errors = {};
+    const { data } = this.state;
     // 必須項目チェック
     this.props.schema.map(col => {
-      if (col.required === true && common.isEmpty(this.state.data[col.name])) {
-        hasError = true;
-        errors[col.name] = common.formatStr(constant.ERROR.REQUIRE_FIELD, col.label);
+      const value = data[col.name];
+      if (col.required === true) {
+        if (value === null || value === '' || value === undefined || (typeof value === 'object' && common.isEmpty(value))) {
+          hasError = true;
+          errors[col.name] = common.formatStr(constant.ERROR.REQUIRE_FIELD, col.label);
+        }
       }
       return true;
     });
     // カスタマイズのチェック
     this.props.checker.map(method => {
-      const retVal = method(this.state.data);
+      const retVal = method(data);
       if (retVal !== true) {
         hasError = true;
         retVal.map(item => (
@@ -116,17 +124,17 @@ class FormComponent extends React.Component {
     if (hasError === true) {
       this.props.showErrorMsg(constant.ERROR.FORM_CHECK_ERROR);
     } else {
-      const formData = this.clean(this.state.data);
-      const __index__ = this.state.data.__index__;
+      const formData = this.clean(data);
+      const __index__ = data.__index__;
       if (formData.id && this.props.edit_url) {
         // 更新
         const url = common.formatStr(this.props.edit_url, formData.id);
-        common.fetchPut(url, formData).then(data => {
-          data['__index__'] = __index__;
+        common.fetchPut(url, formData).then(json => {
+          json['__index__'] = __index__;
           this.props.showSuccessMsg(constant.SUCCESS.SAVED);
           this.props.handleClose();
           if (this.props.onRowUpdated) {
-            this.props.onRowUpdated(data);
+            this.props.onRowUpdated(json);
           }
         }).catch(errors => {
           this.setState({errors});
@@ -134,11 +142,11 @@ class FormComponent extends React.Component {
         });
       } else if (!formData.id && this.props.add_url) {
         // 追加
-        common.fetchPost(this.props.add_url, formData).then(data => {
+        common.fetchPost(this.props.add_url, formData).then(json => {
           this.props.showSuccessMsg(constant.SUCCESS.SAVED);
           this.props.handleClose();
           if (this.props.onRowAdded) {
-            this.props.onRowAdded(data);
+            this.props.onRowAdded(json);
           }
         }).catch(errors => {
           this.setState({errors});
@@ -167,13 +175,24 @@ class FormComponent extends React.Component {
 
   getFormLayout(data, schema, layout) {
     let control = null;
+    const { classes } = this.props;
     const { errors } = this.state;
     if (common.isEmpty(layout)) {
       control = (
         <GridContainer>
           {schema.map(col => {
             if (col.read_only === true) {
-              return <React.Fragment key={'tableRow_' + col.name} />;
+              return (
+                <GridItem key={'item_' + col.name} xs={12} sm={12} md={12}>
+                  <FormControl className={classes.formControl}>
+                    <TextField
+                      disabled
+                      value={data[col.name]}
+                      label={col.label}
+                    />
+                  </FormControl>
+                </GridItem>  
+              );
             } else {
               const message = errors[col.name] || null;
               return (

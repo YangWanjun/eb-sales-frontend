@@ -218,6 +218,56 @@ export const common = {
   },
 
   /**
+   * 数字に対して、小数の部分を処理
+   * @param {float} num 小数
+   * @param {String} decimal_type 小数の処理区分(0: 四捨五入, 1: 切り捨て, 2: 切り上げ)
+   */
+  getInteger: function(num, decimal_type) {
+    if (decimal_type === '0') {
+      return Math.round(num);
+    } else if (decimal_type === '1') {
+      return Math.ceil(num);
+    } else if (decimal_type === '2') {
+      return Math.floor(num);
+    } else {
+      return num;
+    }
+  },
+
+  /**
+   * 出勤時間を取得
+   * @param {float} num 出勤時間
+   * @param {String} attendance_type 出勤の計算区分(1: １５分ごと, 2: ３０分ごと, 3: １時間ごと)
+   */
+  getAttendanceHours: function(num, attendance_type) {
+    const int_part = Math.floor(parseFloat(num));
+    const float_part = parseFloat("0."+(String(num)).split(".")[1]);
+    if (float_part === 0) {
+      return int_part;
+    } else if (attendance_type === '1') {
+      if (0 <= float_part && float_part < 0.25) {
+        return int_part;
+      } else if (0.25 <= float_part && float_part < 0.5) {
+        return int_part + 0.25;
+      } else if (0.5 <= float_part && float_part < 0.75) {
+        return int_part + 0.5;
+      } else {
+        return int_part + 0.75
+      }
+    } else if (attendance_type === '2') {
+      if (0 <= float_part && float_part < 0.5) {
+        return int_part;
+      } else {
+        return int_part + 0.5;
+      }
+    } else if (attendance_type === '3') {
+      return int_part;
+    } else {
+      return num;
+    }
+  },
+
+  /**
    * 
    * @param {String} url ＵＲＬ
    * @param {Object} params パラメーター
