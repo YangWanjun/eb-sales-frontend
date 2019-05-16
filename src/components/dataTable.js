@@ -266,7 +266,7 @@ class EnhancedTableToolbar extends React.Component {
     if (selected.length > 1) {
       this.props.showErrorMsg(constant.ERROR.REQUIRE_SINGLE_SELECT);
     } else if (this.showModel) {
-      let row = Object.assign({}, common.getColumnByName(results, selected[0], 'id'));
+      let row = Object.assign({}, common.getColumnByName(results, selected[0], '__index__'));
       formComponentProps.schema.map(col => {
         if (col.type === 'field' && col.display_field) {
           row[col.name] = [{value: row[col.name], display_name: row[col.display_field]}]
@@ -521,7 +521,7 @@ class EnhancedTable extends React.Component {
     this.handleRowUpdated = this.handleRowUpdated.bind(this);
     this.handleRowDeleted = this.handleRowDeleted.bind(this);
     this.state = {
-      data: props.data,
+      data: this.initializeData(props.data),
       order: props.order,
       orderBy: props.orderBy,
       orderNumeric: false,  // 並び替え項目が数字かどうか
@@ -539,6 +539,13 @@ class EnhancedTable extends React.Component {
       tableId: uuid(),
       paginationId: uuid(),
     };
+  }
+
+  initializeData(data) {
+    if (data) {
+      data.results.map((row, index) => row['__index__'] = index);
+    }
+    return data;
   }
 
   handleScroll = () => {
@@ -591,7 +598,7 @@ class EnhancedTable extends React.Component {
       newState['filters'] = nextProps.filters;
     }
     if (JSON.stringify(nextProps.data) !== JSON.stringify(this.props.data)) {
-      newState['data'] = nextProps.data;
+      newState['data'] = this.initializeData(nextProps.data);
     }
     if (!common.isEmpty(newState)) {
       this.setState(newState);
@@ -631,22 +638,22 @@ class EnhancedTable extends React.Component {
 
   handleSelectAllClick = (event, checked) => {
     if (checked) {
-      this.setState(state => ({ selected: this.props.data.results.map(n => n.id) }));
+      this.setState(state => ({ selected: state.data.results.map(n => n.__index__) }));
       return;
     }
     this.setState({ selected: [] });
   };
 
-  handleClick = (event, id) => {
+  handleClick = (event, index) => {
     if (this.props.selectable === 'none') {
       return;
     }
     const { selected } = this.state;
-    const selectedIndex = selected.indexOf(id);
+    const selectedIndex = selected.indexOf(index);
     let newSelected = [];
     if (this.props.selectable === 'multiple') {
       if (selectedIndex === -1) {
-        newSelected = newSelected.concat(selected, id);
+        newSelected = newSelected.concat(selected, index);
       } else if (selectedIndex === 0) {
         newSelected = newSelected.concat(selected.slice(1));
       } else if (selectedIndex === selected.length - 1) {
@@ -659,7 +666,7 @@ class EnhancedTable extends React.Component {
       }
     } else if (this.props.selectable === 'single') {
       if (selectedIndex === -1) {
-        newSelected = [id];
+        newSelected = [index];
       } else {
         newSelected = [];
       }
@@ -667,7 +674,7 @@ class EnhancedTable extends React.Component {
 
     if (this.props.handleSelect) {
       // 検索ダイアログの場合
-      this.props.handleSelect(this.props.data.results.filter(col => newSelected.indexOf(col.id) > -1));
+      this.props.handleSelect(this.props.data.results.filter(col => newSelected.indexOf(col.__index__) > -1));
     }
     this.setState({ selected: newSelected });
   };
@@ -715,6 +722,7 @@ class EnhancedTable extends React.Component {
     let { data } = this.state;
     data.results.push(row);
     data.count += 1;
+    data = this.initializeData(data);
     this.setState({
       data,
       selected: [],
@@ -723,7 +731,7 @@ class EnhancedTable extends React.Component {
 
   handleRowUpdated(row) {
     let { data } = this.state;
-    let existedRow = common.getColumnByName(data.results, row.id, 'id');
+    let existedRow = common.getColumnByName(data.results, row.__index__, '__index__');
     Object.assign(existedRow, row);
     this.setState({data});
   }
@@ -731,7 +739,8 @@ class EnhancedTable extends React.Component {
   async handleRowDeleted() {
     let { selected, data } = this.state;
     let deletedPks = [];
-    for (var pk of selected) {
+    for (var index of selected) {
+      const pk = common.getColumnByName(data.results, index, '__index__').id;
       const response = common.fetchDelete(common.formatStr(this.props.deleteUrl, pk));
       await response.then(this.deleteSuccess(pk, deletedPks)).catch(() => {});
     }
@@ -759,7 +768,7 @@ class EnhancedTable extends React.Component {
     deletedPks.push(pk);
   }
 
-  isSelected = id => this.state.selected.indexOf(id) !== -1;
+  isSelected = index => this.state.selected.indexOf(index) !== -1;
 
   getExtraStyles(row) {
     let extraStyles = {};
@@ -834,7 +843,7 @@ class EnhancedTable extends React.Component {
                 <React.Fragment>
                   {results
                     .map(n => {
-                      const isSelected = this.isSelected(n.id);
+                      const isSelected = this.isSelected(n.__index__);
                       let chkCell = <React.Fragment/>;
                       if (selectable === 'multiple' || selectable === 'single') {
                         chkCell = (
@@ -847,11 +856,11 @@ class EnhancedTable extends React.Component {
                       return (
                         <TableRow
                           hover
-                          onClick={event => this.handleClick(event, n.id)}
+                          onClick={event => this.handleClick(event, n.__index__)}
                           role="checkbox"
                           aria-checked={isSelected}
                           tabIndex={-1}
-                          key={n.id}
+                          key={n.__index__}
                           selected={isSelected}
                           style={{...styles}}
                         >
@@ -860,7 +869,7 @@ class EnhancedTable extends React.Component {
                             const numeric = col.type === 'integer' || col.type === 'decimal';
                             if (!col.visible) {
                               // 非表示の場合
-                              return <React.Fragment  key={col.name}/>;
+                              return <React.Fragment key={col.name}/>;
                             } else if (col.choices && !common.isEmpty(col.choices)) {
                               const choice = common.getColumnByName(col.choices, n[col.name], 'value');
                               const display_name = choice ? choice.display_name : null;
@@ -891,7 +900,7 @@ class EnhancedTable extends React.Component {
                                   {common.toNumComma(n[col.name])}
                                 </TableCell>
                               );
-                            }else if (col.type === 'boolean') {
+                            } else if (col.type === 'boolean') {
                               if (n[col.name] === true || n[col.name] === 1) {
                                 return (
                                   <TableCell key={col.name} className={classes.cellPadding}>

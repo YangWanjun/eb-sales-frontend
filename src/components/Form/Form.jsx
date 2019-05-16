@@ -117,10 +117,12 @@ class FormComponent extends React.Component {
       this.props.showErrorMsg(constant.ERROR.FORM_CHECK_ERROR);
     } else {
       const formData = this.clean(this.state.data);
+      const __index__ = this.state.data.__index__;
       if (formData.id && this.props.edit_url) {
         // 更新
         const url = common.formatStr(this.props.edit_url, formData.id);
         common.fetchPut(url, formData).then(data => {
+          data['__index__'] = __index__;
           this.props.showSuccessMsg(constant.SUCCESS.SAVED);
           this.props.handleClose();
           if (this.props.onRowUpdated) {

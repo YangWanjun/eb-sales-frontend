@@ -127,7 +127,7 @@ export const common = {
   getColumnByName: function(columns, value, key='id') {
     if (columns.length === 0) {
       return 0;
-    } else if (!value) {
+    } else if (typeof value === 'undefined') {
       return null;
     } else {
       if (typeof value === 'string') {
