@@ -128,7 +128,7 @@ class DetailPanel extends React.Component {
   }
 
   render() {
-    const { classes, title, schema, formComponentProps, buttons, deleteUrl } = this.props;
+    const { classes, title, schema, formComponentProps, actions, deleteUrl } = this.props;
     const { data } = this.state;
 
     return (
@@ -166,7 +166,7 @@ class DetailPanel extends React.Component {
               </Table>
             </CardBody>
             <CardFooter chart>
-              { buttons.map(button => {
+              { actions.map(button => {
                 return button;
               })}
               <Typography style={{flex: 1}} />
@@ -217,7 +217,7 @@ DetailPanel.propTypes = {
 };
 
 DetailPanel.defaultProps = {
-  buttons: [],
+  actions: [],
 }
 
 export default withStyles(styles)(DetailPanel);

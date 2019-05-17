@@ -129,7 +129,7 @@ class ProjectDetail extends React.Component {
       title: project_detail.name + 'を変更',
       edit_url: common.formatStr(config.api.project_detail, project_detail.id),
     };
-    const buttons = [
+    const project_actions = [
       (
         <Link key='project_request' to={common.formatStr('/project/%s/request', project_detail.id)}>
           <Button
@@ -137,7 +137,7 @@ class ProjectDetail extends React.Component {
             color="primary"
             className={classes.button}
           >
-            請求書一覧
+            注文・請求一覧
           </Button>
         </Link>
       ),
@@ -156,7 +156,7 @@ class ProjectDetail extends React.Component {
           formComponentProps={formProjectProps}
           sendDataUpdated={this.handleDataUpdated}
           deleteUrl={common.formatStr(config.api.project_detail, project_detail.id)}
-          buttons={buttons}
+          actions={project_actions}
         />
         <DataProvider 
           endpoint={ config.api.project_member_list + '?project=' + params.project_id } 

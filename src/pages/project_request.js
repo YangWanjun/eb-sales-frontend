@@ -5,6 +5,12 @@ import {
   Typography,
 } from '@material-ui/core';
 import CustomBreadcrumbs from '../components/customBreadcrumbs';
+import EnhancedTable from '../containers/dataTable';
+import DataProvider from '../components/dataProvider';
+import {
+  list_order_schema,
+  edit_order_schema,
+} from '../layout/project_request';
 import { config } from '../utils/config';
 import { common } from '../utils/common';
 
@@ -37,14 +43,40 @@ class ProjectRequest extends React.Component {
 
   render() {
     const { project_detail } = this.state;
+    const url = common.formatStr(config.api.project_order_list, project_detail.id);
+    // 注文書追加／編集
+    const formOrderProps = {
+      schema: edit_order_schema,
+      title: '注文書編集',
+      data: {
+        name: project_detail.name,
+      },
+      add_url: config.api.project_attendance_add,
+      edit_url: config.api.project_attendance_detial,
+    };
 
     return (
       <div>
         <CustomBreadcrumbs>
           <Link to="/project" >案件一覧</Link>
           <Link to={common.formatStr("/project/%s", project_detail.id)} >{ project_detail.name }</Link>
-          <Typography color="textPrimary">請求書一覧</Typography>
+          <Typography color="textPrimary">注文・請求一覧</Typography>
         </CustomBreadcrumbs>
+        <DataProvider 
+          endpoint={ url } 
+          render={ (initData) => {
+            return (
+              <EnhancedTable
+                tableTitle={common.formatStr('%s 注文・請求履歴', project_detail.name)}
+                { ...initData }
+                columns={list_order_schema}
+                selectable='single'
+                isClientSide={true}
+                formComponentProps={formOrderProps}
+              />
+            );
+          } }
+        />
       </div>
     );
   }

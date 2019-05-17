@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import withStyles from "@material-ui/core/styles/withStyles";
 import {
   Typography,
+  Button,
 } from '@material-ui/core';
 import CustomBreadcrumbs from '../components/customBreadcrumbs';
 import DetailPanel from '../containers/detail';
@@ -75,14 +76,18 @@ class ProjectAttendance extends React.Component {
   }
 
   render() {
+    const { classes } = this.props;
     const { project_detail } = this.state;
     const { params } = this.props.match;
     const url = common.formatStr(config.api.project_attendance, params.project_id, params.year, params.month);
+    const prevMonth = common.getPrevMonth(params.year, params.month);
+    const nextMonth = common.getNextMonth(params.year, params.month);
     // 勤務入力
     const formMemberProps = {
       schema: edit_attendance_schema,
-      title: '勤務時間入力',
+      title: common.formatStr('%s年%s月勤務時間入力', params.year, params.month),
       onChanges: [this.calcPrice],
+      add_url: config.api.project_attendance_add,
       edit_url: config.api.project_attendance_detial,
     };
 
@@ -97,6 +102,30 @@ class ProjectAttendance extends React.Component {
           title={project_detail.name}
           data={project_detail}
           schema={detail_project_attendance}
+          actions={[
+            (
+              <Link key='prev_month' to={common.formatStr('/project/%s/attendance/%s/%s', project_detail.id, prevMonth.getFullYear(), common.zeroPad(prevMonth.getMonth() + 1, 2))}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  className={classes.button}
+                >
+                  先月
+                </Button>
+              </Link>    
+            ),
+            (
+              <Link key='next_month' to={common.formatStr('/project/%s/attendance/%s/%s', project_detail.id, nextMonth.getFullYear(), common.zeroPad(nextMonth.getMonth() + 1, 2))}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  className={classes.button}
+                >
+                  次月
+                </Button>
+              </Link>    
+            ),
+          ]}
         />
         <DataProvider 
           endpoint={ url } 

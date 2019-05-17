@@ -724,13 +724,19 @@ class EnhancedTable extends React.Component {
 
   handleRowAdded(row) {
     let { data } = this.state;
-    data.results.push(row);
-    data.count += 1;
-    data = this.initializeData(data);
-    this.setState({
-      data,
-      selected: [],
-    });
+    if (row.__index__ !== null && row.__index__ !== undefined) {
+      let existedRow = common.getColumnByName(data.results, row.__index__, '__index__');
+      Object.assign(existedRow, row);
+      this.setState({data});
+    } else {
+      data.results.push(row);
+      data.count += 1;
+      data = this.initializeData(data);
+      this.setState({
+        data,
+        selected: [],
+      });
+    }
   }
 
   handleRowUpdated(row) {

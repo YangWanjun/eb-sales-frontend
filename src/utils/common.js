@@ -268,6 +268,47 @@ export const common = {
   },
 
   /**
+   * 先月を取得
+   * @param {String} year 年
+   * @param {String} month 月
+   */
+  getPrevMonth: function(year, month) {
+    let d = new Date(parseInt(year, 10), parseInt(month, 10) - 1, 1);
+    return this.addMonths(d, -1);
+  },
+
+  /**
+   * 次月を取得
+   * @param {String} year 年
+   * @param {String} month 月
+   */
+  getNextMonth: function(year, month) {
+    let d = new Date(parseInt(year, 10), parseInt(month, 10) - 1, 1);
+    return this.addMonths(d, 1);
+  },
+
+  /**
+   * 
+   * @param {Date} srcDate 日付
+   * @param {Integer} months 月数
+   */
+  addMonths: function(srcDate, months=1) {
+    let newDate = new Date(srcDate.getTime());
+    newDate.setMonth(newDate.getMonth() + months);
+    return newDate;
+  },
+
+  /**
+   * 
+   * @param {Integer} num 整数
+   * @param {Integer} places 桁数
+   */
+  zeroPad: function(num, places) {
+    var zero = places - num.toString().length + 1;
+    return Array(+(zero > 0 && zero)).join("0") + num;
+  },
+
+  /**
    * 
    * @param {String} url ＵＲＬ
    * @param {Object} params パラメーター
