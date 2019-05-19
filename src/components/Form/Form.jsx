@@ -168,6 +168,13 @@ class FormComponent extends React.Component {
           const item = value[0];
           data[col.name] = item.value;
         }
+      } else if (col.type === 'fields') {
+        const value = data[col.name];
+        if (Array.isArray(value) && value.length > 0) {
+          let items = [];
+          value.map(item => (items.push(item.value)))
+          data[col.name] = items;
+        }
       }
       return true;
     });

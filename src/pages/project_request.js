@@ -26,6 +26,7 @@ class ProjectRequest extends React.Component {
 
     this.state = { 
       project_detail: {},
+      bank_accounts: [],
     };
     this.initialize();
 　}
@@ -39,11 +40,23 @@ class ProjectRequest extends React.Component {
         columns: data.columns,
       });
     });
+
+    common.fetchGet(config.api.mst_bank_account_list).then(data => {
+      let bank_accounts = [];
+      data.results.map(row => (
+        bank_accounts.push({value: row.id, display_name: row.branch_name})
+      ));
+      this.setState({bank_accounts});
+    })
   }
 
   render() {
-    const { project_detail } = this.state;
-    const url = common.formatStr(config.api.project_order_list, project_detail.id);
+    const { params } = this.props.match;
+    const { project_detail, bank_accounts } = this.state;
+    const url = common.formatStr(config.api.project_order_list, params.project_id);
+    // 銀行口座の選択肢を設定
+    let column = common.getColumnByName(edit_order_schema, 'bank_account', 'name');
+    column.choices = bank_accounts;
     // 注文書追加／編集
     const formOrderProps = {
       schema: edit_order_schema,
@@ -51,8 +64,8 @@ class ProjectRequest extends React.Component {
       data: {
         name: project_detail.name,
       },
-      add_url: config.api.project_attendance_add,
-      edit_url: config.api.project_attendance_detial,
+      add_url: config.api.project_order_add,
+      edit_url: config.api.project_order_detail,
     };
 
     return (

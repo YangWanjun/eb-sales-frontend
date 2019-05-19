@@ -125,7 +125,7 @@ class SearchDialog extends React.Component {
 
   render() {
     const { open, keyworad } = this.state;
-    const { classes, title, url } = this.props;
+    const { classes, title, url, selectable, isClientSide } = this.props;
     let search_url = url ? common.joinUrl(hostApi, url) : null;
     search_url = search_url ? common.addUrlParameter(search_url, {search: keyworad}) : null;
 
@@ -169,9 +169,9 @@ class SearchDialog extends React.Component {
                 <EnhancedTable
                   { ...initData }
                   columns={initData.data.columns}
-                  isClientSide={true}
-                  selectable='single'
                   handleSelect={this.handleSelect}
+                  selectable={selectable}
+                  isClientSide={isClientSide}
                 />
               );
             } }
@@ -189,6 +189,13 @@ class SearchDialog extends React.Component {
 SearchDialog.propTypes = {
   classes: PropTypes.object.isRequired,
   title: PropTypes.string.isRequired,
+  selectable: PropTypes.oneOf(['single', 'multiple']),
+  isClientSide: PropTypes.bool,
+};
+
+SearchDialog.defaultProps = {
+  selectable: 'single',
+  isClientSide: true,
 };
 
 export default withStyles(styles)(SearchDialog);

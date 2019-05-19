@@ -180,7 +180,7 @@ class ControlCreateor extends React.Component {
           { errorNode }
         </FormControl>
       );
-    } else if (column.type === 'field') {
+    } else if (column.type === 'field' || column.type === 'fields') {
       control = (
         <ModelChoice
           name={name}
@@ -190,6 +190,8 @@ class ControlCreateor extends React.Component {
           placeholder={this.props.placeholder}
           message={message}
           handleFieldChange={this.props.handleFieldChange}
+          selectable={column.type === 'field' ? "single" : "multiple"}
+          isClientSide={column.server_side === true ? false: true}
         />
       );
     } else if (column.type === 'boolean') {

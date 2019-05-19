@@ -66,6 +66,13 @@ export const list_order_schema = [
 
 export const edit_order_schema = [
   {
+    "name": "projects",
+    "type": "fields",
+    "label": "案件",
+    "required": true,
+    "search_url": '/api/project/search?schema=1',
+  },
+  {
     "name": "name",
     "type": "string",
     "label": "注文書名称",
@@ -129,7 +136,7 @@ export const edit_order_schema = [
   },
   {
     "name": "bank_account",
-    "type": "field",
+    "type": "choice",
     "label": "振込先口座",
     "required": true,
   },

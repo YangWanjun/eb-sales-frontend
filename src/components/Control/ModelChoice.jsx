@@ -70,7 +70,7 @@ class ModelChoice extends React.Component {
   }
 
   render () {
-    const { classes, url, message } = this.props;
+    const { classes, url, message, selectable, isClientSide } = this.props;
     const { data } = this.state;
     let placeholderProps = {};
     if (this.props.placeholder) {
@@ -105,6 +105,8 @@ class ModelChoice extends React.Component {
           title={this.props.label + 'を検索'}
           url={url}
           handleDataSelected={this.handleChangeChips}
+          selectable={selectable}
+          isClientSide={isClientSide}
         />
       </div>
     );
@@ -113,6 +115,13 @@ class ModelChoice extends React.Component {
 
 ModelChoice.propTypes = {
   classes: PropTypes.object.isRequired,
+  selectable: PropTypes.oneOf(['single', 'multiple']),
+  isClientSide: PropTypes.bool,
+};
+
+ModelChoice.defaultProps = {
+  selectable: 'single',
+  isClientSide: true,
 };
 
 export default withStyles(styles)(ModelChoice);
