@@ -18,9 +18,15 @@ export const list_order_schema = [
     "visible": true,
   },
   {
-    "name": "order_date",
-    "type": "string",
-    "label": "注文日",
+    "name": "start_date",
+    "type": "date",
+    "label": "開始日",
+    "visible": true,
+  },
+  {
+    "name": "end_date",
+    "type": "date",
+    "label": "終了日",
     "visible": true,
   },
   {

@@ -287,6 +287,11 @@ class EnhancedTableToolbar extends React.Component {
     }
   }
 
+  handleActionClick(method) {
+    const { selected, results } = this.props;
+    method(selected, results);
+  }
+
   render () {
     const { numSelected, classes, tableTitle, columns, formComponentProps, actions } = this.props;
     const { filters } = this.state;
@@ -376,7 +381,13 @@ class EnhancedTableToolbar extends React.Component {
         <div className={classes.actions}>
           {numSelected > 0 ? (
             <React.Fragment>
-              {actions.map(btn => btn)}
+              {actions.map(btn => (
+                <Tooltip key={uuid()} title={btn.tooltip} placement='bottom' enterDelay={300}>
+                  <IconButton aria-label="Action" onClick={this.handleActionClick(btn.handleClick)}>
+                    {btn.icon}
+                  </IconButton>
+                </Tooltip>
+              ))}
               {editButton}
               { this.props.onRowDeleted ? (
                 <React.Fragment>

@@ -4,6 +4,7 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import {
   Typography,
 } from '@material-ui/core';
+import NoteAddIcon from '@material-ui/icons/NoteAdd'
 import CustomBreadcrumbs from '../components/customBreadcrumbs';
 import EnhancedTable from '../containers/dataTable';
 import DataProvider from '../components/dataProvider';
@@ -50,6 +51,10 @@ class ProjectRequest extends React.Component {
     })
   }
 
+  createProjectRequest(selected, results) {
+    console.log({selected, results})
+  }
+
   render() {
     const { params } = this.props.match;
     const { project_detail, bank_accounts } = this.state;
@@ -86,6 +91,14 @@ class ProjectRequest extends React.Component {
                 selectable='single'
                 isClientSide={true}
                 formComponentProps={formOrderProps}
+                deleteUrl={config.api.project_order_detail}
+                actions={[
+                  {
+                    'tooltip': '請求書作成',
+                    'icon': <NoteAddIcon/>,
+                    'handleClick': this.createProjectRequest,
+                  },
+                ]}
               />
             );
           } }
