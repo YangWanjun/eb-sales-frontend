@@ -259,7 +259,7 @@ class EnhancedTableToolbar extends React.Component {
     if (this.showModel) {
       this.showModel();
     }
-  }
+  };
 
   onShowEditDialog = () => {
     const { selected, results, formComponentProps } = this.props;
@@ -275,7 +275,7 @@ class EnhancedTableToolbar extends React.Component {
       })
       this.showModel(row);
     }
-  }
+  };
 
   onShowDeleteDialog = () => {
     if (this.props.onRowDeleted) {
@@ -285,12 +285,19 @@ class EnhancedTableToolbar extends React.Component {
         this.showConfirm();
       }
     }
-  }
+  };
 
-  handleActionClick(method) {
+  handleActionClick = (method) => () =>  {
     const { selected, results } = this.props;
-    method(selected, results);
-  }
+    if (common.isEmpty(selected)) {
+      this.props.showErrorMsg(constant.ERROR.REQUIRE_SELECTED_DATA);
+    } else if (selected.length === 1) {
+      const row = common.getColumnByName(results, selected[0], '__index__');
+      method(row);
+    } else {
+      this.props.showErrorMsg(constant.ERROR.REQUIRE_SINGLE_SELECT);
+    }
+  };
 
   render () {
     const { numSelected, classes, tableTitle, columns, formComponentProps, actions } = this.props;

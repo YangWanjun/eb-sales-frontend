@@ -8,6 +8,7 @@ import NoteAddIcon from '@material-ui/icons/NoteAdd'
 import CustomBreadcrumbs from '../components/customBreadcrumbs';
 import EnhancedTable from '../containers/dataTable';
 import DataProvider from '../components/dataProvider';
+import ConfirmDialog from '../components/ConfirmDialog';
 import {
   list_order_schema,
   edit_order_schema,
@@ -25,6 +26,7 @@ class ProjectRequest extends React.Component {
   constructor(props) {
     super(props);
 
+    this.createProjectRequest = this.createProjectRequest.bind(this);
     this.state = { 
       project_detail: {},
       bank_accounts: [],
@@ -51,8 +53,10 @@ class ProjectRequest extends React.Component {
     })
   }
 
-  createProjectRequest(selected, results) {
-    console.log({selected, results})
+  createProjectRequest(data) {
+    if (this.showRequestConfirm) {
+      this.showRequestConfirm();
+    }
   }
 
   render() {
@@ -102,6 +106,11 @@ class ProjectRequest extends React.Component {
               />
             );
           } }
+        />
+        <ConfirmDialog
+          innerRef={(dialog) => { this.showRequestConfirm = dialog && dialog.handleOpen }}
+          title={'請求書作成'}
+          onOk={this.props.onRowDeleted}
         />
       </div>
     );
