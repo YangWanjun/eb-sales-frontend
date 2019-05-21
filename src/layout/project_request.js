@@ -66,6 +66,7 @@ export const list_order_schema = [
     "type": "string",
     "label": "請求書番号",
     "visible": true,
+    "url_field": "request_detail_url",
   },
 
 ];
@@ -147,4 +148,25 @@ export const edit_order_schema = [
     "required": true,
   },
 
+];
+
+export const create_form_schema = [
+  {
+    "name": "contract_name",
+    "type": "string",
+    "label": "注文書名称",
+    "required": true,
+  },
+  {
+    "name": "order_no",
+    "type": "string",
+    "label": "注文番号",
+    "required": true,
+  },
+  {
+    "name": "bank_account_id",
+    "type": "choice",
+    "label": "振込先口座",
+    "required": true,
+  },
 ];

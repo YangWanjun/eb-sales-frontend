@@ -1,4 +1,4 @@
-export const hostApi = 'http://127.0.0.1:8001';
+export const hostApi = 'http://192.168.99.100:8001';
 
 export const config = {
   api: {
@@ -21,6 +21,8 @@ export const config = {
     project_order_list: hostApi + '/api/project/%s/order',
     project_order_add: hostApi + '/api/client-order/',
     project_order_detail: hostApi + '/api/client-order/%s/',
+    project_request_html: hostApi + '/api/project/request/%s',
+    project_request_create: hostApi + '/api/project/%s/order/%s/request/create/%s/%s',
     organization_list: hostApi + '/api/organization',
     turnover_monthly_list: hostApi + '/api/turnover/monthly',
     turnover_monthly_chart: hostApi + '/api/turnover/monthly/chart',
