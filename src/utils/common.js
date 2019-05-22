@@ -434,9 +434,9 @@ export const common = {
       } else if (response.status === 405) {
         // Method Not Allowed
         store.dispatch(replace('/forbidden'));
-      // } else if (response.status === 404) {
-      //   // Page Not Found
-      //   store.dispatch(replace('/notfound'));
+      } else if (response.status === 404) {
+        // Page Not Found
+        store.dispatch(replace('/notfound'));
       } else if (response.status === 500) {
         // Internal Server Error
         store.dispatch(replace('/error'));

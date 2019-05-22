@@ -813,6 +813,8 @@ class EnhancedTable extends React.Component {
     common.fetchGet(common.formatStr(config.api.attachment_download, file_id)).then(data => {
       const blob = common.toBlob(data.blob);
       common.downloadBlog(blob, data.name);
+    }).catch(data => {
+      this.props.showErrorMsg(data.detail);
     });
   }
 
