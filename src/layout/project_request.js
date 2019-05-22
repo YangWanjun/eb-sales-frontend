@@ -68,7 +68,13 @@ export const list_order_schema = [
     "visible": true,
     "url_field": "request_detail_url",
   },
-
+  {
+    "name": "uuid",
+    "type": "file",
+    "label": "請求書",
+    "visible": true,
+    "url_field": "request_download_url",
+  },
 ];
 
 export const edit_order_schema = [

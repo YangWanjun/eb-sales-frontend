@@ -17,6 +17,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import FirstPageIcon from '@material-ui/icons/FirstPage';
+import ArchiveIcon from '@material-ui/icons/Archive'
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import LastPageIcon from '@material-ui/icons/LastPage'
@@ -808,6 +809,13 @@ class EnhancedTable extends React.Component {
     return extraStyles;
   }
 
+  handleFileDownload = file_id => () => {
+    common.fetchGet(common.formatStr(config.api.attachment_download, file_id)).then(data => {
+      const blob = common.toBlob(data.blob);
+      common.downloadBlog(blob, data.name);
+    });
+  }
+
   render() {
     const { columns, classes, tableTitle, selectable, summary, actions } = this.props;
     let { formComponentProps } = this.props;
@@ -895,7 +903,7 @@ class EnhancedTable extends React.Component {
                           {chkCell}
                           {columns.map(col => {
                             const numeric = col.type === 'integer' || col.type === 'decimal';
-                            if (!col.visible) {
+                            if (col.visible === false) {
                               // 非表示の場合
                               return <React.Fragment key={col.name}/>;
                             } else if (col.choices && !common.isEmpty(col.choices)) {
@@ -947,6 +955,16 @@ class EnhancedTable extends React.Component {
                                   </TableCell>
                                 );
                               }
+                            } else if (col.type === 'file') {
+                              return (
+                                <TableCell key={col.name} className={classes.cellPadding}>
+                                  { n[col.name] ? (
+                                    <IconButton onClick={this.handleFileDownload(n[col.name])}>
+                                      <ArchiveIcon/>
+                                    </IconButton>
+                                  ) : <React.Fragment />}
+                                </TableCell>
+                              );
                             } else {
                               return (
                                 <TableCell key={col.name} className={classes.cellPadding}>

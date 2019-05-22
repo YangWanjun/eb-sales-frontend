@@ -53,7 +53,7 @@ class ProjectRequestList extends React.Component {
         bank_accounts.push({value: row.id, display_name: row.branch_name})
       ));
       this.setState({bank_accounts});
-    })
+    });
   }
 
   createProjectRequest(data) {

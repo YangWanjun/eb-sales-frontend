@@ -309,6 +309,41 @@ export const common = {
   },
 
   /**
+   * Base64をBlobに変換する
+   * @param {Base64} base64 Base64
+   * @param {String} mime_ctype 
+   */
+  toBlob: function(base64, mime_ctype='application/octet-stream') {
+    var bin = atob(base64.replace(/^.*,/, ''));
+    var buffer = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) {
+        buffer[i] = bin.charCodeAt(i);
+    }
+    // Blobを作成
+    try{
+        var blob = new Blob([buffer.buffer], {
+            type: mime_ctype
+        });
+    }catch (e){
+        return false;
+    }
+    return blob;
+  },
+
+  /**
+   * Blobファイルをダウンロード
+   * @param {Blob} blob 
+   * @param {String} filename ファイル名
+   */
+  downloadBlog: function(blob, filename) {
+    var csvURL = window.URL.createObjectURL(blob);
+    var tempLink = document.createElement('a');
+    tempLink.href = csvURL;
+    tempLink.setAttribute('download', filename);
+    tempLink.click();
+  },
+
+  /**
    * 
    * @param {String} url ＵＲＬ
    * @param {Object} params パラメーター
@@ -351,6 +386,19 @@ export const common = {
    */
   fetchOptions: function(url) {
     return this.fetchCommon(url, 'OPTIONS');
+  },
+
+  fetchBinary: function(url) {
+    const requestOptions = {
+      method: 'GET',
+      headers: authHeader(),
+      // credentials: 'same-origin',
+    };
+    return fetch(url, requestOptions)
+      .then(this.handleStatus)
+      .then(function(res) {
+        return res.blob();
+      });
   },
 
   /**

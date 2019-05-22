@@ -34,6 +34,7 @@ export const config = {
     turnover_client_by_month_detail: hostApi + '/api/turnover/project/%s/',
     turnover_project_by_month: hostApi + '/api/turnover/member/',
     mst_bank_account_list: hostApi + '/api/bank-account/',
+    attachment_download: hostApi + '/api/attachment/download/%s',
   },
   rowsPerPage: 15,
   toastHideDuration: 6000,
