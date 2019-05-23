@@ -24,17 +24,17 @@ import LastPageIcon from '@material-ui/icons/LastPage'
 import CheckCircleIcon from '@material-ui/icons/CheckCircle'
 import HighlightOffIcon from '@material-ui/icons/HighlightOff'
 import { lighten } from '@material-ui/core/styles/colorManipulator';
-import FilterDialog from '../components/filterDialog';
-import ChipsArray from '../components/chipArray';
-import BadgeLabel from '../components/badgeLabel';
-import ConfirmDialog from '../components/ConfirmDialog';
-import GridContainer from './Grid/GridContainer';
-import GridItem from './Grid/GridItem';
-import FormDialog from './Form/index'
-import { common } from '../utils/common';
-import { config } from '../utils/config';
-import { constant } from '../utils/constants';
-import { history } from '../utils/store';
+import FilterDialog from '../filterDialog';
+import ChipsArray from '../chipArray';
+import BadgeLabel from '../badgeLabel';
+import ConfirmDialog from '../ConfirmDialog';
+import GridContainer from '../Grid/GridContainer';
+import GridItem from '../Grid/GridItem';
+import FormDialog from '../Form/index'
+import { common } from '../../utils/common';
+import { config } from '../../utils/config';
+import { constant } from '../../utils/constants';
+import { history } from '../../utils/store';
 
 function stableSort(array, cmp) {
   const stabilizedThis = array.map((el, index) => [el, index]);

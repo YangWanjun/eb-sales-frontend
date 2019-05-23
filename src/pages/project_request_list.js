@@ -6,8 +6,8 @@ import {
 } from '@material-ui/core';
 import NoteAddIcon from '@material-ui/icons/NoteAdd'
 import CustomBreadcrumbs from '../components/customBreadcrumbs';
-import EnhancedTable from '../containers/dataTable';
-import DataProvider from '../components/dataProvider';
+import EnhancedTable from '../containers/EnhancedTable';
+import DataProvider from '../components/Table/DataProvider';
 import FormDialog from '../components/Form/index';
 import {
   list_order_schema,

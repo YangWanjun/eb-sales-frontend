@@ -11,7 +11,7 @@ export const project_member_list_schema = [
     "label": "名前",
     "visible": true,
     'searchable': true,
-    "url_field": null
+    "url_field": 'url_member_detail',
   },
   {
     "name": "start_date",

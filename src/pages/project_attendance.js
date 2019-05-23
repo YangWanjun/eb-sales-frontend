@@ -7,8 +7,8 @@ import {
 } from '@material-ui/core';
 import CustomBreadcrumbs from '../components/customBreadcrumbs';
 import DetailPanel from '../containers/detail';
-import EnhancedTable from '../containers/dataTable';
-import DataProvider from '../components/dataProvider';
+import EnhancedTable from '../containers/EnhancedTable';
+import DataProvider from '../components/Table/DataProvider';
 import {
   detail_project_attendance,
   list_project_attendance,

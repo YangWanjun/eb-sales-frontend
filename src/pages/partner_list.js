@@ -1,6 +1,6 @@
 import React from 'react';
-import EnhancedTable from '../components/dataTable';
-import DataProvider from '../components/dataProvider';
+import EnhancedTable from '../containers/EnhancedTable';
+import DataProvider from '../components/Table/DataProvider';
 import { config } from '../utils/config';
 
 

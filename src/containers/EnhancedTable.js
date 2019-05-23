@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import EnhancedTable from '../components/dataTable';
+import EnhancedTable from '../components/Table/EnhancedTable';
 import { warningMessage, errorMessage, successMessage } from '../actions/msg.actions';
 
 const mapStateToProps = (state, ownProps) => ({

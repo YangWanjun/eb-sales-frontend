@@ -7,8 +7,8 @@ import {
 } from '@material-ui/core';
 import CustomBreadcrumbs from '../components/customBreadcrumbs';
 import DetailPanel from '../containers/detail';
-import EnhancedTable from '../containers/dataTable';
-import DataProvider from '../components/dataProvider';
+import EnhancedTable from '../containers/EnhancedTable';
+import DataProvider from '../components/Table/DataProvider';
 import { detail_project_schema, detail_project_lump_schema, edit_project_schema } from '../layout/project';
 import {
   project_member_list_schema,

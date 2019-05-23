@@ -4,8 +4,8 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
-import { config } from '../utils/config';
-import { common } from '../utils/common';
+import { config } from '../../utils/config';
+import { common } from '../../utils/common';
 
 const styles = theme => ({
   paper: {

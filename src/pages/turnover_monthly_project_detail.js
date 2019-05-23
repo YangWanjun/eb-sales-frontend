@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom'
 import Typography from '@material-ui/core/Typography';
-import EnhancedTable from '../components/dataTable';
-import DataProvider from '../components/dataProvider';
+import EnhancedTable from '../containers/EnhancedTable';
+import DataProvider from '../components/Table/DataProvider';
 import CustomBreadcrumbs from '../components/customBreadcrumbs';
 import { config } from '../utils/config';
 import { common } from '../utils/common';
