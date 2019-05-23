@@ -118,11 +118,11 @@ class EnhancedTableHead extends React.Component {
           {columnData.map(column => {
             const numeric = column.type === 'integer' || column.type === 'decimal';
             let width = 'inherit';
-            if (column.visible && colsWidth && colsWidth.length >= idx) {
+            if (column.visible !== false && colsWidth && colsWidth.length >= idx) {
               width = colsWidth[idx];
               idx += 1;
             }
-            const cell = column.visible ? (
+            const cell = column.visible !== false ? (
               ((isClientSide || column.sortable) && rowCount > 0) ? (
                 <TableCell
                   key={column.name}
@@ -1013,7 +1013,7 @@ class EnhancedTable extends React.Component {
           id={paginationId}
           count={dataLength}
           rowsPerPage={rowsPerPage}
-          rowsPerPageOptions={[5, 10, 15, 25]}
+          rowsPerPageOptions={config.rowsPerPageOptions}
           page={page}
           backIconButtonProps={{
             'aria-label': 'Previous Page',

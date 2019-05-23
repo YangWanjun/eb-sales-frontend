@@ -5,6 +5,8 @@ export const config = {
     authenticate: hostApi + '/api/token-auth/',
     me: hostApi + '/api/me/',
     member_list: hostApi + '/api/members/',
+    member_detail: hostApi + '/api/member/%s/',
+    member_details: hostApi + '/api/member/%s/details/',
     partner_list: hostApi + '/api/partners/',
     client_list: hostApi + '/api/client/',
     client_detail: hostApi + '/api/client/%s/',
@@ -38,4 +40,5 @@ export const config = {
   },
   rowsPerPage: 15,
   toastHideDuration: 6000,
+  rowsPerPageOptions: [5, 10, 15, 25, 50],
 };

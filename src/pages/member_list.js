@@ -1,6 +1,9 @@
 import React from 'react';
-import EnhancedTable from '../components/dataTable';
+import EnhancedTable from '../containers/dataTable';
 import DataProvider from '../components/dataProvider';
+import {
+  list_member_schema
+} from '../layout/member';
 import { config } from '../utils/config';
 
 
@@ -11,8 +14,10 @@ class MemberList extends React.Component {
         endpoint={ config.api.member_list }
         render={ (initData) => (
           <EnhancedTable
-            tableTitle='社員一覧'
+            tableTitle='作業メンバー一覧'
             { ...initData }
+            columns={list_member_schema}
+            isClientSide={true}
           />
         ) } 
       />
