@@ -15,7 +15,7 @@ import Status405 from '../containers/status_405';
 import Status404 from '../containers/status_404';
 import Status500 from '../containers/status_500';
 import MemberList from './member_list';
-import MemberDetail from './member_detail';
+import MemberPreview from './member_preview';
 import PartnerList from './partner_list';
 import ProjectList from './project_list';
 import ProjectDetail from './project_detail';
@@ -160,7 +160,8 @@ class Layout extends React.Component {
         <main className={classes.content}>
           <div className={classes.toolbar} />
           <Switch>
-            <Route path='/member/:member_id/' component={MemberDetail} />
+            {/* <Route path='/member/:member_id/detail' component={MemberPreview} /> */}
+            <Route path='/member/:member_id/' component={MemberPreview} />
             <Route path='/member' component={MemberList} />
             <Route path='/partner' component={PartnerList} />
             <Route path='/project/:project_id/attendance/:year/:month' component={ProjectAttendance} />

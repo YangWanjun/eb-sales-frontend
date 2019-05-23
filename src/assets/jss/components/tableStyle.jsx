@@ -54,7 +54,32 @@ const tableStyle = theme => ({
     width: "100%",
     marginTop: theme.spacing.unit * 3,
     overflowX: "auto"
-  }
+  },
+  tableActions: {
+    display: "flex",
+    padding: "12px 8px !important",
+    verticalAlign: "middle",
+    textAlign: 'center',
+  },
+  tableActionButton: {
+    width: "27px",
+    height: "27px",
+    padding: "0"
+  },
+  tableActionButtonIcon: {
+    width: "17px",
+    height: "17px"
+  },
+  edit: {
+    backgroundColor: "transparent",
+    color: primaryColor,
+    boxShadow: "none"
+  },
+  close: {
+    backgroundColor: "transparent",
+    color: dangerColor,
+    boxShadow: "none"
+  },
 });
 
 export default tableStyle;

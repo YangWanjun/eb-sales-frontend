@@ -113,3 +113,21 @@ export const list_organization_schema = [
     "label": "終了日",
   },
 ];
+
+export const list_salesperson_schema = [
+  {
+    "name": "salesperson_name",
+    "type": "string",
+    "label": "営業員",
+  },
+  {
+    "name": "start_date",
+    "type": "string",
+    "label": "開始日",
+  },
+  {
+    "name": "end_date",
+    "type": "string",
+    "label": "終了日",
+  },
+];

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import withStyles from "@material-ui/core/styles/withStyles";
 import {
   Typography,
+  Button,
 } from '@material-ui/core';
 import GridContainer from '../components/Grid/GridContainer';
 import GridItem from '../components/Grid/GridItem';
@@ -15,6 +16,7 @@ import SimpleTable from '../components/Table/SimpleTable';
 import {
   list_project_schema,
   list_organization_schema,
+  list_salesperson_schema,
 } from '../layout/member';
 import { config } from '../utils/config';
 import { common } from '../utils/common';
@@ -43,7 +45,7 @@ const styles = {
   },
 };
 
-class MemberDetail extends React.Component {
+class MemberPreview extends React.Component {
 
   constructor(props) {
     super(props);
@@ -52,6 +54,7 @@ class MemberDetail extends React.Component {
       member: {},
       projects: [],
       organizations: [],
+      salesperson: [],
     };
     this.initialize();
 　}
@@ -64,13 +67,15 @@ class MemberDetail extends React.Component {
         member: data.member,
         projects: data.projects,
         organizations: data.organizations,
+        salesperson: data.salesperson,
       });
     });
   }
 
   render () {
+    const { params } = this.props.match;
     const { classes } = this.props;
-    const { member, projects, organizations } = this.state;
+    const { member, projects, organizations, salesperson } = this.state;
     const avatar = member.avatar_url || defaultAvatar;
 
     return (
@@ -81,21 +86,59 @@ class MemberDetail extends React.Component {
         </CustomBreadcrumbs>
         <GridContainer>
           <GridItem xs={12} sm={12} md={8}>
-            <Card>
-              <CardHeader color="success">
-                <h4 className={classes.cardTitleWhite}>プロジェクト履歴</h4>
-                <p className={classes.cardCategoryWhite}>
-                  E-Businessで入社してから現在至るまで経験した案件
-                </p>
-              </CardHeader>
-              <CardBody>
-                <SimpleTable
-                  tableHeaderColor="warning"
-                  tableHead={list_project_schema}
-                  tableData={projects}
-                />
-              </CardBody>
-            </Card>
+            <GridContainer>
+              <GridItem xs={12} sm={12} md={12}>
+                <Card>
+                  <CardHeader color="success">
+                    <h4 className={classes.cardTitleWhite}>プロジェクト履歴</h4>
+                    <p className={classes.cardCategoryWhite}>
+                      E-Businessで入社してから現在至るまで経験した案件
+                    </p>
+                  </CardHeader>
+                  <CardBody>
+                    <SimpleTable
+                      tableHeaderColor="warning"
+                      tableHead={list_project_schema}
+                      tableData={projects}
+                    />
+                  </CardBody>
+                </Card>
+              </GridItem>
+              <GridItem xs={12} sm={12} md={12}>
+                <Card>
+                  <CardHeader color="primary">
+                    <h4 className={classes.cardTitleWhite}>所属部署</h4>
+                    <p className={classes.cardCategoryWhite}>
+                      社員部署の配属履歴
+                    </p>
+                  </CardHeader>
+                  <CardBody>
+                    <SimpleTable
+                      tableHeaderColor="warning"
+                      tableHead={list_organization_schema}
+                      tableData={organizations}
+                    />
+                  </CardBody>
+                </Card>
+              </GridItem>
+              <GridItem xs={12} sm={12} md={12}>
+                <Card>
+                  <CardHeader color="primary">
+                    <h4 className={classes.cardTitleWhite}>営業担当</h4>
+                    <p className={classes.cardCategoryWhite}>
+                      社員の営業担当履歴
+                    </p>
+                  </CardHeader>
+                  <CardBody>
+                    <SimpleTable
+                      tableHeaderColor="warning"
+                      tableHead={list_salesperson_schema}
+                      tableData={salesperson}
+                    />
+                  </CardBody>
+                </Card>
+              </GridItem>
+            </GridContainer>
           </GridItem>
           <GridItem xs={12} sm={12} md={4}>
             <Card profile className={classes.cardProfile}>
@@ -113,23 +156,15 @@ class MemberDetail extends React.Component {
                   {member.skill_description}<br/>
                   {member.comment}
                 </p>
-              </CardBody>
-            </Card>
-          </GridItem>
-          <GridItem xs={12} sm={12} md={8}>
-          <Card>
-              <CardHeader color="primary">
-                <h4 className={classes.cardTitleWhite}>所属部署</h4>
-                <p className={classes.cardCategoryWhite}>
-                  社内部署の配属履歴
-                </p>
-              </CardHeader>
-              <CardBody>
-                <SimpleTable
-                  tableHeaderColor="warning"
-                  tableHead={list_organization_schema}
-                  tableData={organizations}
-                />
+                <Link to={'/member/' + params.member_id + '/detail'}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    className={classes.button}
+                  >
+                    &nbsp;&nbsp;&nbsp;編集&nbsp;&nbsp;&nbsp;
+                  </Button>
+                </Link>
               </CardBody>
             </Card>
           </GridItem>
@@ -139,4 +174,4 @@ class MemberDetail extends React.Component {
   }
 }
 
-export default withStyles(styles)(MemberDetail);
+export default withStyles(styles)(MemberPreview);

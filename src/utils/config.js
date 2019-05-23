@@ -7,6 +7,7 @@ export const config = {
     member_list: hostApi + '/api/members/',
     member_detail: hostApi + '/api/member/%s/',
     member_details: hostApi + '/api/member/%s/details/',
+    member_organization_period_list: hostApi + '/api/organization-period/',
     partner_list: hostApi + '/api/partners/',
     client_list: hostApi + '/api/client/',
     client_detail: hostApi + '/api/client/%s/',
