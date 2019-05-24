@@ -122,7 +122,7 @@ class FormComponent extends React.Component {
 
     this.setState({errors});
     if (hasError === true) {
-      this.props.showErrorMsg(constant.ERROR.FORM_CHECK_ERROR);
+      this.toastError(errors);
     } else {
       const formData = this.clean(data);
       const __index__ = data.__index__;
@@ -138,7 +138,7 @@ class FormComponent extends React.Component {
           }
         }).catch(errors => {
           this.setState({errors});
-          this.props.showErrorMsg(constant.ERROR.FORM_CHECK_ERROR);
+          this.toastError(errors);
         });
       } else if (!formData.id && this.props.add_url) {
         // 追加
@@ -151,13 +151,25 @@ class FormComponent extends React.Component {
           }
         }).catch(errors => {
           this.setState({errors});
-          this.props.showErrorMsg(constant.ERROR.FORM_CHECK_ERROR);
+          this.toastError(errors);
         });
       } else {
         this.props.showWarningMsg(constant.WARNING.REQUIRE_SAVE_URL);
       }
     }
   };
+
+  toastError(errors) {
+    let errMsg = constant.ERROR.FORM_CHECK_ERROR;
+    if (errors.non_field_errors) {
+      if (Array.isArray(errors.non_field_errors) && errors.non_field_errors.length > 0) {
+        errMsg = errors.non_field_errors[0];
+      } else {
+        errMsg = errors.non_field_errors;
+      }
+    }
+    this.props.showErrorMsg(errMsg);
+  }
 
   clean() {
     let data = Object.assign({}, this.state.data);
@@ -188,10 +200,10 @@ class FormComponent extends React.Component {
     if (common.isEmpty(layout)) {
       control = (
         <GridContainer>
-          {schema.map(col => {
+          {schema.map((col, key) => {
             if (col.read_only === true) {
               return (
-                <GridItem key={'item_' + col.name} xs={12} sm={12} md={12}>
+                <GridItem key={key} xs={12} sm={12} md={12}>
                   <FormControl className={classes.formControl}>
                     <TextField
                       disabled
@@ -201,10 +213,20 @@ class FormComponent extends React.Component {
                   </FormControl>
                 </GridItem>  
               );
+            } else if (col.type === 'cascade') {
+              return (
+                <ControlCreateor
+                  key={key}
+                  column={col}
+                  data={data}
+                  handleChange={this.handleChange}
+                  wrapper={{element: GridItem, props: {xs: 12, sm: 12, md: 12}}}
+                />
+              );
             } else {
               const message = errors[col.name] || null;
               return (
-                <GridItem key={'item_' + col.name} xs={12} sm={12} md={12}>
+                <GridItem key={key} xs={12} sm={12} md={12}>
                   <ControlCreateor
                     name={col.name} 
                     column={col} 
@@ -266,7 +288,6 @@ class FormComponent extends React.Component {
             <Card>
               <CardHeader color="info">
                 <h4 className={classes.cardTitleWhite}>{title}</h4>
-                {/* <p className={classes.cardCategoryWhite}>{project_detail.name}</p> */}
               </CardHeader>
               <CardBody className={classes.cardBody}>
                 { formLayout }

@@ -14,6 +14,7 @@ import {
 } from '@material-ui/core';
 import MyDatePicker from '../Control/DatePicker';
 import HierarchySelect from '../Control/HierarchySelect';
+import CascadeSelect from '../Control/CascadeSelect';
 import ModelChoice from '../../containers/modelChoice';
 import { common } from "../../utils/common";
 
@@ -142,9 +143,9 @@ class ControlCreateor extends React.Component {
             <InputLabel htmlFor={name}>{label}</InputLabel>
             <Select value={value} inputProps={{ name: name, value: value }} onChange={this.props.handleChange}>
               <MenuItem key='none' value=""><em>None</em></MenuItem>
-              {column.choices.map(item => {
+              {column.choices ? column.choices.map(item => {
                 return <MenuItem key={item.value} value={item.value}>{item.display_name}</MenuItem>;
-              })}
+              }) : null}
             </Select>
             { errorNode }
           </FormControl>
@@ -179,6 +180,14 @@ class ControlCreateor extends React.Component {
           </Select>
           { errorNode }
         </FormControl>
+      );
+    } else if (column.type === 'cascade') {
+      control = (
+        <CascadeSelect
+          {...this.props}
+          fields={column.fields}
+          choices={column.choices}
+        />
       );
     } else if (column.type === 'field' || column.type === 'fields') {
       control = (

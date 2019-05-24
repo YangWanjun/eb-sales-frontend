@@ -3,19 +3,17 @@ import { Link } from 'react-router-dom'
 import withStyles from "@material-ui/core/styles/withStyles";
 import {
   Typography,
-  Button,
 } from '@material-ui/core';
 import CustomBreadcrumbs from '../components/customBreadcrumbs';
 import DetailPanel from '../containers/detail';
 import EnhancedTable from '../containers/EnhancedTable';
 import DataProvider from '../components/Table/DataProvider';
-import { detail_project_schema, detail_project_lump_schema, edit_project_schema } from '../layout/project';
 import {
-  project_member_list_schema,
-  add_project_member_schema,
-  add_layout,
-  project_attendance_list_schema,
-} from '../layout/project_member';
+  detail_member_schema,
+  edit_member_schema,
+  list_organization_schema,
+  edit_member_organization_schema,
+} from '../layout/member';
 import { config } from '../utils/config';
 import { common } from '../utils/common';
 import { constant } from '../utils/constants';
@@ -32,9 +30,9 @@ class MemberDetail extends React.Component {
   constructor(props) {
     super(props);
 
-    this.handleDataUpdated = this.handleDataUpdated.bind(this);
     this.state = { 
       member: {},
+      organizations: [],
     };
     this.initialize();
 　}
@@ -47,14 +45,23 @@ class MemberDetail extends React.Component {
         member: data,
       });
     });
+    // 事業部一覧を初期化する
+    common.fetchGet(config.api.organization_list).then(data => {
+      let organizations = [];
+      data.results.map(row => (
+        organizations.push({value: row.id, display_name: row.name, parent: row.parent, disabled: row.is_on_sales !== true})
+      ));
+      this.setState({organizations});
+    });
   }
 
-  checkAssignDate(data) {
-    const {start_date, end_date} = data;
-    if (start_date && end_date && start_date > end_date) {
+  checkDepartment(data) {
+    const {division, department, section} = data;
+    if (!division && !department && !section) {
       return [
-        {name: 'start_date', message: common.formatStr(constant.ERROR.DATE_CONTRADICT, '開始日', '終了日')},
-        {name: 'end_date', message: common.formatStr(constant.ERROR.DATE_CONTRADICT, '開始日', '終了日')},
+        {name: 'division', message: common.formatStr(constant.ERROR.REQUIRE_FIELD, '所属部署')},
+        {name: 'department', message: common.formatStr(constant.ERROR.REQUIRE_FIELD, '所属部署')},
+        {name: 'section', message: common.formatStr(constant.ERROR.REQUIRE_FIELD, '所属部署')},
       ];
     } else {
       return true;
@@ -72,16 +79,29 @@ class MemberDetail extends React.Component {
     }
   }
 
-  handleDataUpdated(newData) {
-    let { project_detail } = this.state;
-    Object.assign(project_detail, newData);
-    this.setState({project_detail});
-  }
-
   render () {
-    const { classes } = this.props;
-    const { member } = this.state;
+    const { member, organizations } = this.state;
     const { params } = this.props.match;
+    const formProjectProps = {
+      schema: edit_member_schema,
+      title: member.full_name + 'を変更',
+      edit_url: common.formatStr(config.api.member_detail, params.member_id),
+    };
+    let colOrg = common.getColumnByName(edit_member_organization_schema, 'organization', 'name');
+    colOrg['choices'] = organizations;
+    const formMemberOrganizationProps = {
+      schema: edit_member_organization_schema,
+      layout: [],
+      title: member.full_name + 'に所属部署を設定',
+      checker: [this.checkDepartment],
+      // onChanges: [this.calcPlusMinus],
+      data: {
+        member: params.member_id,
+        member_name: member.full_name,
+      },
+      add_url: config.api.member_organization_period_list,
+      edit_url: config.api.member_organization_period_detail,
+    };
 
     return (
       <div>
@@ -90,32 +110,30 @@ class MemberDetail extends React.Component {
           <Link to={"/member/" + params.member_id} >{member.full_name}</Link>
           <Typography color="textPrimary">詳細</Typography>
         </CustomBreadcrumbs>
-        {/* <DetailPanel
-          title={member.full_name}
-          data={project_detail}
-          schema={project_detail.is_lump ? detail_project_lump_schema : detail_project_schema}
+        <DetailPanel
+          title={member.full_name + 'の詳細情報'}
+          data={member}
+          schema={detail_member_schema}
           formComponentProps={formProjectProps}
-          sendDataUpdated={this.handleDataUpdated}
-          deleteUrl={common.formatStr(config.api.project_detail, project_detail.id)}
-          actions={project_actions}
-        /> */}
-        {/* <DataProvider 
-          endpoint={ config.api.project_member_list + '?project=' + params.project_id } 
+          deleteUrl={common.formatStr(config.api.member_detail, params.member_id)}
+        />
+        <DataProvider 
+          endpoint={ config.api.member_organization_period_list + '?member=' + params.member_id } 
           render={ (initData) => {
             return (
               <EnhancedTable
-                tableTitle='メンバー一覧'
+                tableTitle='所属部署'
                 { ...initData }
-                columns={project_member_list_schema}
+                columns={list_organization_schema}
                 isClientSide={true}
-                selectable='multiple'
-                formComponentProps={formMemberProps}
-                deleteUrl={config.api.project_member_delete + '?project=' + params.project_id}
+                selectable='single'
+                formComponentProps={formMemberOrganizationProps}
+                deleteUrl={config.api.member_organization_period_detail}
               />
             );
           } }
         />
-        { project_detail.id ? (
+        {/* { project_detail.id ? (
           <DataProvider 
             endpoint={ common.formatStr(config.api.project_attendance_list, project_detail.id)} 
             render={ (initData) => {
