@@ -11,6 +11,7 @@ export const config = {
     member_organization_period_detail: hostApi + '/api/organization-period/%s/',
     organization_list: hostApi + '/api/organization',
     organization_division_list: hostApi + '/api/organization-division/',
+    organization_view_list: hostApi + '/api/organization-view/',
     salesperson_list: hostApi + '/api/salesperson/',
     salesperson_period_list: hostApi + '/api/salesperson-period/',
     salesperson_period_detail: hostApi + '/api/salesperson-period/%s/',

@@ -448,6 +448,11 @@ const styles = theme => ({
   tableWrapper: {
     overflowX: 'auto',
   },
+  tableRow: {
+    "&:hover": {
+      backgroundColor: "#90ee90 !important"
+    }
+  },
   cellPadding: {
     paddingRight: 0,
   },
@@ -893,7 +898,7 @@ class EnhancedTable extends React.Component {
                       const styles = this.getExtraStyles(n)
                       return (
                         <TableRow
-                          hover
+                          className={classes.tableRow}
                           onClick={event => this.handleClick(event, n.__index__)}
                           role="checkbox"
                           aria-checked={isSelected}

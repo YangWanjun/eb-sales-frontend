@@ -34,7 +34,7 @@ export const MemberListItems = () => (
       </ListItemIcon>
       <ListItemText primary="社員一覧" />
     </ListItem>
-    <ListItem button component={Link} to='/department'>
+    <ListItem button component={Link} to='/organization'>
       <ListItemIcon>
         <FolderShared />
       </ListItemIcon>

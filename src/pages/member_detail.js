@@ -134,7 +134,7 @@ class MemberDetail extends React.Component {
         <CustomBreadcrumbs>
           <Link to="/member" >作業メンバー一覧</Link>
           <Link to={"/member/" + params.member_id} >{member.full_name}</Link>
-          <Typography color="textPrimary">詳細</Typography>
+          <Typography color="textPrimary">変更</Typography>
         </CustomBreadcrumbs>
         <DetailPanel
           title={member.full_name + 'の詳細情報'}

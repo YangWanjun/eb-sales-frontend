@@ -17,6 +17,7 @@ import Status500 from '../containers/status_500';
 import MemberList from './member_list';
 import MemberPreview from './member_preview';
 import MemberDetail from './member_detail';
+import OrganizationList from './organization_list';
 import PartnerList from './partner_list';
 import ProjectList from './project_list';
 import ProjectDetail from './project_detail';
@@ -164,6 +165,7 @@ class Layout extends React.Component {
             <Route path='/member/:member_id/detail' component={MemberDetail} />
             <Route path='/member/:member_id/' component={MemberPreview} />
             <Route path='/member' component={MemberList} />
+            <Route path='/organization' component={OrganizationList} />
             <Route path='/partner' component={PartnerList} />
             <Route path='/project/:project_id/attendance/:year/:month' component={ProjectAttendance} />
             <Route path='/project/:project_id/request/:request_no' component={ProjectRequestDetail} />
