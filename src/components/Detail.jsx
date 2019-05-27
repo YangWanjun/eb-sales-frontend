@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types';
 import withStyles from "@material-ui/core/styles/withStyles";
 import {
@@ -156,7 +157,13 @@ class DetailPanel extends React.Component {
                       <TableRow key={col.name}>
                         <TableCell className={classes.cellHeader}>{col.label}</TableCell>
                         { badgeColor === null ? (
-                          <TableCell><Typography style={{whiteSpace: 'pre-line'}}>{ display_name }</Typography></TableCell>
+                          <TableCell>
+                            <Typography style={{whiteSpace: 'pre-line'}}>
+                              {(col.url_field && data[col.url_field]) ? (
+                                <Link to={data[col.url_field]}>{display_name}</Link>
+                              ) : display_name}
+                            </Typography>
+                          </TableCell>
                         ) : (
                           <TableCell><BadgeLabel color={badgeColor} badgeContent={ display_name } /></TableCell>
                         )}

@@ -79,17 +79,6 @@ class MemberDetail extends React.Component {
     }
   }
 
-  calcPlusMinus(name, data) {
-    if (['price', 'min_hours', 'max_hours'].indexOf(name) > -1) {
-      const {price, min_hours, max_hours} = data;
-      const plus_per_hour = Math.round(price / max_hours);
-      const minus_per_hour = Math.round(price / min_hours);
-      return { minus_per_hour, plus_per_hour };
-    } else {
-      return null;
-    }
-  }
-
   render () {
     const { member, organizations, salesperson } = this.state;
     const { params } = this.props.match;
@@ -106,7 +95,6 @@ class MemberDetail extends React.Component {
       layout: [],
       title: member.full_name + 'に所属部署を設定',
       checker: [this.checkDepartment],
-      // onChanges: [this.calcPlusMinus],
       data: {
         member: params.member_id,
         member_name: member.full_name,

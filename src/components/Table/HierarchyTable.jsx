@@ -38,7 +38,7 @@ class HierarchyTable extends React.Component {
   handleScroll = () => {
     const { tableId, paginationId } = this.state;
     const data = getFixedHeaderOption(tableId, paginationId);
-    console.log(data)
+
     this.setState(data);
   }
 

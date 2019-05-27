@@ -18,6 +18,7 @@ import MemberList from './member_list';
 import MemberPreview from './member_preview';
 import MemberDetail from './member_detail';
 import OrganizationList from './organization_list';
+import OrganizationDetail from './organization_detail';
 import PartnerList from './partner_list';
 import ProjectList from './project_list';
 import ProjectDetail from './project_detail';
@@ -165,6 +166,7 @@ class Layout extends React.Component {
             <Route path='/member/:member_id/detail' component={MemberDetail} />
             <Route path='/member/:member_id/' component={MemberPreview} />
             <Route path='/member' component={MemberList} />
+            <Route path='/organization/:pk/' component={OrganizationDetail} />
             <Route path='/organization' component={OrganizationList} />
             <Route path='/partner' component={PartnerList} />
             <Route path='/project/:project_id/attendance/:year/:month' component={ProjectAttendance} />

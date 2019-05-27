@@ -991,7 +991,7 @@ class EnhancedTable extends React.Component {
                 </React.Fragment>
               ) : (
                 <TableRow>
-                  <TableCell colSpan={ selectable === 'multiple' ? columns.length + 1 : columns.length }>
+                  <TableCell colSpan={ selectable === 'multiple' || selectable === 'single' ? columns.length + 1 : columns.length }>
                     { constant.INFO.NO_DATA }
                   </TableCell>
                 </TableRow>
