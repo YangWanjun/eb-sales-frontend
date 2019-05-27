@@ -18,9 +18,10 @@ const styles = theme => ({
 
 class MyDatePicker extends React.Component {
   render() {
-    const { classes, label, value, message, onChange } = this.props;
+    const { classes, label, message, onChange } = this.props;
     const error = message ? {error: true} : {};
     const errorNode = message ? (<FormHelperText>{message}</FormHelperText>) : <React.Fragment />;
+    const value = this.props.value || null;
 
     return (
       <FormControl className={classes.formControl} {...error}>
@@ -31,6 +32,7 @@ class MyDatePicker extends React.Component {
             value={value}
             onChange={onChange}
             format='yyyy/MM/dd'
+            maxDate={'9999/12/31'}
             {...error}
           />
         </MuiPickersUtilsProvider>

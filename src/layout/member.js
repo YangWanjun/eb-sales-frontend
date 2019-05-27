@@ -210,7 +210,7 @@ export const detail_member_schema = [
   },
   {
     "name": "marriage",
-    "type": "string",
+    "type": "choice",
     "label": "婚姻状況",
     "choices": [
       {
@@ -328,7 +328,7 @@ export const edit_member_schema = [
   },
   {
     "name": "marriage",
-    "type": "string",
+    "type": "choice",
     "label": "婚姻状況",
     "choices": [
       {
@@ -390,6 +390,32 @@ export const edit_member_organization_schema = [
       },
     ],
     "label": "所属部署",
+    "choices": [],
+  },
+  {
+    "name": "start_date",
+    "type": "date",
+    "label": "開始日",
+    "required": true,
+  },
+  {
+    "name": "end_date",
+    "type": "date",
+    "label": "終了日",
+  },
+];
+
+export const edit_salesperson_schema = [
+  {
+    "name": "member_name",
+    "type": "string",
+    "label": "メンバー",
+    "read_only": true,
+  },
+  {
+    "name": "salesperson",
+    "type": "choice",
+    "label": "営業員",
     "choices": [],
   },
   {

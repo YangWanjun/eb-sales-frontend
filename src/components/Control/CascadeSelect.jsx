@@ -4,6 +4,7 @@ import {
   MenuItem,
   InputLabel,
   Select,
+  FormHelperText,
 } from '@material-ui/core';
 import { common } from '../../utils/common';
 
@@ -30,8 +31,11 @@ class CascadeSelect extends React.Component {
     return retVal;
   }
 
-  getChildItems(parent) {
-    const children = this.props.choices.filter(sub => sub.parent === parent);
+  getChildItems(parent, currentValue) {
+    let children = this.props.choices.filter(sub => sub.parent === parent);
+    if (currentValue && children.filter(sub => sub.value === currentValue).length === 0) {
+      children = children.concat(this.props.choices.filter(sub => sub.value === currentValue));
+    }
     return children;
   }
 
@@ -71,15 +75,17 @@ class CascadeSelect extends React.Component {
   }
 
   render() {
-    const { classes, fields, data, wrapper } = this.props;
+    const { classes, fields, data, wrapper, errors } = this.props;
 
     return (
       <React.Fragment>
         { fields.map((field, key) => {
           const value = data[field.name] || '';
-          const choices = this.getChildItems(this.getParentId(field, value));
+          const choices = this.getChildItems(this.getParentId(field), value);
+          const hasError = (errors && errors[field.name]) ? {error: true} : {};
+          const errorNode = (errors && errors[field.name]) ? (<FormHelperText>{errors[field.name]}</FormHelperText>) : null;
           const control = (
-            <FormControl key={key} className={classes.formControl}>
+            <FormControl key={key} className={classes.formControl} {...hasError}>
               <InputLabel htmlFor={field.name}>{field.label}</InputLabel>
               <Select value={value} inputProps={{ name: field.name, value: value }} onChange={this.handleChange}>
                 <MenuItem key='none' value=""><em>None</em></MenuItem>
@@ -87,6 +93,7 @@ class CascadeSelect extends React.Component {
                   return <MenuItem disabled={item.disabled === true} key={item.value} value={item.value}>{item.display_name}</MenuItem>;
                 }) : null}
               </Select>
+              {errorNode}
             </FormControl>
           );
           if (wrapper) {

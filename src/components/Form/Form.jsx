@@ -221,6 +221,7 @@ class FormComponent extends React.Component {
                   data={data}
                   handleChange={this.handleChange}
                   wrapper={{element: GridItem, props: {xs: 12, sm: 12, md: 12}}}
+                  errors={errors}
                 />
               );
             } else {
