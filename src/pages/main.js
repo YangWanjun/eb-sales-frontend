@@ -20,6 +20,7 @@ import MemberDetail from './member_detail';
 import OrganizationList from './organization_list';
 import OrganizationDetail from './organization_detail';
 import PartnerList from './partner_list';
+import PartnerDetail from './partner_detail';
 import ProjectList from './project_list';
 import ProjectDetail from './project_detail';
 import ProjectAttendance from './project_attendance';
@@ -168,6 +169,7 @@ class Layout extends React.Component {
             <Route path='/member' component={MemberList} />
             <Route path='/organization/:pk/' component={OrganizationDetail} />
             <Route path='/organization' component={OrganizationList} />
+            <Route path='/partner/:pk' component={PartnerDetail} />
             <Route path='/partner' component={PartnerList} />
             <Route path='/project/:project_id/attendance/:year/:month' component={ProjectAttendance} />
             <Route path='/project/:project_id/request/:request_no' component={ProjectRequestDetail} />
