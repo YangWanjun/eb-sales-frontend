@@ -18,7 +18,7 @@ export const list_schema = [
     "search_type": "icontains"
   },
   {
-    "name": "client_id",
+    "name": "customer_id",
     "type": "integer",
     "label": "関連会社ＩＤ",
     "min_value": 0,
@@ -26,13 +26,13 @@ export const list_schema = [
     "visible": false,
   },
   {
-    "name": "client_name",
+    "name": "customer_name",
     "type": "string",
     "label": "関連会社名称",
     "max_length": 50,
     "visible": true,
     "sortable": true,
-    "sort_field": "client_name",
+    "sort_field": "customer_name",
     "searchable": true,
     "search_type": "icontains"
   },
@@ -239,7 +239,7 @@ export const detail_project_schema = [
     "label": "所属部署",
   },
   {
-    "name": "client__name",
+    "name": "customer__name",
     "type": "string",
     "label": "関連会社",
   },
@@ -387,7 +387,7 @@ export const detail_project_lump_schema = [
     "label": "所属部署",
   },
   {
-    "name": "client__name",
+    "name": "customer__name",
     "type": "string",
     "label": "関連会社",
   },
@@ -545,7 +545,7 @@ export const detail_project_lump_schema = [
 
 export const detail_project_attendance = [
   {
-    "name": "client__name",
+    "name": "customer__name",
     "type": "string",
     "label": "関連会社",
   },
@@ -619,12 +619,12 @@ export const edit_project_schema = [
     "label": "所属部署",
   },
   {
-    "name": "client",
+    "name": "customer",
     "type": "field",
     "required": true,
     "label": "関連会社",
-    "display_field": 'client__name',
-    "search_url": '/api/client/',
+    "display_field": 'customer__name',
+    "search_url": '/api/customer/',
   },
   {
     "name": "business_type",
@@ -664,14 +664,14 @@ export const edit_project_schema = [
     "required": true,
     "label": "案件責任者",
     "display_field": 'manager__name',
-    "search_url": '/api/client-member/',
+    "search_url": '/api/customer-member/',
   },
   {
     "name": "contact",
     "type": "field",
     "label": "案件連絡者",
     "display_field": 'contact__name',
-    "search_url": '/api/client-member/',
+    "search_url": '/api/customer-member/',
   },
   {
     "name": "start_date",

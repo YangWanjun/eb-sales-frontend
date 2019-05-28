@@ -137,9 +137,9 @@ class EnhancedTableHead extends React.Component {
                     enterDelay={300}
                   >
                     <TableSortLabel
-                      active={orderBy === (isClientSide ? column.name : column.sort_field)}
+                      active={orderBy === (isClientSide ? column.name : (column.sort_field || column.name))}
                       direction={order}
-                      onClick={this.createSortHandler(isClientSide ? column.name : column.sort_field, numeric)}
+                      onClick={this.createSortHandler(isClientSide ? column.name : (column.sort_field || column.name), numeric)}
                     >
                       {column.label}
                     </TableSortLabel>
@@ -184,7 +184,8 @@ class EnhancedTableFooter extends React.Component {
           onChange={onSelectAllClick}
         />
       </TableCell>
-    ) : (<React.Fragment></React.Fragment>);
+    ) : null;
+    console.log(summary);
 
     return (
       <TableFooter>
@@ -192,8 +193,8 @@ class EnhancedTableFooter extends React.Component {
           { chkCell }
           {columnData.map(col => {
             const numeric = col.type === 'integer' || col.type === 'decimal';
-            if (!col.visible) {
-              return <React.Fragment  key={col.name}/>;
+            if (col.visible === false) {
+              return null;
             } else if (numeric === true) {
               return (<TableCell key={col.name} align='right' className={classes.cellPadding}>{common.toNumComma(summary[col.name])}</TableCell>);
             } else {

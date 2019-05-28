@@ -4,36 +4,39 @@ import Typography from '@material-ui/core/Typography';
 import EnhancedTable from '../containers/EnhancedTable';
 import DataProvider from '../components/Table/DataProvider';
 import CustomBreadcrumbs from '../components/customBreadcrumbs';
+import {
+  list_projects_schema,
+} from '../layout/turnover';
 import { config } from '../utils/config';
 import { common } from '../utils/common';
 
-class TurnoverMonthlyClientDetail extends React.Component {
+class TurnoverMonthlyCustomerDetail extends React.Component {
 
   constructor(props) {
     super(props);
 
-    this.state = { client_detail: {} };
+    this.state = { customer_detail: {} };
   }
 
   componentDidMount() {
     const { params } = this.props.match;
-    const url_client_detail = common.formatStr(config.api.client_detail, params.client_id);
-    common.fetchGet(url_client_detail).then(data => {
-      this.setState({ client_detail: data, })
+    const url_customer_detail = common.formatStr(config.api.customer_detail, params.customer_id);
+    common.fetchGet(url_customer_detail).then(data => {
+      this.setState({ customer_detail: data, })
     });
   }
 
   render () {
     const urlParams = common.parseQuerystring(this.props.location.search, '&', '=', true);
-    const { client_detail } = this.state;
+    const { customer_detail } = this.state;
     const { params } = this.props.match;
-    const tableTitle = client_detail.name;
+    const tableTitle = customer_detail.name;
     const parentTitle = params.ym.substring(0, 4) + '年' + params.ym.substring(4, 6) + '月売上詳細';
-    const api_url = config.api.turnover_client_by_month 
+    const api_url = config.api.turnover_customer_by_month 
       + '?year=' + params.ym.substring(0, 4) 
       + '&month=' + params.ym.substring(4, 6)
-      + '&client_id=' + params.client_id;
-    const summaryUrl = common.formatStr(config.api.turnover_clients_by_month_detail, params.client_id)
+      + '&customer_id=' + params.customer_id;
+    const summaryUrl = common.formatStr(config.api.turnover_customers_by_month_detail, params.customer_id)
       + '?year=' + params.ym.substring(0, 4) 
       + '&month=' + params.ym.substring(4, 6);
 
@@ -53,6 +56,7 @@ class TurnoverMonthlyClientDetail extends React.Component {
             <EnhancedTable
               tableTitle={tableTitle}
               { ...initData }
+              columns={list_projects_schema}
               endpoint={ this.props.location.pathname }
             />
           ) } 
@@ -62,4 +66,4 @@ class TurnoverMonthlyClientDetail extends React.Component {
   }
 }
 
-export default TurnoverMonthlyClientDetail;
+export default TurnoverMonthlyCustomerDetail;

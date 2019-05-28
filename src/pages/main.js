@@ -28,7 +28,7 @@ import ProjectRequestDetail from './project_request_detail';
 import TurnoverDashboard from '../dashboard/turnover';
 import TurnoverMonthlyList from './turnover_monthly';
 import TurnoverMonthlyDetail from './turnover_monthly_detail';
-import TurnoverMonthlyClientDetail from './turnover_monthly_client_detail';
+import TurnoverMonthlyCustomerDetail from './turnover_monthly_customer_detail';
 import TurnoverMonthlyProjectDetail from './turnover_monthly_project_detail';
 import SimpleSnackbar from '../containers/snackBar';
 
@@ -175,7 +175,7 @@ class Layout extends React.Component {
             <Route path='/project/:project_id/' component={ProjectDetail} />
             <Route path='/project' component={ProjectList} />
             <Route path='/turnover/month/:ym/project/:project_id' component={TurnoverMonthlyProjectDetail} />
-            <Route path='/turnover/month/:ym/client/:client_id' component={TurnoverMonthlyClientDetail} />
+            <Route path='/turnover/month/:ym/customer/:customer_id' component={TurnoverMonthlyCustomerDetail} />
             <Route path='/turnover/monthly/:ym' component={TurnoverMonthlyDetail} />
             <Route path='/turnover/monthly' component={TurnoverMonthlyList} />
             <Route path='/turnover' component={TurnoverDashboard} />

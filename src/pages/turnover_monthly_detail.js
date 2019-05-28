@@ -4,6 +4,9 @@ import Typography from '@material-ui/core/Typography';
 import EnhancedTable from '../containers/EnhancedTable';
 import DataProvider from '../components/Table/DataProvider';
 import CustomBreadcrumbs from '../components/customBreadcrumbs';
+import {
+  list_customers_monthly_schema,
+} from '../layout/turnover';
 import { config } from '../utils/config';
 import { common } from '../utils/common';
 
@@ -13,7 +16,7 @@ class TurnoverMonthlyDetail extends React.Component {
     const urlParams = common.parseQuerystring(this.props.location.search, '&', '=', true);
     const { params } = this.props.match;
     const tableTitle = params.ym.substring(0, 4) + '年' + params.ym.substring(4, 6) + '月売上詳細';
-    const api_url = config.api.turnover_clients_by_month + '?year=' + params.ym.substring(0, 4) + '&month=' + params.ym.substring(4, 6);
+    const api_url = config.api.turnover_customers_by_month + '?year=' + params.ym.substring(0, 4) + '&month=' + params.ym.substring(4, 6);
 
     return (
       <div>
@@ -29,6 +32,7 @@ class TurnoverMonthlyDetail extends React.Component {
             <EnhancedTable
               tableTitle={tableTitle}
               { ...initData }
+              columns={list_customers_monthly_schema}
               endpoint={ this.props.location.pathname }
             />
           ) } 

@@ -4,6 +4,9 @@ import Typography from '@material-ui/core/Typography';
 import EnhancedTable from '../containers/EnhancedTable';
 import DataProvider from '../components/Table/DataProvider';
 import CustomBreadcrumbs from '../components/customBreadcrumbs';
+import {
+  list_project_member_schema,
+} from '../layout/turnover';
 import { config } from '../utils/config';
 import { common } from '../utils/common';
 
@@ -12,7 +15,7 @@ class TurnoverMonthlyProjectDetail extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { project_detail: {client: {}} };
+    this.state = { project_detail: {customer: {}} };
   }
 
   componentDidMount() {
@@ -33,7 +36,7 @@ class TurnoverMonthlyProjectDetail extends React.Component {
       + '?year=' + params.ym.substring(0, 4) 
       + '&month=' + params.ym.substring(4, 6)
       + '&project_id=' + params.project_id;
-    const summaryUrl = common.formatStr(config.api.turnover_client_by_month_detail, params.project_id)
+    const summaryUrl = common.formatStr(config.api.turnover_customer_by_month_detail, params.project_id)
       + '?year=' + params.ym.substring(0, 4) 
       + '&month=' + params.ym.substring(4, 6);
 
@@ -43,7 +46,7 @@ class TurnoverMonthlyProjectDetail extends React.Component {
           <Link to="/turnover" >売上情報</Link>
           <Link to="/turnover/monthly" >月別売上一覧</Link>
           <Link to={"/turnover/monthly/" + params.ym} >{parentTitle}</Link>
-          <Link to={"/turnover/month/" + params.ym + '/client/' + project_detail.client.id} >{project_detail.client.name}</Link>
+          <Link to={"/turnover/month/" + params.ym + '/customer/' + project_detail.customer.id} >{project_detail.customer.name}</Link>
           <Typography color="textPrimary">{tableTitle}</Typography>
         </CustomBreadcrumbs>
         <DataProvider
@@ -54,6 +57,7 @@ class TurnoverMonthlyProjectDetail extends React.Component {
             <EnhancedTable
               tableTitle={tableTitle}
               { ...initData }
+              columns={list_project_member_schema}
               endpoint={ this.props.location.pathname }
             />
           ) } 

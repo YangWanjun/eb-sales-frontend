@@ -4,6 +4,9 @@ import Typography from '@material-ui/core/Typography';
 import EnhancedTable from '../containers/EnhancedTable';
 import DataProvider from '../components/Table/DataProvider';
 import CustomBreadcrumbs from '../components/customBreadcrumbs';
+import {
+  list_monthly_schema,
+} from '../layout/turnover';
 import { config } from '../utils/config';
 import { common } from '../utils/common';
 
@@ -24,6 +27,7 @@ class TurnoverMonthlyList extends React.Component {
             <EnhancedTable
               tableTitle='月別売上一覧'
               { ...initData }
+              columns={list_monthly_schema}
               endpoint={ this.props.location.pathname }
             />
           ) } 
