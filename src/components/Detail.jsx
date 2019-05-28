@@ -20,6 +20,7 @@ import ConfirmDialog from '../components/ConfirmDialog';
 import FormDialog from './Form/index'
 import { common } from '../utils/common';
 import { constant } from '../utils/constants';
+import { history } from '../utils/store';
 
 const styles = theme => ({
   cardCategoryWhite: {
@@ -102,10 +103,11 @@ class DetailPanel extends React.Component {
   }
 
   async handleDataDeleted() {
-    if (this.props.deleteUrl) {
+    const { deleteUrl, deletedNext } = this.props;
+    if (deleteUrl) {
       let success = true;
       let message = constant.SUCCESS.DELETED
-      const response = common.fetchDelete(this.props.deleteUrl);
+      const response = common.fetchDelete(deleteUrl);
       await response
         .then(() => {})
         .catch(data => {
@@ -118,6 +120,9 @@ class DetailPanel extends React.Component {
         });
       if (success === true) {
         // 削除成功しました。
+        if (deletedNext) {
+          history.push(deletedNext);
+        }
         this.props.showSuccessMsg(message);
         return true;
       } else {

@@ -31,6 +31,7 @@ class OrganizationDetail extends React.Component {
 
     this.state = { 
       organization: {},
+      organizations: [],
     };
     this.initialize(props.match.params);
 　}
@@ -42,6 +43,14 @@ class OrganizationDetail extends React.Component {
         organization: data,
       });
     });
+    // 組織一覧を初期化する
+    common.fetchGet(config.api.organization_list).then(data => {
+      let organizations = [];
+      data.results.map(row => (
+        organizations.push({value: row.id, display_name: row.name, parent: row.parent, disabled: row.is_on_sales !== true})
+      ));
+      this.setState({organizations});
+    });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -52,8 +61,11 @@ class OrganizationDetail extends React.Component {
 
   render() {
     const { params } = this.props.match;
-    const { organization } = this.state;
+    const { organization, organizations } = this.state;
     // 部署を変更する
+    // 所属部署の設定
+    let colOrg = common.getColumnByName(edit_organization_schema, 'parent', 'name');
+    colOrg['choices'] = organizations;
     const formOrganizationProps = {
       schema: edit_organization_schema,
       title: organization.name + 'を変更',
@@ -83,6 +95,7 @@ class OrganizationDetail extends React.Component {
           schema={detail_organization_schema}
           formComponentProps={formOrganizationProps}
           deleteUrl={common.formatStr(config.api.organization_detail, params.pk)}
+          deletedNext="/organization"
         />
         <DataProvider 
           endpoint={ config.api.position_ship_list + '?organization=' + params.pk } 

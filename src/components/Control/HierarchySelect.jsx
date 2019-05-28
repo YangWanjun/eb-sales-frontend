@@ -40,7 +40,7 @@ class HierarchySelect extends React.Component {
       display_name = '▼' + display_name;
     }
 
-    items.push(<MenuItem {...itemProps} style={{marginLeft: deep * 30}}>{display_name}</MenuItem>)
+    items.push(<MenuItem disabled={item.disabled === true} {...itemProps} style={{marginLeft: deep * 30}}>{display_name}</MenuItem>)
     children.map(sub => {
       return this.getChildItems(items, sub, deep + 1);
     });

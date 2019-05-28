@@ -81,9 +81,9 @@ export const edit_organization_schema = [
   },
   {
     "name": "parent",
-    "type": "field",
+    "type": "choice",
     "label": "親組織",
-    "display_field": 'parent_name',
+    "choices": [],
   },
 ];
 
@@ -98,54 +98,18 @@ export const list_position_ship_schema = [
     "type": "choice",
     "label": "職位",
     "choices": [
-        {
-            "value": 1.0,
-            "display_name": "代表取締役"
-        },
-        {
-            "value": 1.1,
-            "display_name": "取締役"
-        },
-        {
-            "value": 3.0,
-            "display_name": "事業部長"
-        },
-        {
-            "value": 3.1,
-            "display_name": "副事業部長"
-        },
-        {
-            "value": 4.0,
-            "display_name": "部長"
-        },
-        {
-            "value": 5.0,
-            "display_name": "担当部長"
-        },
-        {
-            "value": 6.0,
-            "display_name": "課長"
-        },
-        {
-            "value": 7.0,
-            "display_name": "担当課長"
-        },
-        {
-            "value": 8.0,
-            "display_name": "PM"
-        },
-        {
-            "value": 9.0,
-            "display_name": "リーダー"
-        },
-        {
-            "value": 10.0,
-            "display_name": "サブリーダー"
-        },
-        {
-            "value": 11.0,
-            "display_name": "勤務統計者"
-        }
+      { "value": '1.0', "display_name": "代表取締役" },
+      { "value": '1.1', "display_name": "取締役" },
+      { "value": '3.0', "display_name": "事業部長" },
+      { "value": '3.1', "display_name": "副事業部長" },
+      { "value": '4.0', "display_name": "部長" },
+      { "value": '5.0', "display_name": "担当部長" },
+      { "value": '6.0', "display_name": "課長" },
+      { "value": '7.0', "display_name": "担当課長" },
+      { "value": '8.0', "display_name": "PM" },
+      { "value": '9.0', "display_name": "リーダー" },
+      { "value": '10.0', "display_name": "サブリーダー" },
+      { "value": '11.0', "display_name": "勤務統計者" },
     ],
   },
   {
@@ -169,54 +133,18 @@ export const edit_position_ship_schema = [
     "type": "choice",
     "label": "職位",
     "choices": [
-      {
-        "value": 1.0,
-        "display_name": "代表取締役"
-      },
-      {
-        "value": 1.1,
-        "display_name": "取締役"
-      },
-      {
-        "value": 3.0,
-        "display_name": "事業部長"
-      },
-      {
-        "value": 3.1,
-        "display_name": "副事業部長"
-      },
-      {
-        "value": 4.0,
-        "display_name": "部長"
-      },
-      {
-        "value": 5.0,
-        "display_name": "担当部長"
-      },
-      {
-        "value": 6.0,
-        "display_name": "課長"
-      },
-      {
-        "value": 7.0,
-        "display_name": "担当課長"
-      },
-      {
-        "value": 8.0,
-        "display_name": "PM"
-      },
-      {
-        "value": 9.0,
-        "display_name": "リーダー"
-      },
-      {
-        "value": 10.0,
-        "display_name": "サブリーダー"
-      },
-      {
-        "value": 11.0,
-        "display_name": "勤務統計者"
-      }
+      { "value": '1.0', "display_name": "代表取締役" },
+      { "value": '1.1', "display_name": "取締役" },
+      { "value": '3.0', "display_name": "事業部長" },
+      { "value": '3.1', "display_name": "副事業部長" },
+      { "value": '4.0', "display_name": "部長" },
+      { "value": '5.0', "display_name": "担当部長" },
+      { "value": '6.0', "display_name": "課長" },
+      { "value": '7.0', "display_name": "担当課長" },
+      { "value": '8.0', "display_name": "PM" },
+      { "value": '9.0', "display_name": "リーダー" },
+      { "value": '10.0', "display_name": "サブリーダー" },
+      { "value": '11.0', "display_name": "勤務統計者" }
     ],
     "required": true,
   },

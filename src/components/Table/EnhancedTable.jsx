@@ -831,12 +831,12 @@ class EnhancedTable extends React.Component {
       data, order, orderBy, orderNumeric, filters, selected, rowsPerPage, page,
       showFixedHeader, fixedHeaderPosition, fixedHeaderColsWidth
     } = this.state;
-    let dataLength = data.count;
+    let dataLength = data ? data.count : 0;
     // const emptyRows = rowsPerPage - Math.min(rowsPerPage, dataLength - page * rowsPerPage);
-    let results = data.results;
+    let results = data ? data.results : [];
     if (this.props.isClientSide) {
       // 並び替え
-      results = stableSort(data.results, getSorting(order, orderBy, orderNumeric));
+      results = stableSort(data ? data.results : [], getSorting(order, orderBy, orderNumeric));
       // 検索
       if (!common.isEmpty(filters)) {
         results = stableFilter(results, filters);
@@ -868,7 +868,7 @@ class EnhancedTable extends React.Component {
         <EnhancedTableToolbar 
           numSelected={selected.length}
           selected={selected}
-          results={data.results}
+          results={data ? data.results : []}
           columns={columns} 
           tableTitle={tableTitle}
           filters={filters} 
@@ -1072,6 +1072,7 @@ EnhancedTable.defaultProps = {
   isClientSide: false,
   summary: {},
   actions: [],
+  columns: [],
 };
 
 export default withStyles(styles)(EnhancedTable);

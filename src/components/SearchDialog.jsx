@@ -15,7 +15,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import SearchIcon from '@material-ui/icons/Search';
 import { fade } from '@material-ui/core/styles/colorManipulator';
 import EnhancedTable from './Table/EnhancedTable';
-import DataProvider from './Table/EnhancedTable';
+import DataProvider from './Table/DataProvider';
 import {common} from '../utils/common';
 import {constant} from '../utils/constants';
 import {hostApi} from '../utils/config';

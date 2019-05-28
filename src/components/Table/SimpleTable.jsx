@@ -1,16 +1,15 @@
 import React from "react";
-import { Link } from 'react-router-dom';
 import PropTypes from "prop-types";
 // @material-ui/core components
 import withStyles from "@material-ui/core/styles/withStyles";
 import {
   Table,
-  TableHead,
   TableRow,
   TableBody,
-  TableCell,
 } from "@material-ui/core";
 // core components
+import DataTableCell from './DataTableCell';
+import DataTableHead from './DataTableHead';
 import tableStyle from "../../assets/jss/components/tableStyle.jsx";
 
 class SimpleTable extends React.Component {
@@ -21,33 +20,21 @@ class SimpleTable extends React.Component {
     return (
       <div className={classes.tableResponsive}>
         <Table className={classes.table}>
-          {tableHead !== undefined ? (
-            <TableHead className={classes[tableHeaderColor + "TableHeader"]}>
-              <TableRow>
-                {tableHead.map((col, key) => {
-                  return (
-                    <TableCell
-                      className={classes.tableCell + " " + classes.tableHeadCell}
-                      key={key}
-                    >
-                      {col.label}
-                    </TableCell>
-                  );
-                })}
-              </TableRow>
-            </TableHead>
-          ) : null}
+          <DataTableHead
+            {...{classes, tableHeaderColor, tableHead}}
+          />
           <TableBody>
             {tableData.map((row, key) => {
               return (
                 <TableRow key={key}>
                   {tableHead.map((col, key) => {
                     return (
-                      <TableCell className={classes.tableCell} key={key}>
-                        {(col.url_field && row[col.url_field]) ? (
-                          <Link to={row[col.url_field]}>{row[col.name]}</Link>
-                        ) : row[col.name]}
-                      </TableCell>
+                      <DataTableCell
+                        key={key}
+                        classes={classes}
+                        column={col}
+                        row={row}
+                      />
                     );
                   })}
                 </TableRow>

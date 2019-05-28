@@ -98,11 +98,9 @@ class HierarchyTable extends React.Component {
     return (
       <div className={classes.tableResponsive} style={{marginTop: 0}}>
         <Table className={classes.table} id={tableId}>
-          {tableHead !== undefined ? (
-            <DataTableHead
-              {...{classes, tableHeaderColor, tableHead}}
-            />
-          ) : null}
+          <DataTableHead
+            {...{classes, tableHeaderColor, tableHead}}
+          />
           <TableBody>
             {rows.map(row => {
               return row;

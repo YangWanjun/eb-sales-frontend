@@ -41,18 +41,18 @@ class FormComponent extends React.Component {
 
   handleChange(event) {
     let value = event.target.value;
-    let id = event.target.name;
+    let name = event.target.name;
 
     this.setState((state) => {
       let data = state.data;
-      data[id] = value;
+      data[name] = value;
       return {data: data};
     });
 
     this.props.onChanges.map(method => {
       let data = this.state.data;
-      data[id] = value;
-      const retVal = method(id, data);
+      data[name] = value;
+      const retVal = method(name, data);
       if (retVal) {
         this.setState((state) => {
           let data = Object.assign({}, state.data, retVal);
@@ -65,11 +65,11 @@ class FormComponent extends React.Component {
 
   handleDateChange = key => date => {
     let value = common.formatDate(date, 'YYYY-MM-DD');
-    let id = key;
+    let name = key;
 
     this.setState((state) => {
       let data = state.data;
-      data[id] = value
+      data[name] = value
       return {data: data};
     });
   };
@@ -83,12 +83,12 @@ class FormComponent extends React.Component {
   };
 
   handleCheck(event) {
-    let id = event.target.value;
+    let name = event.target.value;
     const checked = event.target.checked;
     
     this.setState((state) => {
       let data = state.data;
-      data[id] = checked;
+      data[name] = checked;
       return {data: data};
     });
   }
