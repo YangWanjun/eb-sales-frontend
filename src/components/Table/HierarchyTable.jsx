@@ -6,6 +6,7 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import {
   Table,
   TableRow,
+  // TableCell,
   TableBody,
 } from "@material-ui/core";
 // core components
@@ -13,6 +14,7 @@ import DataTableHead from './DataTableHead';
 import DataTableCell from './DataTableCell';
 import DataTableFixedHead from './DataTableFixedHead';
 import { getFixedHeaderOption } from './TableCommon';
+// import TableRowDial from '../Control/TableRowDial';
 import tableStyle from "../../assets/jss/components/tableStyle.jsx";
 import { common } from '../../utils/common';
 
@@ -86,6 +88,9 @@ class HierarchyTable extends React.Component {
             />
           );
         })}
+        {/* <TableCell className={classes.tableActionCell}>
+          <TableRowDial />
+        </TableCell> */}
       </TableRow>
     );
   }
@@ -100,6 +105,7 @@ class HierarchyTable extends React.Component {
         <Table className={classes.table} id={tableId}>
           <DataTableHead
             {...{classes, tableHeaderColor, tableHead}}
+            actions={true}
           />
           <TableBody>
             {rows.map(row => {
@@ -115,6 +121,7 @@ class HierarchyTable extends React.Component {
               <DataTableHead
                 {...{classes, tableHeaderColor, tableHead}}
                 colsWidth={fixedHeaderColsWidth} 
+                actions={true}
               />
             }
           />

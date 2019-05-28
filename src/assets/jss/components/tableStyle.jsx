@@ -61,6 +61,11 @@ const tableStyle = theme => ({
     verticalAlign: "middle",
     textAlign: 'center',
   },
+  tableActionCell: {
+    width: 35,
+    textAlign: 'center',
+    padding: 0,
+  },
   tableActionButton: {
     width: "27px",
     height: "27px",

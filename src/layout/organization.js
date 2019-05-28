@@ -154,3 +154,33 @@ export const edit_position_ship_schema = [
     "label": "兼任",
   },
 ];
+
+export const list_organization_member_schema = [
+  {
+    "name": "name",
+    "type": "string",
+    "label": "名前",
+    "searchable": true,
+  },
+  {
+    "name": "start_date",
+    "type": "date",
+    "label": "配属開始日",
+  },
+  {
+    "name": "end_date",
+    "type": "date",
+    "label": "配属終了日",
+  },
+  {
+    "name": "is_working",
+    "type": "boolean",
+    "label": "稼働中",
+    "searchable": true,
+  },
+  {
+    "name": "positions",
+    "type": "string",
+    "label": "職位",
+  },
+];

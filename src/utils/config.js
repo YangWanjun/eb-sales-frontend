@@ -13,6 +13,7 @@ export const config = {
     organization_detail: hostApi + '/api/organization/%s/',
     organization_division_list: hostApi + '/api/organization-division/',
     organization_view_list: hostApi + '/api/organization-view/',
+    organization_member_list: hostApi + '/api/organization-member/%s/',
     position_ship_list: hostApi + '/api/position-ship/',
     position_ship_detail: hostApi + '/api/position-ship/%s/',
     salesperson_list: hostApi + '/api/salesperson/',

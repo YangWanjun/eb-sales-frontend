@@ -13,6 +13,7 @@ import {
   edit_organization_schema,
   list_position_ship_schema,
   edit_position_ship_schema,
+  list_organization_member_schema,
 } from '../layout/organization';
 import { config } from '../utils/config';
 import { common } from '../utils/common';
@@ -109,6 +110,19 @@ class OrganizationDetail extends React.Component {
                 selectable='single'
                 formComponentProps={formPositionShipProps}
                 deleteUrl={config.api.position_ship_detail}
+              />
+            );
+          } }
+        />
+        <DataProvider 
+          endpoint={ common.formatStr(config.api.organization_member_list, params.pk) } 
+          render={ (initData) => {
+            return (
+              <EnhancedTable
+                tableTitle={organization.name + ' のメンバー一覧'}
+                { ...initData }
+                columns={list_organization_member_schema}
+                isClientSide={true}
               />
             );
           } }

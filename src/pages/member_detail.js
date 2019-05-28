@@ -129,7 +129,6 @@ class MemberDetail extends React.Component {
           data={member}
           schema={detail_member_schema}
           formComponentProps={formProjectProps}
-          deleteUrl={common.formatStr(config.api.member_detail, params.member_id)}
         />
         <DataProvider 
           endpoint={ config.api.member_organization_period_list + '?member=' + params.member_id } 
