@@ -252,9 +252,11 @@ export const list_pay_notify_schema = [
 
 export const edit_pay_notify_schema = [
   {
-    "name": "member_name",
-    "type": "string",
+    "name": "member",
+    "type": "choice",
     "label": "名前",
+    "required": true,
+    "dataSource": '',
   },
   {
     "name": "is_cc",

@@ -24,6 +24,7 @@ export const config = {
     partner_view_list: hostApi + '/api/partner-list/',
     partner_member_list: hostApi + '/api/partner-member/',
     partner_member_detail: hostApi + '/api/partner-member/%s/',
+    partner_member_choice: hostApi + '/api/partner/%s/member/',
     partner_pay_notify_recipient_list: hostApi + '/api/partner-pay-notify-recipient/',
     partner_pay_notify_recipient_detial: hostApi + '/api/partner-pay-notify-recipient/%s/',
     customer_list: hostApi + '/api/customer/',

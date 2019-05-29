@@ -15,6 +15,7 @@ import {
 import MyDatePicker from '../Control/DatePicker';
 import HierarchySelect from '../Control/HierarchySelect';
 import CascadeSelect from '../Control/CascadeSelect';
+import DataSelect from '../Control/DataSelect';
 import ModelChoice from '../../containers/modelChoice';
 import { common } from "../../utils/common";
 
@@ -141,12 +142,14 @@ class ControlCreateor extends React.Component {
         control = (
           <FormControl className={classes.formControl} { ...error }>
             <InputLabel htmlFor={name}>{label}</InputLabel>
-            <Select value={value} inputProps={{ name: name, value: value }} onChange={this.props.handleChange}>
-              <MenuItem key='none' value=""><em>None</em></MenuItem>
-              {column.choices ? column.choices.map(item => {
-                return <MenuItem key={item.value} value={item.value}>{item.display_name}</MenuItem>;
-              }) : null}
-            </Select>
+            <DataSelect
+              name={name}
+              value={value}
+              choices={column.choices}
+              dataSource={column.dataSource}
+              onChange={this.props.handleChange}
+              { ...error }
+            />
             { errorNode }
           </FormControl>
         );

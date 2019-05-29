@@ -167,6 +167,8 @@ class FormComponent extends React.Component {
       } else {
         errMsg = errors.non_field_errors;
       }
+    } else if (errors.detail) {
+      errMsg = errors.detail;
     }
     this.props.showErrorMsg(errMsg);
   }

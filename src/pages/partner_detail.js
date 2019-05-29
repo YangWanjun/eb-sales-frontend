@@ -31,6 +31,7 @@ class PartnerDetail extends React.Component {
 
     this.state = { 
       partner: {},
+      members: [],
     };
     this.initialize(props.match.params);
 　}
@@ -42,15 +43,22 @@ class PartnerDetail extends React.Component {
         partner: data,
       });
     });
+    // 協力会社の社員一覧
+    common.fetchGet(config.api.partner_member_list + '?company=' + params.pk).then(data => {
+      let members = [];
+      data.results.map(row => (
+        members.push({value: row.id, display_name: row.name})
+      ));
+      this.setState({members});
+    });
   }
 
   render() {
     const { params } = this.props.match;
     const { partner } = this.state;
-    // // 部署を変更する
-    // // 所属部署の設定
-    // let colOrg = common.getColumnByName(edit_organization_schema, 'parent', 'name');
-    // colOrg['choices'] = organizations;
+    let colMember = common.getColumnByName(edit_pay_notify_schema, 'member', 'name');
+    // colMember['choices'] = members;
+    colMember['dataSource'] = common.formatStr(config.api.partner_member_choice, params.pk);
     const formPartnerProps = {
       schema: edit_partner_schema,
       title: partner.name + 'を変更',
