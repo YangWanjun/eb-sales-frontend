@@ -264,3 +264,94 @@ export const edit_pay_notify_schema = [
     "label": "ＣＣに入れて送信",
   },
 ];
+
+export const list_bank_account_schema = [
+  {
+    "name": "bank_name",
+    "type": "string",
+    "label": "銀行名称",
+  },
+  {
+    "name": "branch_name",
+    "type": "string",
+    "label": "支店名称",
+  },
+  {
+    "name": "account_type",
+    "type": "choice",
+    "label": "預金種類",
+    "choices": [
+      { "value": "1", "display_name": "普通預金" },
+      { "value": "2", "display_name": "定期預金" },
+      { "value": "3", "display_name": "総合口座" },
+      { "value": "4", "display_name": "当座預金" },
+      { "value": "5", "display_name": "貯蓄預金" },
+      { "value": "6", "display_name": "大口定期預金" },
+      { "value": "7", "display_name": "積立定期預金" },
+    ]
+  },
+  {
+    "name": "account_number",
+    "type": "string",
+    "label": "口座番号",
+  },
+  {
+    "name": "account_holder",
+    "type": "string",
+    "label": "口座名義",
+  },
+];
+
+export const edit_bank_account_schema = [
+  {
+    "name": "bank",
+    "type": "field",
+    "label": "銀行名称",
+    "search_url": '/api/bank/?schema=1',
+    "display_field": 'bank_name',
+    "required": true,
+  },
+  {
+    "name": "branch_no",
+    "type": "string",
+    "label": "支店番号",
+    "required": true,
+  },
+  {
+    "name": "branch_name",
+    "type": "string",
+    "label": "支店名称",
+    "required": true,
+  },
+  {
+    "name": "branch_kana",
+    "type": "string",
+    "label": "支店カナ",
+  },
+  {
+    "name": "account_type",
+    "type": "choice",
+    "label": "預金種類",
+    "choices": [
+      { "value": "1", "display_name": "普通預金" },
+      { "value": "2", "display_name": "定期預金" },
+      { "value": "3", "display_name": "総合口座" },
+      { "value": "4", "display_name": "当座預金" },
+      { "value": "5", "display_name": "貯蓄預金" },
+      { "value": "6", "display_name": "大口定期預金" },
+      { "value": "7", "display_name": "積立定期預金" },
+    ],
+    "required": true,
+  },
+  {
+    "name": "account_number",
+    "type": "string",
+    "label": "口座番号",
+    "required": true,
+  },
+  {
+    "name": "account_holder",
+    "type": "string",
+    "label": "口座名義",
+  },
+];

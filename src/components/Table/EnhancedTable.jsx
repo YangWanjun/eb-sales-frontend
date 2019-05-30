@@ -451,7 +451,7 @@ const styles = theme => ({
   },
   tableRow: {
     "&:hover": {
-      backgroundColor: "#90ee90 !important"
+      backgroundColor: "rgba(0, 0, 0, 0.07) !important"
     }
   },
   cellPadding: {

@@ -55,7 +55,7 @@ class ModelChoice extends React.Component {
   handleChangeChips(chips) {
     let data = [];
     chips.map(row => (
-      data.push({value: row.id, display_name: row.name})
+      data.push({value: row.id === undefined ? row.code : row.id, display_name: row.name})
     ));
     this.setState({data});
     if (this.props.handleFieldChange) {

@@ -13,6 +13,8 @@ import {
   list_partner_member_schema,
   list_pay_notify_schema,
   edit_pay_notify_schema,
+  list_bank_account_schema,
+  edit_bank_account_schema,
 } from '../layout/partner';
 import { config } from '../utils/config';
 import { common } from '../utils/common';
@@ -86,6 +88,17 @@ class PartnerDetail extends React.Component {
       add_url: config.api.partner_pay_notify_recipient_list,
       edit_url: config.api.partner_pay_notify_recipient_detial,
     };
+    // 協力会社銀行口座
+    const formBankAccountProps = {
+      schema: edit_bank_account_schema,
+      layout: [],
+      title: '協力会社銀行口座',
+      data: {
+        company: params.pk,
+      },
+      add_url: config.api.partner_bank_account_list,
+      edit_url: config.api.partner_bank_account_detail,
+    };
 
     return (
       <div>
@@ -127,6 +140,22 @@ class PartnerDetail extends React.Component {
                 selectable='single'
                 formComponentProps={formPayNotifyProps}
                 deleteUrl={config.api.partner_pay_notify_recipient_detial}
+              />
+            );
+          } }
+        />
+        <DataProvider 
+          endpoint={ config.api.partner_bank_account_list + '?company=' + params.pk } 
+          render={ (initData) => {
+            return (
+              <EnhancedTable
+                tableTitle='協力会社銀行口座一覧'
+                { ...initData }
+                columns={list_bank_account_schema}
+                isClientSide={true}
+                selectable='single'
+                formComponentProps={formBankAccountProps}
+                deleteUrl={config.api.partner_bank_account_detail}
               />
             );
           } }
