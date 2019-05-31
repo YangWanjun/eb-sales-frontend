@@ -1,32 +1,31 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Stepper from '@material-ui/core/Stepper';
-import Step from '@material-ui/core/Step';
-import StepLabel from '@material-ui/core/StepLabel';
-import StepContent from '@material-ui/core/StepContent';
-import Button from '@material-ui/core/Button';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
+import { withStyles } from '@material-ui/core/styles';
+import {
+  Typography,
+  Paper,
+  Button,
+  Stepper,
+  Step,
+  StepLabel,
+  StepContent,
+} from '@material-ui/core';
+import FormComponent from '../../containers/form';
 
-const useStyles = makeStyles(theme => ({
+const styles = theme => ({
   root: {
     width: '90%',
   },
   button: {
-    marginTop: theme.spacing(1),
-    marginRight: theme.spacing(1),
+    marginTop: theme.spacing.unit,
+    marginRight: theme.spacing.unit,
   },
   actionsContainer: {
-    marginBottom: theme.spacing(2),
+    marginBottom: theme.spacing.unit * 2,
   },
   resetContainer: {
-    padding: theme.spacing(3),
+    padding: theme.spacing.unit * 3,
   },
-}));
-
-function getSteps() {
-  return ['Select campaign settings', 'Create an ad group', 'Create an ad'];
-}
+});
 
 function getStepContent(step) {
   switch (step) {
@@ -46,64 +45,87 @@ function getStepContent(step) {
   }
 }
 
-function StepForm() {
-  const classes = useStyles();
-  const [activeStep, setActiveStep] = React.useState(0);
-  const steps = getSteps();
+class StepForm extends React.Component {
 
-  function handleNext() {
-    setActiveStep(prevActiveStep => prevActiveStep + 1);
+  constructor(props) {
+    super(props);
+
+    this.handleNext = this.handleNext.bind(this);
+    this.handleBack = this.handleBack.bind(this);
+    this.handleReset = this.handleReset.bind(this);
+    this.state = {
+      activeStep: 0,
+    }
   }
 
-  function handleBack() {
-    setActiveStep(prevActiveStep => prevActiveStep - 1);
+  handleNext() {
+    this.setState(state => {
+      return {activeStep: state.activeStep + 1};
+    });
   }
 
-  function handleReset() {
-    setActiveStep(0);
+  handleBack() {
+    this.setState(state => {
+      return {activeStep: state.activeStep - 1};
+    });
   }
 
-  return (
-    <div className={classes.root}>
-      <Stepper activeStep={activeStep} orientation="vertical">
-        {steps.map((label, index) => (
-          <Step key={label}>
-            <StepLabel>{label}</StepLabel>
-            <StepContent>
-              <Typography>{getStepContent(index)}</Typography>
-              <div className={classes.actionsContainer}>
-                <div>
-                  <Button
-                    disabled={activeStep === 0}
-                    onClick={handleBack}
-                    className={classes.button}
-                  >
-                    Back
-                  </Button>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleNext}
-                    className={classes.button}
-                  >
-                    {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-                  </Button>
-                </div>
-              </div>
-            </StepContent>
-          </Step>
-        ))}
-      </Stepper>
-      {activeStep === steps.length && (
-        <Paper square elevation={0} className={classes.resetContainer}>
-          <Typography>All steps completed - you&apos;re finished</Typography>
-          <Button onClick={handleReset} className={classes.button}>
-            Reset
-          </Button>
-        </Paper>
-      )}
-    </div>
-  );
+  handleReset() {
+    this.setState({activeStep: 0});
+  }
+
+  render () {
+    const { classes, steps } = this.props;
+    const { activeStep } = this.state;
+
+    return (
+      <div className={classes.root}>
+        <Stepper activeStep={activeStep} orientation="vertical">
+          {steps.map((step, index) => {
+            return (
+              <Step key={index}>
+                <StepLabel>{step.name}</StepLabel>
+                <StepContent>
+                  <div>
+                    {step.form ? (
+                      <FormComponent {...step.form} classes={classes} />
+                    ) : null}
+                  </div>
+                  <div className={classes.actionsContainer}>
+                    <div>
+                      <Button
+                        disabled={activeStep === 0}
+                        onClick={this.handleBack}
+                        className={classes.button}
+                      >
+                        Back
+                      </Button>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={this.handleNext}
+                        className={classes.button}
+                      >
+                        {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                      </Button>
+                    </div>
+                  </div>
+                </StepContent>
+              </Step>
+            );
+          })}
+        </Stepper>
+        {activeStep === steps.length && (
+          <Paper square elevation={0} className={classes.resetContainer}>
+            <Typography>All steps completed - you&apos;re finished</Typography>
+            <Button onClick={this.handleReset} className={classes.button}>
+              Reset
+            </Button>
+          </Paper>
+        )}
+      </div>
+    );
+  }
 }
 
-export default StepForm;
+export default withStyles(styles)(StepForm);

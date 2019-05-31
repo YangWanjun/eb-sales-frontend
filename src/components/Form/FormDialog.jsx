@@ -1,9 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core';
+import {
+  withStyles,
+  Button,
+} from '@material-ui/core';
 import Modal from '@material-ui/core/Modal';
-import FormComponent from '../../containers/form';
+import Card from "../Card/Card";
+import GridItem from "../Grid/GridItem.jsx";
+import GridContainer from "../Grid/GridContainer.jsx";
+import CardHeader from "../Card/CardHeader.jsx";
+import CardBody from "../Card/CardBody.jsx";
+import CardFooter from '../Card/CardFooter';
+import FormComponent from './Form';
 import { common } from '../../utils/common';
+import { constant } from "../../utils/constants";
 
 const styles = theme => ({
   root: {
@@ -56,10 +66,24 @@ const styles = theme => ({
   },
 });
 
+function getModalStyle() {
+  const top = 50;
+  const left = 50;
+
+  return {
+    top: `${top}%`,
+    left: `${left}%`,
+    transform: `translate(-${top}%, -${left}%)`,
+  };
+}
+
 class FormDialog extends React.Component {
   constructor(props) {
     super(props);
 
+    this.handleOk = this.handleOk.bind(this);
+    this.clean = this.clean.bind(this);
+    this.toastError = this.toastError.bind(this);
     this.state = {
       open: false,
       data: {},
@@ -77,7 +101,59 @@ class FormDialog extends React.Component {
     this.setState({open: false});
   };
 
+  handleOk = () => {
+    const formData = this.clean();
+    if (formData) {
+      const __index__ = formData.__index__;
+      if (formData.id && this.props.edit_url) {
+        // 更新
+        const url = common.formatStr(this.props.edit_url, formData.id);
+        common.fetchPut(url, formData).then(json => {
+          json['__index__'] = __index__;
+          this.props.showSuccessMsg(constant.SUCCESS.SAVED);
+          this.handleClose();
+          if (this.props.onRowUpdated) {
+            this.props.onRowUpdated(json);
+          }
+        }).catch(errors => {
+          this.setState({errors});
+          this.toastError(errors);
+        });
+      } else if (!formData.id && this.props.add_url) {
+        // 追加
+        common.fetchPost(this.props.add_url, formData).then(json => {
+          json['__index__'] = __index__;
+          this.props.showSuccessMsg(constant.SUCCESS.SAVED);
+          this.handleClose();
+          if (this.props.onRowAdded) {
+            this.props.onRowAdded(json);
+          }
+        }).catch(errors => {
+          this.setState({errors});
+          this.toastError(errors);
+        });
+      } else {
+        this.props.showWarningMsg(constant.WARNING.REQUIRE_SAVE_URL);
+      }
+    }
+  };
+
+  clean() {
+    if (this._clean) {
+      return this._clean();
+    } else {
+      return null;
+    }
+  }
+
+  toastError() {
+    if (this._toastError) {
+      this._toastError();
+    }
+  }
+
   render() {
+    const { classes, title } = this.props;
     const { open, data } = this.state;
     let props = Object.assign({}, this.props);
     if (!common.isEmpty(data)) {
@@ -92,7 +168,36 @@ class FormDialog extends React.Component {
           aria-labelledby="simple-modal-title"
           aria-describedby="simple-modal-description"
         >
-          <FormComponent {...props} handleClose={this.handleClose} />
+          <div style={getModalStyle()} className={classes.paper}>
+            <GridContainer>
+              <GridItem xs={12} sm={12} md={12}>
+                <Card>
+                  <CardHeader color="info">
+                    <h4 className={classes.cardTitleWhite}>{title}</h4>
+                  </CardHeader>
+                  <CardBody className={classes.cardBody}>
+                    <FormComponent
+                      ref={(form) => {
+                        this._clean = form && form.clean;
+                        this._toastError = form && form.toastError;
+                      }}
+                      {...props}
+                    />
+                  </CardBody>
+                  <CardFooter chart>
+                    <div className={classes.rightAlign}>
+                      <Button onClick={this.handleClose}>
+                        キャンセル
+                      </Button>
+                      <Button onClick={this.handleOk} color="primary" type="submit" autoFocus={true}>
+                        確定
+                      </Button>
+                    </div>
+                  </CardFooter>
+                </Card>
+              </GridItem>
+            </GridContainer>
+          </div>
         </Modal>
       </div>
     )

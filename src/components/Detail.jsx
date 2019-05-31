@@ -17,7 +17,7 @@ import CardBody from "./Card/CardBody.jsx";
 import CardFooter from "./Card/CardFooter.jsx";
 import BadgeLabel from '../components/badgeLabel';
 import ConfirmDialog from '../components/ConfirmDialog';
-import { FormDialog } from './Form/index'
+import FormDialog from '../containers/FormDialog';
 import { common } from '../utils/common';
 import { constant } from '../utils/constants';
 import { history } from '../utils/store';

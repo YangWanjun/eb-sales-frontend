@@ -2,29 +2,13 @@ import React from "react";
 import PropTypes from 'prop-types';
 import {
   FormControl,
-  Button,
   TextField,
 } from '@material-ui/core';
-import Card from "../Card/Card";
 import GridItem from "../Grid/GridItem.jsx";
 import GridContainer from "../Grid/GridContainer.jsx";
-import CardHeader from "../Card/CardHeader.jsx";
-import CardBody from "../Card/CardBody.jsx";
-import CardFooter from '../Card/CardFooter';
 import ControlCreateor from './ControlCreator';
 import { common } from "../../utils/common";
 import { constant } from "../../utils/constants";
-
-function getModalStyle() {
-  const top = 50;
-  const left = 50;
-
-  return {
-    top: `${top}%`,
-    left: `${left}%`,
-    transform: `translate(-${top}%, -${left}%)`,
-  };
-}
 
 class FormComponent extends React.Component {
 
@@ -33,6 +17,9 @@ class FormComponent extends React.Component {
 
     this.handleChange = this.handleChange.bind(this);
     this.handleCheck = this.handleCheck.bind(this);
+    this.validate = this.validate.bind(this);
+    this.clean = this.clean.bind(this);
+    this.toastError = this.toastError.bind(this);
     this.state = { 
       data: this.props.data || {},
       errors: {},
@@ -93,7 +80,7 @@ class FormComponent extends React.Component {
     });
   }
 
-  handleOk = () => {
+  validate() {
     let hasError = false;
     let errors = {};
     const { data } = this.state;
@@ -123,76 +110,52 @@ class FormComponent extends React.Component {
     this.setState({errors});
     if (hasError === true) {
       this.toastError(errors);
+      return false;
     } else {
-      const formData = this.clean(data);
-      const __index__ = data.__index__;
-      if (formData.id && this.props.edit_url) {
-        // 更新
-        const url = common.formatStr(this.props.edit_url, formData.id);
-        common.fetchPut(url, formData).then(json => {
-          json['__index__'] = __index__;
-          this.props.showSuccessMsg(constant.SUCCESS.SAVED);
-          this.props.handleClose();
-          if (this.props.onRowUpdated) {
-            this.props.onRowUpdated(json);
-          }
-        }).catch(errors => {
-          this.setState({errors});
-          this.toastError(errors);
-        });
-      } else if (!formData.id && this.props.add_url) {
-        // 追加
-        common.fetchPost(this.props.add_url, formData).then(json => {
-          json['__index__'] = __index__;
-          this.props.showSuccessMsg(constant.SUCCESS.SAVED);
-          this.props.handleClose();
-          if (this.props.onRowAdded) {
-            this.props.onRowAdded(json);
-          }
-        }).catch(errors => {
-          this.setState({errors});
-          this.toastError(errors);
-        });
-      } else {
-        this.props.showWarningMsg(constant.WARNING.REQUIRE_SAVE_URL);
-      }
+      return true;
     }
-  };
+  }
 
   toastError(errors) {
     let errMsg = constant.ERROR.FORM_CHECK_ERROR;
-    if (errors.non_field_errors) {
-      if (Array.isArray(errors.non_field_errors) && errors.non_field_errors.length > 0) {
-        errMsg = errors.non_field_errors[0];
-      } else {
-        errMsg = errors.non_field_errors;
+    if (errors) {
+      if (errors.non_field_errors) {
+        if (Array.isArray(errors.non_field_errors) && errors.non_field_errors.length > 0) {
+          errMsg = errors.non_field_errors[0];
+        } else {
+          errMsg = errors.non_field_errors;
+        }
+      } else if (errors.detail) {
+        errMsg = errors.detail;
       }
-    } else if (errors.detail) {
-      errMsg = errors.detail;
     }
     this.props.showErrorMsg(errMsg);
   }
 
   clean() {
-    let data = Object.assign({}, this.state.data);
-    this.props.schema.map(col => {
-      if (col.type === 'field') {
-        const value = data[col.name];
-        if (Array.isArray(value) && value.length > 0) {
-          const item = value[0];
-          data[col.name] = item.value;
+    if (this.validate() === true) {
+      let data = Object.assign({}, this.state.data);
+      this.props.schema.map(col => {
+        if (col.type === 'field') {
+          const value = data[col.name];
+          if (Array.isArray(value) && value.length > 0) {
+            const item = value[0];
+            data[col.name] = item.value;
+          }
+        } else if (col.type === 'fields') {
+          const value = data[col.name];
+          if (Array.isArray(value) && value.length > 0) {
+            let items = [];
+            value.map(item => (items.push(item.value)))
+            data[col.name] = items;
+          }
         }
-      } else if (col.type === 'fields') {
-        const value = data[col.name];
-        if (Array.isArray(value) && value.length > 0) {
-          let items = [];
-          value.map(item => (items.push(item.value)))
-          data[col.name] = items;
-        }
-      }
-      return true;
-    });
-    return data;
+        return true;
+      });
+      return data;
+    } else {
+      return null;
+    }
   }
 
   getFormLayout(data, schema, layout) {
@@ -280,36 +243,9 @@ class FormComponent extends React.Component {
   }
 
   render() {
-    const { classes, schema, layout, title } = this.props;
+    const { schema, layout } = this.props;
     const { data } = this.state;
-    const formLayout = this.getFormLayout(data, schema, layout);
-
-    return (
-      <div style={getModalStyle()} className={classes.paper}>
-        <GridContainer>
-          <GridItem xs={12} sm={12} md={12}>
-            <Card>
-              <CardHeader color="info">
-                <h4 className={classes.cardTitleWhite}>{title}</h4>
-              </CardHeader>
-              <CardBody className={classes.cardBody}>
-                { formLayout }
-              </CardBody>
-              <CardFooter chart>
-                <div className={classes.rightAlign}>
-                  <Button onClick={this.props.handleClose}>
-                    キャンセル
-                  </Button>
-                  <Button onClick={this.handleOk} color="primary" type="submit" autoFocus={true}>
-                    確定
-                  </Button>
-                </div>
-              </CardFooter>
-            </Card>
-          </GridItem>
-        </GridContainer>
-      </div>
-    );
+    return this.getFormLayout(data, schema, layout);
   }
 }
 

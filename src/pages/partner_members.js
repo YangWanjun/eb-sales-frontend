@@ -3,15 +3,16 @@ import { Link } from 'react-router-dom'
 import {
   Typography,
 } from '@material-ui/core';
+import AddIcon from '@material-ui/icons/Add';
 import CustomBreadcrumbs from '../components/customBreadcrumbs';
 import EnhancedTable from '../containers/EnhancedTable';
 import DataProvider from '../components/Table/DataProvider';
-import StepForm from '../components/Form/StepForm';
 import {
   list_member_schema,
 } from '../layout/partner_member';
 import { config } from '../utils/config';
 import { common } from '../utils/common';
+import { history } from '../utils/store';
 
 class PartnerMembers extends React.Component {
 
@@ -33,13 +34,16 @@ class PartnerMembers extends React.Component {
     });
   }
 
+  createPartnerMember = () => {
+    const { params } = this.props.match;
+    history.push({
+      'pathname': common.formatStr('/partner/%s/member/add', params.pk),
+    })
+  };
+
   render () {
     const { params } = this.props.match;
     const { partner } = this.state;
-    // 作業メンバー編集
-    // const formMemberProps = {
-    //   schema: add_project_member_schema,
-    // }
 
     return (
       <div>
@@ -56,12 +60,16 @@ class PartnerMembers extends React.Component {
               { ...initData }
               columns={list_member_schema}
               isClientSide={true}
-              selectable={'single'}
-              // formComponentProps={formMemberProps}
+              actions={[
+                {
+                  'tooltip': '追加',
+                  'icon': <AddIcon/>,
+                  'handleClick': this.createPartnerMember,
+                },
+              ]}
             />
           ) } 
         />
-        <StepForm/>
       </div>
     );
   }

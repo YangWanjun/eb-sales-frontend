@@ -30,7 +30,7 @@ import BadgeLabel from '../badgeLabel';
 import ConfirmDialog from '../ConfirmDialog';
 import GridContainer from '../Grid/GridContainer';
 import GridItem from '../Grid/GridItem';
-import { FormDialog } from '../Form/index'
+import FormDialog from '../../containers/FormDialog';
 import { common } from '../../utils/common';
 import { config } from '../../utils/config';
 import { constant } from '../../utils/constants';
@@ -290,8 +290,10 @@ class EnhancedTableToolbar extends React.Component {
   };
 
   handleActionClick = (method) => () =>  {
-    const { selected, results } = this.props;
-    if (common.isEmpty(selected)) {
+    const { selected, selectable, results } = this.props;
+    if (selectable === 'none') {
+      method();
+    } else if (common.isEmpty(selected)) {
       this.props.showErrorMsg(constant.ERROR.REQUIRE_SELECTED_DATA);
     } else if (selected.length === 1) {
       const row = common.getColumnByName(results, selected[0], '__index__');
@@ -302,7 +304,7 @@ class EnhancedTableToolbar extends React.Component {
   };
 
   render () {
-    const { numSelected, classes, tableTitle, columns, formComponentProps, actions } = this.props;
+    const { numSelected, selectable, classes, tableTitle, columns, formComponentProps, actions } = this.props;
     const { filters } = this.state;
     let toolComponent = null;
 
@@ -388,6 +390,17 @@ class EnhancedTableToolbar extends React.Component {
         </div>
         <div className={classes.spacer} />
         <div className={classes.actions}>
+          {selectable === 'none' ? (
+            <React.Fragment>
+              {actions.map(btn => (
+                <Tooltip key={uuid()} title={btn.tooltip} placement='bottom' enterDelay={300}>
+                  <IconButton aria-label="Action" onClick={this.handleActionClick(btn.handleClick)}>
+                    {btn.icon}
+                  </IconButton>
+                </Tooltip>
+              ))}
+            </React.Fragment>
+          ) : null}
           {numSelected > 0 ? (
             <React.Fragment>
               {actions.map(btn => (
@@ -869,6 +882,7 @@ class EnhancedTable extends React.Component {
         <EnhancedTableToolbar 
           numSelected={selected.length}
           selected={selected}
+          selectable={selectable}
           results={data ? data.results : []}
           columns={columns} 
           tableTitle={tableTitle}
