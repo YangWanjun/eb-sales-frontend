@@ -10,7 +10,7 @@ import EnhancedTable from '../containers/EnhancedTable';
 import DataProvider from '../components/Table/DataProvider';
 import {
   edit_partner_schema,
-  list_partner_member_schema,
+  list_partner_employee_schema,
   list_pay_notify_schema,
   edit_pay_notify_schema,
   list_bank_account_schema,
@@ -50,7 +50,7 @@ class PartnerDetail extends React.Component {
     const { params } = this.props.match;
     const { partner } = this.state;
     let colMember = common.getColumnByName(edit_pay_notify_schema, 'member', 'name');
-    colMember['dataSource'] = common.formatStr(config.api.partner_member_choice, params.pk);
+    colMember['dataSource'] = common.formatStr(config.api.partner_employee_choice, params.pk);
     const formPartnerProps = {
       schema: edit_partner_schema,
       title: partner.name + 'を変更',
@@ -58,14 +58,14 @@ class PartnerDetail extends React.Component {
     };
     // 職位を設定する
     const formPartnerMemberProps = {
-      schema: list_partner_member_schema,
+      schema: list_partner_employee_schema,
       layout: [],
       title: partner.name + ' に社員設定',
       data: {
         company: params.pk,
       },
-      add_url: config.api.partner_member_list,
-      edit_url: config.api.partner_member_detail,
+      add_url: config.api.partner_employee_list,
+      edit_url: config.api.partner_employee_detail,
     };
     // 支払通知書の宛先を設定する
     const formPayNotifyProps = {
@@ -104,17 +104,17 @@ class PartnerDetail extends React.Component {
           formComponentProps={formPartnerProps}
         />
         <DataProvider 
-          endpoint={ config.api.partner_member_list + '?company=' + params.pk } 
+          endpoint={ config.api.partner_employee_list + '?company=' + params.pk } 
           render={ (initData) => {
             return (
               <EnhancedTable
                 tableTitle={partner.name + ' の社員一覧'}
                 { ...initData }
-                columns={list_partner_member_schema}
+                columns={list_partner_employee_schema}
                 isClientSide={true}
                 selectable='single'
                 formComponentProps={formPartnerMemberProps}
-                deleteUrl={config.api.partner_member_detail}
+                deleteUrl={config.api.partner_employee_detail}
               />
             );
           } }

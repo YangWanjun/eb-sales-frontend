@@ -202,7 +202,7 @@ export const edit_partner_schema = [
   },
 ];
 
-export const list_partner_member_schema = [
+export const list_partner_employee_schema = [
   {
     "name": "name",
     "type": "string",

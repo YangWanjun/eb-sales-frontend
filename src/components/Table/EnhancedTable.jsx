@@ -30,7 +30,7 @@ import BadgeLabel from '../badgeLabel';
 import ConfirmDialog from '../ConfirmDialog';
 import GridContainer from '../Grid/GridContainer';
 import GridItem from '../Grid/GridItem';
-import FormDialog from '../Form/index'
+import { FormDialog } from '../Form/index'
 import { common } from '../../utils/common';
 import { config } from '../../utils/config';
 import { constant } from '../../utils/constants';
@@ -419,7 +419,7 @@ class EnhancedTableToolbar extends React.Component {
               {searchComponent}
             </React.Fragment>
           )}
-          { formComponentProps ? (
+          { (formComponentProps && !common.isEmpty(formComponentProps)) ? (
             <FormDialog
               innerRef={(dialog) => { this.showModel = dialog && dialog.handleOpen }}
               {...formComponentProps}
