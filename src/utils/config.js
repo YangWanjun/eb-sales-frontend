@@ -29,6 +29,7 @@ export const config = {
     partner_pay_notify_recipient_detial: hostApi + '/api/partner-pay-notify-recipient/%s/',
     partner_bank_account_list: hostApi + '/api/partner-bank-account/',
     partner_bank_account_detail: hostApi + '/api/partner-bank-account/%s/',
+    partner_monthly_status: hostApi + '/api/partner/%s/monthly-status/',
     customer_list: hostApi + '/api/customer/',
     customer_detail: hostApi + '/api/customer/%s/',
     project_list: hostApi + '/api/vproject/',

@@ -6,6 +6,7 @@ import {
   Table,
   TableRow,
   TableBody,
+  TablePagination,
 } from "@material-ui/core";
 // core components
 import DataTableCell from './DataTableCell';
@@ -14,8 +15,23 @@ import tableStyle from "../../assets/jss/components/tableStyle.jsx";
 
 class SimpleTable extends React.Component {
 
+  constructor(props) {
+    super(props);
+
+    this.handleChangePage = this.handleChangePage.bind(this);
+    this.state = {
+      page: 0,
+    };
+  }
+
+  handleChangePage = (event, page) => {
+    this.setState({page});
+  };
+
   render () {
     const { classes, tableHeaderColor, tableHead, tableData } = this.props;
+    const { page } = this.state;
+    const rowsPerPage = 10;
 
     return (
       <div className={classes.tableResponsive}>
@@ -24,24 +40,42 @@ class SimpleTable extends React.Component {
             {...{classes, tableHeaderColor, tableHead}}
           />
           <TableBody>
-            {tableData.map((row, key) => {
-              return (
-                <TableRow key={key}>
-                  {tableHead.map((col, key) => {
-                    return (
-                      <DataTableCell
-                        key={key}
-                        classes={classes}
-                        column={col}
-                        row={row}
-                      />
-                    );
-                  })}
-                </TableRow>
-              );
+            {tableData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((row, key) => {
+                return (
+                  <TableRow key={key}>
+                    {tableHead.map((col, key) => {
+                      return (
+                        <DataTableCell
+                          key={key}
+                          classes={classes}
+                          column={col}
+                          row={row}
+                        />
+                      );
+                    })}
+                  </TableRow>
+                );
             })}
           </TableBody>
         </Table>
+        {tableData.length > rowsPerPage ? (
+          <TablePagination
+            component="div"
+            // id={paginationId}
+            count={tableData.length}
+            rowsPerPage={rowsPerPage}
+            rowsPerPageOptions={[]}
+            page={page}
+            backIconButtonProps={{
+              'aria-label': 'Previous Page',
+            }}
+            nextIconButtonProps={{
+              'aria-label': 'Next Page',
+            }}
+            onChangePage={this.handleChangePage}
+          />
+        ) : <React.Fragment/> }
       </div>
     );
   }

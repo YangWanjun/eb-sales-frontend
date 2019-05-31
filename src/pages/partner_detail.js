@@ -33,7 +33,6 @@ class PartnerDetail extends React.Component {
 
     this.state = { 
       partner: {},
-      members: [],
     };
     this.initialize(props.match.params);
 　}
@@ -45,21 +44,12 @@ class PartnerDetail extends React.Component {
         partner: data,
       });
     });
-    // 協力会社の社員一覧
-    common.fetchGet(config.api.partner_member_list + '?company=' + params.pk).then(data => {
-      let members = [];
-      data.results.map(row => (
-        members.push({value: row.id, display_name: row.name})
-      ));
-      this.setState({members});
-    });
   }
 
   render() {
     const { params } = this.props.match;
     const { partner } = this.state;
     let colMember = common.getColumnByName(edit_pay_notify_schema, 'member', 'name');
-    // colMember['choices'] = members;
     colMember['dataSource'] = common.formatStr(config.api.partner_member_choice, params.pk);
     const formPartnerProps = {
       schema: edit_partner_schema,
@@ -104,7 +94,8 @@ class PartnerDetail extends React.Component {
       <div>
         <CustomBreadcrumbs>
           <Link to="/partner" >協力会社一覧</Link>
-          <Typography color="textPrimary">{partner.name}</Typography>
+          <Link to={'/partner/' + params.pk} >{partner.name}</Link>
+          <Typography color="textPrimary">変更</Typography>
         </CustomBreadcrumbs>
         <DetailPanel
           title={partner.name}

@@ -355,3 +355,26 @@ export const edit_bank_account_schema = [
     "label": "口座名義",
   },
 ];
+
+export const list_monthly_status = [
+  {
+    "name": "name",
+    "type": "string",
+    "label": "対象年月",
+  },
+  {
+    "name": "member_count",
+    "type": "integer",
+    "label": "社員数",
+  },
+  {
+    "name": "amount",
+    "type": "integer",
+    "label": "金額",
+  },
+  {
+    "name": "is_all_sent",
+    "type": "boolean",
+    "label": "請求書送信済",
+  },
+];

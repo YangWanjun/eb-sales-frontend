@@ -21,12 +21,18 @@ class DataTableHead extends React.Component {
                 width = colsWidth[key];
                 key += 1;
               }
+              let align = 'left';
+              if (column.type === 'integer' || column.type === 'decimal') {
+                align = 'right';
+              } else if (column.type === 'boolean') {
+                align = 'center';
+              }
               return (
                 <TableCell
                   className={classes.tableCell + " " + classes.tableHeadCell}
                   key={key}
                   style={{width}}
-                  align={(column.type === 'integer' || column.type === 'decimal') ? 'right': 'left'}
+                  align={align}
                 >
                   {column.label}
                 </TableCell>
