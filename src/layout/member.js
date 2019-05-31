@@ -250,11 +250,13 @@ export const edit_member_schema = [
     "name": "last_name",
     "type": "string",
     "label": "姓",
+    "required": true,
   },
   {
     "name": "first_name",
     "type": "string",
     "label": "名",
+    "required": true,
   },
   {
     "name": "gender",
@@ -278,23 +280,24 @@ export const edit_member_schema = [
   },
   {
     "name": "birthday",
-    "type": "string",
+    "type": "date",
     "label": "生年月日",
   },
   {
     "name": "graduate_date",
-    "type": "string",
+    "type": "date",
     "label": "卒業年月日",
   },
   {
     "name": "join_date",
-    "type": "string",
+    "type": "date",
     "label": "入社年月日",
   },
   {
     "name": "email",
     "type": "string",
     "label": "会社メールアドレス",
+    "required": true,
   },
   {
     "name": "private_email",
