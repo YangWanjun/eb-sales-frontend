@@ -247,6 +247,13 @@ export const detail_member_schema = [
 
 export const edit_member_schema = [
   {
+    "name": "employee_id",
+    "type": "string",
+    "label": "社員ID",
+    "required": true,
+    "max_length": 30,
+  },
+  {
     "name": "last_name",
     "type": "string",
     "label": "姓",

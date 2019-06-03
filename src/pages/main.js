@@ -24,6 +24,7 @@ import PartnerDetail from './partner_detail';
 import PartnerPreview from './partner_preview';
 import PartnerMembers from './partner_members';
 import PartnerMemberAdd from './partner_member_add';
+import PartnerMember from './partner_member_detail';
 import ProjectList from './project_list';
 import ProjectDetail from './project_detail';
 import ProjectAttendance from './project_attendance';
@@ -174,6 +175,7 @@ class Layout extends React.Component {
             <Route path='/organization' component={OrganizationList} />
             <Route path='/partner/:pk/member/add' component={PartnerMemberAdd} />
             <Route path='/partner/:pk/detail' component={PartnerDetail} />
+            <Route path='/partner/:partner_id/members/:member_id' component={PartnerMember} />
             <Route path='/partner/:pk/members' component={PartnerMembers} />
             <Route path='/partner/:pk' component={PartnerPreview} />
             <Route path='/partner' component={PartnerList} />

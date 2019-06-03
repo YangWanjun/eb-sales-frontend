@@ -29,21 +29,29 @@ const styles = theme => ({
   },
 });
 
-class MemberDetail extends React.Component {
+class PartnerMember extends React.Component {
 
   constructor(props) {
     super(props);
 
     this.state = { 
+      partner: {},
       member: {},
       organizations: [],
       salesperson: [],
+      contracts: [],
     };
     this.initialize();
 　}
 
   initialize() {
     const { params } = this.props.match;
+    const url_detail = common.formatStr(config.api.partner_detail, params.partner_id);
+    common.fetchGet(url_detail).then(data => {
+      this.setState({
+        partner: data,
+      });
+    });
     const url_member_detail = common.formatStr(config.api.member_detail, params.member_id) + '?schema=1';
     common.fetchGet(url_member_detail).then(data => {
       this.setState({
@@ -69,7 +77,7 @@ class MemberDetail extends React.Component {
   }
 
   render () {
-    const { member, organizations, salesperson } = this.state;
+    const { partner, member, organizations, salesperson } = this.state;
     const { params } = this.props.match;
     const formProjectProps = {
       schema: edit_member_schema,
@@ -109,8 +117,9 @@ class MemberDetail extends React.Component {
     return (
       <div>
         <CustomBreadcrumbs>
-          <Link to="/member" >作業メンバー一覧</Link>
-          <Link to={"/member/" + params.member_id} >{member.full_name}</Link>
+          <Link to="/partner" >協力会社一覧</Link>
+          <Link to={'/partner/' + params.partner_id} >{partner.name}</Link>
+          <Link to={'/partner/' + params.partner_id + '/members'} >作業メンバー一覧</Link>
           <Typography color="textPrimary">変更</Typography>
         </CustomBreadcrumbs>
         <DetailPanel
@@ -156,4 +165,4 @@ class MemberDetail extends React.Component {
   }
 }
 
-export default withStyles(styles)(MemberDetail);
+export default withStyles(styles)(PartnerMember);

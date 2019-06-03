@@ -17,10 +17,17 @@ import {
 import {
   edit_partner_member_org_schema,
   edit_partner_member_salesperson_schema,
+  edit_bp_contract_schema,
+  edit_bp_contract_layout,
 } from '../layout/partner_member';
+import {
+  get_minus_per_hour_memo,
+  get_max_per_hour_memo,
+  get_basic_price_memo,
+  checkDepartment,
+} from './common';
 import { config } from '../utils/config';
 import { common } from '../utils/common';
-import { constant } from '../utils/constants';
 
 const styles = theme => ({
   cardCategoryWhite: {
@@ -85,16 +92,71 @@ class PartnerMemberAdd extends React.Component {
     });
   }
 
-  checkDepartment(data) {
-    const {division, department, section} = data;
-    if (!division && !department && !section) {
-      return [
-        {name: 'division', message: common.formatStr(constant.ERROR.REQUIRE_FIELD, '所属部署')},
-        {name: 'department', message: common.formatStr(constant.ERROR.REQUIRE_FIELD, '所属部署')},
-        {name: 'section', message: common.formatStr(constant.ERROR.REQUIRE_FIELD, '所属部署')},
-      ];
+  setPriceMemo(name, data) {
+    if ([
+      'allowance_base', 
+      'calculate_time_min', 
+      'calculate_time_max', 
+    ].indexOf(name) > -1) {
+      // 基本給
+      let {
+        allowance_base,
+        calculate_time_max,
+        calculate_time_min,
+        allowance_absenteeism,
+        allowance_overtime,
+        is_hourly_pay,
+        is_fixed_cost,
+        is_show_formula,
+      } = data;
+      if (calculate_time_min) {
+        allowance_absenteeism = Math.round(allowance_base / calculate_time_min);
+      }
+      if (calculate_time_max) {
+        allowance_overtime = Math.round(allowance_base / calculate_time_max);
+      }
+      const allowance_absenteeism_memo = get_minus_per_hour_memo(allowance_base, calculate_time_min, is_show_formula);
+      const allowance_overtime_memo = get_max_per_hour_memo(allowance_base, calculate_time_max, is_show_formula);
+      return {
+        allowance_base_memo: get_basic_price_memo(allowance_base, is_fixed_cost, is_hourly_pay),
+        allowance_absenteeism,
+        allowance_overtime,
+        allowance_absenteeism_memo,
+        allowance_overtime_memo,
+      };
+    } else if ([
+      'allowance_absenteeism', 
+      'allowance_overtime',
+      'is_show_formula'
+    ].indexOf(name) > -1) {
+      let {
+        allowance_base,
+        calculate_time_max,
+        calculate_time_min,
+        allowance_absenteeism,
+        allowance_overtime,
+        is_show_formula,
+      } = data;
+      const allowance_absenteeism_memo = get_minus_per_hour_memo(allowance_base, calculate_time_min, is_show_formula, allowance_absenteeism);
+      const allowance_overtime_memo = get_max_per_hour_memo(allowance_base, calculate_time_max, is_show_formula, allowance_overtime);
+      return {
+        allowance_absenteeism_memo,
+        allowance_overtime_memo,
+      };
+    } else if ([
+      'is_hourly_pay',
+      'is_fixed_cost'
+    ].indexOf(name) > -1) {
+      let {
+        allowance_base,
+        is_hourly_pay,
+        is_fixed_cost,
+      } = data;
+      return {
+        allowance_base_memo: get_basic_price_memo(allowance_base, is_fixed_cost, is_hourly_pay),
+      }
     } else {
-      return true;
+      return null;
     }
   }
 
@@ -102,6 +164,8 @@ class PartnerMemberAdd extends React.Component {
     const { params } = this.props.match;
     const { classes } = this.props;
     const { partner, organizations, salesperson } = this.state;
+    // ＢＰの場合社員ＩＤは自動採番なので、非表示にする
+    delete edit_member_schema[0];
     // 所属部署の設定
     let colOrg = common.getColumnByName(edit_partner_member_org_schema, 'organization', 'name');
     colOrg['choices'] = organizations;
@@ -110,29 +174,43 @@ class PartnerMemberAdd extends React.Component {
     colSalesperson['choices'] = salesperson;
     let steps = [
       {
-        'name': '基本情報設定',
-        'form': {
-          'name': 'member',
-          'schema': edit_member_schema,
+        name: '基本情報設定',
+        form: {
+          name: 'member',
+          schema: edit_member_schema,
+        },
+        initial: {
+          member_type: 4,
+          cost: 0,
+          is_retired: 0,
+          notify_type: 1,
+          is_individual_pay: 0,
+          is_on_sales: 1,
         }
       },
       {
-        'name': '所属設定',
-        'form': {
-          'name': 'organization_period',
-          'schema': edit_partner_member_org_schema,
-          'checker': [this.checkDepartment],
+        name: '所属設定',
+        form: {
+          name: 'organization_period',
+          schema: edit_partner_member_org_schema,
+          'checker': [checkDepartment],
         }
       },
       {
-        'name': '営業員設定',
-        'form': {
-          'name': 'salesperson_period',
-          'schema': edit_partner_member_salesperson_schema,
+        name: '営業員設定',
+        form: {
+          name: 'salesperson_period',
+          schema: edit_partner_member_salesperson_schema,
         }
       },
       {
-        'name': '精算条件設定',
+        name: 'ＢＰ契約設定',
+        form: {
+          name: 'bp_contract',
+          schema: edit_bp_contract_schema,
+          layout: edit_bp_contract_layout,
+          onChanges: [this.setPriceMemo],
+        },
       },
     ];
 
@@ -158,6 +236,8 @@ class PartnerMemberAdd extends React.Component {
                   <CardBody>
                     <StepForm
                       steps={steps}
+                      add_url={common.formatStr(config.api.partner_member_list, params.pk)}
+                      success_url={'/partner/' + params.pk + '/members/%s'}
                     />
                   </CardBody>
                 </Card>

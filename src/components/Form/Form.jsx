@@ -21,10 +21,25 @@ class FormComponent extends React.Component {
     this.clean = this.clean.bind(this);
     this.toastError = this.toastError.bind(this);
     this.state = { 
-      data: this.props.data || {},
-      errors: {},
+      data: this.initializeData(props),
+      errors: props.errors || {},
     };
 　}
+
+  initializeData(props) {
+    if (props.schema) {
+      let data = props.data || {};
+      props.schema.map(col => {
+        if (common.isEmpty(data[col.name]) && col.default) {
+          data[col.name] = col.default;
+        }
+        return true;
+      });
+      return data;
+    } else {
+      return {};
+    }
+  }
 
   handleChange(event) {
     let value = event.target.value;
@@ -77,6 +92,19 @@ class FormComponent extends React.Component {
       let data = state.data;
       data[name] = checked;
       return {data: data};
+    });
+
+    this.props.onChanges.map(method => {
+      let data = this.state.data;
+      data[name] = checked;
+      const retVal = method(name, data);
+      if (retVal) {
+        this.setState((state) => {
+          let data = Object.assign({}, state.data, retVal);
+          return {data: data};
+        });
+      }
+      return true;
     });
   }
 
@@ -160,91 +188,100 @@ class FormComponent extends React.Component {
 
   getFormLayout(data, schema, layout) {
     let control = null;
-    const { classes } = this.props;
-    const { errors } = this.state;
     if (common.isEmpty(layout)) {
       control = (
         <GridContainer>
-          {schema.map((col, key) => {
-            if (col.read_only === true) {
-              return (
-                <GridItem key={key} xs={12} sm={12} md={12}>
-                  <FormControl className={classes.formControl}>
-                    <TextField
-                      disabled
-                      value={data[col.name]}
-                      label={col.label}
-                    />
-                  </FormControl>
-                </GridItem>  
-              );
-            } else if (col.type === 'cascade') {
-              return (
-                <ControlCreateor
-                  key={key}
-                  column={col}
-                  data={data}
-                  handleChange={this.handleChange}
-                  wrapper={{element: GridItem, props: {xs: 12, sm: 12, md: 12}}}
-                  errors={errors}
-                />
-              );
-            } else {
-              const message = errors[col.name] || null;
-              return (
-                <GridItem key={key} xs={12} sm={12} md={12}>
-                  <ControlCreateor
-                    name={col.name} 
-                    column={col} 
-                    value={data[col.name]}
-                    data={data}
-                    label={col.label}
-                    placeholder={col.help_text}
-                    message={message}
-                    handleDateChange={this.handleDateChange(col.name)} 
-                    handleChange={this.handleChange}
-                    handleFieldChange={this.handleFieldChange}
-                    handleCheck={this.handleCheck}
-                  />
-                </GridItem>
-              );
-            }
-          })}
+          {schema.map((col, key) => (
+            this.createFormField(col, key, 12, data)
+          ))}
         </GridContainer>
       );
     } else {
       control = (
         <GridContainer>
-          {}
+          {layout.map((row, key) => (
+            this.getRowLayout(row, key, data)
+          ))}
         </GridContainer>
       );
     }
     return control;
   }
 
-  getRowLayout(data, columns) {
-    const colSpan = Math.floor(12 / columns.length);
-    return (
-      <React.Fragment>
-        {columns.map(col => (
-          <GridItem key={'item_' + col.name} xs={12} sm={12} md={colSpan}>
-            <ControlCreateor
-              name={col.name}
-              column={col} 
+  getRowLayout(row, key, data) {
+    const { schema } = this.props;
+    if (typeof row === 'string') {
+      const col = common.getColumnByName(schema, row, 'name');
+      return col ? this.createFormField(col, row, 12, data) : null;
+    } else if (Array.isArray(row)) {
+      const colSpan = Math.floor(12 / row.length);
+      return (
+        <React.Fragment key={key}>
+          {row.map((fieldName, key) => {
+            const col = common.getColumnByName(schema, fieldName, 'name');
+            return col ? this.createFormField(col, key, colSpan, data) : null;
+          })}
+        </React.Fragment>
+      );
+    }
+    return null;
+  }
+
+  createFormField(col, key, colSpan, data) {
+    const { classes } = this.props;
+    const { errors } = this.state;
+    if (col.read_only === true) {
+      return (
+        <GridItem key={key} xs={12} sm={12} md={colSpan}>
+          <FormControl className={classes.formControl}>
+            <TextField
+              disabled
               value={data[col.name]}
               label={col.label}
-              handleDateChange={this.handleDateChange(col.name)}
-              handleChange={this.handleChange}
+              InputLabelProps={{
+                shrink: true,
+              }}
             />
-          </GridItem>
-        ))}
-      </React.Fragment>
-    )
+          </FormControl>
+        </GridItem>  
+      );
+    } else if (col.type === 'cascade') {
+      return (
+        <ControlCreateor
+          key={key}
+          column={col}
+          data={data}
+          handleChange={this.handleChange}
+          wrapper={{element: GridItem, props: {xs: 12, sm: 12, md: colSpan}}}
+          errors={errors}
+        />
+      );
+    } else {
+      const message = errors[col.name] || null;
+      return (
+        <GridItem key={key} xs={12} sm={12} md={colSpan}>
+          <ControlCreateor
+            name={col.name} 
+            column={col} 
+            value={data[col.name]}
+            data={data}
+            label={col.label}
+            placeholder={col.help_text}
+            message={message}
+            handleDateChange={this.handleDateChange(col.name)} 
+            handleChange={this.handleChange}
+            handleFieldChange={this.handleFieldChange}
+            handleCheck={this.handleCheck}
+          />
+        </GridItem>
+      );
+    }
   }
 
   render() {
     const { schema, layout } = this.props;
     const { data } = this.state;
+    console.log(data);
     return this.getFormLayout(data, schema, layout);
   }
 }

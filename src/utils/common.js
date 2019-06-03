@@ -88,7 +88,7 @@ export const common = {
    * @param {Object} obj 
    */
   isEmpty: function(obj) {
-    if (!obj) {
+    if (obj === null || obj === undefined || obj === '') {
       return true;
     } else if (Array.isArray(obj)) {
       return obj.length === 0;
