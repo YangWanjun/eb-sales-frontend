@@ -17,6 +17,12 @@ import {
   edit_salesperson_schema,
 } from '../layout/member';
 import {
+  list_bp_contract_schema,
+  edit_bp_contract_schema,
+  edit_bp_contract_layout,
+} from '../layout/partner_member';
+import {
+  setPriceMemo,
   checkDepartment,
 } from './common';
 import { config } from '../utils/config';
@@ -39,7 +45,6 @@ class PartnerMember extends React.Component {
       member: {},
       organizations: [],
       salesperson: [],
-      contracts: [],
     };
     this.initialize();
 　}
@@ -113,6 +118,19 @@ class PartnerMember extends React.Component {
       add_url: config.api.salesperson_period_list,
       edit_url: config.api.salesperson_period_detail,
     };
+    // ＢＰ契約設定
+    const formContractProps = {
+      schema: edit_bp_contract_schema,
+      layout: edit_bp_contract_layout,
+      title: member.full_name + 'の契約を設定',
+      data: {
+        company: params.partner_id,
+        member: params.member_id,
+      },
+      onChanges: [setPriceMemo],
+      add_url: config.api.partner_member_contract_list,
+      edit_url: config.api.partner_member_contract_detail,
+    };
 
     return (
       <div>
@@ -120,7 +138,7 @@ class PartnerMember extends React.Component {
           <Link to="/partner" >協力会社一覧</Link>
           <Link to={'/partner/' + params.partner_id} >{partner.name}</Link>
           <Link to={'/partner/' + params.partner_id + '/members'} >作業メンバー一覧</Link>
-          <Typography color="textPrimary">変更</Typography>
+          <Typography color="textPrimary">{member.full_name}</Typography>
         </CustomBreadcrumbs>
         <DetailPanel
           title={member.full_name + 'の詳細情報'}
@@ -156,6 +174,22 @@ class PartnerMember extends React.Component {
                 selectable='single'
                 formComponentProps={formSalespersonProps}
                 deleteUrl={config.api.salesperson_period_detail}
+              />
+            );
+          } }
+        />
+        <DataProvider 
+          endpoint={ common.formatStr(config.api.partner_member_contract_list, params.member_id) } 
+          render={ (initData) => {
+            return (
+              <EnhancedTable
+                tableTitle='契約一覧'
+                { ...initData }
+                columns={list_bp_contract_schema}
+                isClientSide={true}
+                selectable='single'
+                formComponentProps={formContractProps}
+                deleteUrl={config.api.partner_member_contract_detail}
               />
             );
           } }

@@ -13,7 +13,6 @@ import CardBody from "../Card/CardBody.jsx";
 import CardFooter from '../Card/CardFooter';
 import FormComponent from './Form';
 import { common } from '../../utils/common';
-import { constant } from "../../utils/constants";
 
 const styles = theme => ({
   root: {
@@ -82,8 +81,6 @@ class FormDialog extends React.Component {
     super(props);
 
     this.handleOk = this.handleOk.bind(this);
-    this.clean = this.clean.bind(this);
-    this.toastError = this.toastError.bind(this);
     this.state = {
       open: false,
       data: {},
@@ -102,55 +99,10 @@ class FormDialog extends React.Component {
   };
 
   handleOk = () => {
-    const formData = this.clean();
-    if (formData) {
-      const __index__ = formData.__index__;
-      if (formData.id && this.props.edit_url) {
-        // 更新
-        const url = common.formatStr(this.props.edit_url, formData.id);
-        common.fetchPut(url, formData).then(json => {
-          json['__index__'] = __index__;
-          this.props.showSuccessMsg(constant.SUCCESS.SAVED);
-          this.handleClose();
-          if (this.props.onRowUpdated) {
-            this.props.onRowUpdated(json);
-          }
-        }).catch(errors => {
-          this.setState({errors});
-          this.toastError(errors);
-        });
-      } else if (!formData.id && this.props.add_url) {
-        // 追加
-        common.fetchPost(this.props.add_url, formData).then(json => {
-          json['__index__'] = __index__;
-          this.props.showSuccessMsg(constant.SUCCESS.SAVED);
-          this.handleClose();
-          if (this.props.onRowAdded) {
-            this.props.onRowAdded(json);
-          }
-        }).catch(errors => {
-          this.setState({errors});
-          this.toastError(errors);
-        });
-      } else {
-        this.props.showWarningMsg(constant.WARNING.REQUIRE_SAVE_URL);
-      }
+    if (this._handleOk) {
+      this._handleOk();
     }
   };
-
-  clean() {
-    if (this._clean) {
-      return this._clean();
-    } else {
-      return null;
-    }
-  }
-
-  toastError() {
-    if (this._toastError) {
-      this._toastError();
-    }
-  }
 
   render() {
     const { classes, title } = this.props;
@@ -178,10 +130,10 @@ class FormDialog extends React.Component {
                   <CardBody className={classes.cardBody}>
                     <FormComponent
                       ref={(form) => {
-                        this._clean = form && form.clean;
-                        this._toastError = form && form.toastError;
+                        this._handleOk = form && form.handleOk;
                       }}
                       {...props}
+                      handleClose={this.handleClose}
                     />
                   </CardBody>
                   <CardFooter chart>

@@ -160,6 +160,7 @@ export const edit_bp_contract_schema = [
     "help_text": "足りないなら欠勤となる",
     "default": 160.0,
     "min_value": 0,
+    "step": 0.25,
     "required": true,
   },
   {
@@ -169,6 +170,7 @@ export const edit_bp_contract_schema = [
     "help_text": "超えたら残業となる",
     "default": 200.0,
     "min_value": 0,
+    "step": 0.25,
     "required": true,
   },
   {
@@ -197,6 +199,7 @@ export const edit_bp_contract_schema = [
     "label": "計算用下限",
     "help_text": "欠勤手当を算出ために使われます",
     "default": 160.0,
+    "step": 0.25,
     "min_value": 0,
   },
   {
@@ -205,6 +208,7 @@ export const edit_bp_contract_schema = [
     "label": "計算用上限",
     "help_text": "残業手当を算出ために使われます",
     "default": 200.0,
+    "step": 0.25,
     "min_value": 0,
   },
   {
@@ -265,4 +269,60 @@ export const edit_bp_contract_layout = [
   ['allowance_overtime', 'allowance_overtime_memo'],
   ['allowance_other', 'allowance_other_memo'],
   'comment',
+];
+
+export const list_bp_contract_schema = [
+  {
+    "name": "start_date",
+    "type": "date",
+    "label": "開始日",
+    "required": true,
+  },
+  {
+    "name": "end_date",
+    "type": "date",
+    "label": "終了日",
+  },
+  {
+    "name": "company_name",
+    "type": "string",
+    "label": "会社名",
+  },
+  {
+    "name": "is_hourly_pay",
+    "type": "boolean",
+    "label": "時給",
+  },
+  {
+    "name": "is_fixed_cost",
+    "type": "boolean",
+    "label": "固定",
+  },
+  {
+    "name": "allowance_base",
+    "type": "integer",
+    "label": "基本給",
+  },
+  {
+    "name": "calculate_type",
+    "type": "choice",
+    "label": "計算種類",
+    "choices": [
+      {"value": "01", "display_name": "固定１６０時間"},
+      {"value": "02", "display_name": "営業日数 × ８"},
+      {"value": "03", "display_name": "営業日数 × ７.９"},
+      {"value": "04", "display_name": "営業日数 × ７.７５"},
+      {"value": "99", "display_name": "その他（任意）"},
+    ],
+  },
+  {
+    "name": "allowance_absenteeism_memo",
+    "type": "string",
+    "label": "欠勤手当",
+  },
+  {
+    "name": "allowance_overtime_memo",
+    "type": "string",
+    "label": "残業手当",
+  },
 ];

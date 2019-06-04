@@ -15,6 +15,7 @@ import CustomBreadcrumbs from '../components/customBreadcrumbs';
 import SimpleTable from '../components/Table/SimpleTable';
 import {
   list_monthly_status,
+  list_members_order_status,
 } from '../layout/partner';
 import { config } from '../utils/config';
 import { common } from '../utils/common';
@@ -54,6 +55,7 @@ class PartnerPreview extends React.Component {
     this.state = { 
       partner: {},
       monthly_status: [],
+      member_order_status: [],
     };
     this.initialize();
 　}
@@ -72,12 +74,18 @@ class PartnerPreview extends React.Component {
         monthly_status: data.results,
       });
     });
+    // 社員の注文状況
+    common.fetchGet(common.formatStr(config.api.partner_members_order_status, params.pk)).then(data => {
+      this.setState({
+        member_order_status: data.results,
+      });
+    });
   }
 
   render () {
     const { params } = this.props.match;
     const { classes } = this.props;
-    const { partner, monthly_status } = this.state;
+    const { partner, monthly_status, member_order_status } = this.state;
     const avatar = defaultAvatar;
 
     return (
@@ -102,6 +110,23 @@ class PartnerPreview extends React.Component {
                       tableHeaderColor="warning"
                       tableHead={list_monthly_status}
                       tableData={monthly_status}
+                    />
+                  </CardBody>
+                </Card>
+              </GridItem>
+              <GridItem xs={12} sm={12} md={12}>
+                <Card>
+                  <CardHeader color="info">
+                    <h4 className={classes.cardTitleWhite}>社員の注文状況</h4>
+                    <p className={classes.cardCategoryWhite}>
+                      社員の今月と来月の注文書は送信済みなのかどうか
+                    </p>
+                  </CardHeader>
+                  <CardBody>
+                    <SimpleTable
+                      tableHeaderColor="warning"
+                      tableHead={list_members_order_status}
+                      tableData={member_order_status}
                     />
                   </CardBody>
                 </Card>

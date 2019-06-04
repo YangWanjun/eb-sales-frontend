@@ -990,7 +990,7 @@ class EnhancedTable extends React.Component {
                             } else {
                               return (
                                 <TableCell key={col.name} className={classes.cellPadding}>
-                                  <Typography noWrap style={{ maxWidth: 200, }}>
+                                  <Typography noWrap style={{ maxWidth: 260, }}>
                                     {(col.url_field && n[col.url_field]) ? (
                                       <Link to={n[col.url_field]}>{n[col.name]}</Link>
                                     ) : n[col.name] }

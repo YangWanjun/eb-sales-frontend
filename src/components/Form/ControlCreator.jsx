@@ -12,7 +12,6 @@ import {
   ListItemText,
   Chip,
 } from '@material-ui/core';
-import MyDatePicker from '../Control/DatePicker';
 import HierarchySelect from '../Control/HierarchySelect';
 import CascadeSelect from '../Control/CascadeSelect';
 import DataSelect from '../Control/DataSelect';
@@ -46,12 +45,20 @@ class ControlCreateor extends React.Component {
     if (column.visible === false) {
     } else if (column.type === 'date') {
       control = (
-        <MyDatePicker
-          value={value}
-          label={label}
-          message={message}
-          onChange={this.props.handleDateChange}
-        />
+        <FormControl className={classes.formControl} { ...error }>
+          <TextField
+            { ...error }
+            name={name}
+            value={value}
+            label={label}
+            type="date"
+            InputLabelProps={{
+              shrink: true,
+            }}
+            onChange={this.props.handleChange}
+          />
+          { errorNode }
+        </FormControl>
       );
     } else if (column.type === 'string') {
       value = value || '';
@@ -89,7 +96,6 @@ class ControlCreateor extends React.Component {
         </FormControl>
       );
     } else if (column.type === 'integer') {
-      value = value || '';
       control = (
         <FormControl className={classes.formControl} { ...error }>
           <TextField
@@ -107,7 +113,6 @@ class ControlCreateor extends React.Component {
         </FormControl>
       );
     } else if (column.type === 'decimal') {
-      value = value || '';
       control = (
         <FormControl className={classes.formControl} { ...error }>
           <TextField

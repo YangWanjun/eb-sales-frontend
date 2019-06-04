@@ -20,6 +20,7 @@ class FormComponent extends React.Component {
     this.validate = this.validate.bind(this);
     this.clean = this.clean.bind(this);
     this.toastError = this.toastError.bind(this);
+    this.handleOk = this.handleOk.bind(this);
     this.state = { 
       data: this.initializeData(props),
       errors: props.errors || {},
@@ -185,6 +186,43 @@ class FormComponent extends React.Component {
       return null;
     }
   }
+
+  handleOk = () => {
+    const formData = this.clean();
+    if (formData) {
+      const __index__ = formData.__index__;
+      if (formData.id && this.props.edit_url) {
+        // 更新
+        const url = common.formatStr(this.props.edit_url, formData.id);
+        common.fetchPut(url, formData).then(json => {
+          json['__index__'] = __index__;
+          this.props.showSuccessMsg(constant.SUCCESS.SAVED);
+          this.props.handleClose();
+          if (this.props.onRowUpdated) {
+            this.props.onRowUpdated(json);
+          }
+        }).catch(errors => {
+          this.setState({errors});
+          this.toastError(errors);
+        });
+      } else if (!formData.id && this.props.add_url) {
+        // 追加
+        common.fetchPost(this.props.add_url, formData).then(json => {
+          json['__index__'] = __index__;
+          this.props.showSuccessMsg(constant.SUCCESS.SAVED);
+          this.props.handleClose();
+          if (this.props.onRowAdded) {
+            this.props.onRowAdded(json);
+          }
+        }).catch(errors => {
+          this.setState({errors});
+          this.toastError(errors);
+        });
+      } else {
+        this.props.showWarningMsg(constant.WARNING.REQUIRE_SAVE_URL);
+      }
+    }
+  };
 
   getFormLayout(data, schema, layout) {
     let control = null;

@@ -61,3 +61,71 @@ export function checkDepartment(data) {
     return true;
   }
 };
+
+export function setPriceMemo(name, data) {
+  if ([
+    'allowance_base', 
+    'calculate_time_min', 
+    'calculate_time_max', 
+  ].indexOf(name) > -1) {
+    // 基本給
+    let {
+      allowance_base,
+      calculate_time_max,
+      calculate_time_min,
+      allowance_absenteeism,
+      allowance_overtime,
+      is_hourly_pay,
+      is_fixed_cost,
+      is_show_formula,
+    } = data;
+    if (calculate_time_min) {
+      allowance_absenteeism = Math.round(allowance_base / calculate_time_min);
+    }
+    if (calculate_time_max) {
+      allowance_overtime = Math.round(allowance_base / calculate_time_max);
+    }
+    const allowance_absenteeism_memo = get_minus_per_hour_memo(allowance_base, calculate_time_min, is_show_formula);
+    const allowance_overtime_memo = get_max_per_hour_memo(allowance_base, calculate_time_max, is_show_formula);
+    return {
+      allowance_base_memo: get_basic_price_memo(allowance_base, is_fixed_cost, is_hourly_pay),
+      allowance_absenteeism,
+      allowance_overtime,
+      allowance_absenteeism_memo,
+      allowance_overtime_memo,
+    };
+  } else if ([
+    'allowance_absenteeism', 
+    'allowance_overtime',
+    'is_show_formula'
+  ].indexOf(name) > -1) {
+    let {
+      allowance_base,
+      calculate_time_max,
+      calculate_time_min,
+      allowance_absenteeism,
+      allowance_overtime,
+      is_show_formula,
+    } = data;
+    const allowance_absenteeism_memo = get_minus_per_hour_memo(allowance_base, calculate_time_min, is_show_formula, allowance_absenteeism);
+    const allowance_overtime_memo = get_max_per_hour_memo(allowance_base, calculate_time_max, is_show_formula, allowance_overtime);
+    return {
+      allowance_absenteeism_memo,
+      allowance_overtime_memo,
+    };
+  } else if ([
+    'is_hourly_pay',
+    'is_fixed_cost'
+  ].indexOf(name) > -1) {
+    let {
+      allowance_base,
+      is_hourly_pay,
+      is_fixed_cost,
+    } = data;
+    return {
+      allowance_base_memo: get_basic_price_memo(allowance_base, is_fixed_cost, is_hourly_pay),
+    }
+  } else {
+    return null;
+  }
+};

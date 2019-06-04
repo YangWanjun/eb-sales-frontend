@@ -370,11 +370,50 @@ export const list_monthly_status = [
   {
     "name": "amount",
     "type": "integer",
-    "label": "金額",
+    "label": "支払金額",
   },
   {
     "name": "is_all_sent",
     "type": "boolean",
     "label": "請求書送信済",
+  },
+];
+
+export const list_members_order_status = [
+  {
+    "name": "name",
+    "type": "string",
+    "label": "名前",
+    "url_field": 'url',
+  },
+  {
+    "name": "start_date",
+    "type": "date",
+    "label": "雇用開始日",
+  },
+  {
+    "name": "end_date",
+    "type": "date",
+    "label": "雇用終了日",
+  },
+  {
+    "name": "project_name",
+    "type": "date",
+    "label": "案件名",
+  },
+  {
+    "name": "has_curr_order",
+    "type": "boolean",
+    "label": "今月",
+  },
+  {
+    "name": "has_next_order",
+    "type": "boolean",
+    "label": "来月",
+  },
+  {
+    "name": "is_retired",
+    "type": "boolean",
+    "label": "退職",
   },
 ];
