@@ -7,7 +7,7 @@ import {
 
 class DataTableHead extends React.Component {
   render() {
-    const { classes, tableHeaderColor, tableHead, colsWidth } = this.props;
+    const { classes, tableHeaderColor, tableHead, colsWidth, actions } = this.props;
 
     if (tableHead === undefined) {
       return null;
@@ -38,6 +38,9 @@ class DataTableHead extends React.Component {
                 </TableCell>
               );
             })}
+            { actions && actions.length > 0 ? (
+              <TableCell />
+            ) : null }
           </TableRow>
         </TableHead>
       );

@@ -326,3 +326,36 @@ export const list_bp_contract_schema = [
     "label": "残業手当",
   },
 ];
+
+export const list_bp_member_orders_schema = [
+  {
+    "name": "name",
+    "type": "string",
+    "label": "案件／対象年月",
+  },
+  {
+    "name": "business_days",
+    "type": "integer",
+    "label": "営業日数",
+  },
+  {
+    "name": "order_no",
+    "type": "string",
+    "label": "作業期間／注文番号",
+  },
+  {
+    "name": "order_file",
+    "type": "file",
+    "label": "注文書",
+  },
+  {
+    "name": "order_request_file",
+    "type": "file",
+    "label": "注文請書",
+  },
+  {
+    "name": "is_sent",
+    "type": "boolean",
+    "label": "送信",
+  },
+];

@@ -9,7 +9,6 @@ import SaveIcon from '@material-ui/icons/Save';
 import PrintIcon from '@material-ui/icons/Print';
 import ShareIcon from '@material-ui/icons/Share';
 import DeleteIcon from '@material-ui/icons/Delete';
-import MoreIcon from '@material-ui/icons/More';
 
 const styles = theme => ({
   root: {

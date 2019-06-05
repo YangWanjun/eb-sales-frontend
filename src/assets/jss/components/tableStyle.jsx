@@ -53,7 +53,7 @@ const tableStyle = theme => ({
   tableResponsive: {
     width: "100%",
     marginTop: theme.spacing.unit * 3,
-    overflowX: "auto"
+    overflow: "visible",
   },
   tableActions: {
     display: "flex",
@@ -67,23 +67,14 @@ const tableStyle = theme => ({
     padding: 0,
   },
   tableActionButton: {
-    width: "27px",
-    height: "27px",
-    padding: "0"
+    margin: 2,
   },
-  tableActionButtonIcon: {
-    width: "17px",
-    height: "17px"
-  },
-  edit: {
-    backgroundColor: "transparent",
-    color: primaryColor,
-    boxShadow: "none"
-  },
-  close: {
-    backgroundColor: "transparent",
-    color: dangerColor,
-    boxShadow: "none"
+  tableActionWrapper: {
+    display: 'flex',
+    position: 'absolute',
+    top: '0',
+    right: '50px',
+    whiteSpace: 'nowrap',
   },
 });
 

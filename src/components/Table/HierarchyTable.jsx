@@ -6,15 +6,13 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import {
   Table,
   TableRow,
-  // TableCell,
   TableBody,
 } from "@material-ui/core";
 // core components
 import DataTableHead from './DataTableHead';
-import DataTableCell from './DataTableCell';
+import DataTableCell from '../../containers/dataTableCell';
 import DataTableFixedHead from './DataTableFixedHead';
 import { getFixedHeaderOption } from './TableCommon';
-// import TableRowDial from '../Control/TableRowDial';
 import tableStyle from "../../assets/jss/components/tableStyle.jsx";
 import { common } from '../../utils/common';
 
@@ -73,7 +71,7 @@ class HierarchyTable extends React.Component {
   }
 
   getTableRow(row, deep) {
-    const { classes, tableHead } = this.props;
+    const { classes, tableHead, actions } = this.props;
     return (
       <TableRow key={row.id} hover>
         {tableHead.map((col, key) => {
@@ -88,15 +86,19 @@ class HierarchyTable extends React.Component {
             />
           );
         })}
-        {/* <TableCell className={classes.tableActionCell}>
-          <TableRowDial />
-        </TableCell> */}
+        {actions.length > 0 ? (
+          <DataTableCell
+            classes={classes}
+            actions={actions}
+            row={row}
+          />
+        ) : null}
       </TableRow>
     );
   }
 
   render () {
-    const { classes, tableHeaderColor, tableHead } = this.props;
+    const { classes, tableHeaderColor, tableHead, actions } = this.props;
     const { showFixedHeader, tableId, fixedHeaderPosition, fixedHeaderColsWidth } = this.state;
     const rows = this.getAllRows()
 
@@ -105,7 +107,7 @@ class HierarchyTable extends React.Component {
         <Table className={classes.table} id={tableId}>
           <DataTableHead
             {...{classes, tableHeaderColor, tableHead}}
-            actions={true}
+            actions={actions}
           />
           <TableBody>
             {rows.map(row => {
@@ -121,7 +123,7 @@ class HierarchyTable extends React.Component {
               <DataTableHead
                 {...{classes, tableHeaderColor, tableHead}}
                 colsWidth={fixedHeaderColsWidth} 
-                actions={true}
+                actions={actions}
               />
             }
           />
@@ -132,7 +134,8 @@ class HierarchyTable extends React.Component {
 }
 
 HierarchyTable.defaultProps = {
-  tableHeaderColor: "gray"
+  tableHeaderColor: "gray",
+  actions: [],
 };
 
 HierarchyTable.propTypes = {
@@ -147,7 +150,8 @@ HierarchyTable.propTypes = {
     "gray"
   ]),
   tableHead: PropTypes.arrayOf(PropTypes.object),
-  tableData: PropTypes.arrayOf(PropTypes.object)
+  tableData: PropTypes.arrayOf(PropTypes.object),
+  actions: PropTypes.array,
 };
 
 export default withStyles(tableStyle)(HierarchyTable);
