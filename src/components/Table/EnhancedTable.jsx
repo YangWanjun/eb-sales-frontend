@@ -185,7 +185,6 @@ class EnhancedTableFooter extends React.Component {
         />
       </TableCell>
     ) : null;
-    console.log(summary);
 
     return (
       <TableFooter>

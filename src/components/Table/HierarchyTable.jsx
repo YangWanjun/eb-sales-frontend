@@ -23,6 +23,7 @@ class HierarchyTable extends React.Component {
   constructor(props) {
     super(props);
 
+    this.handleHideActions = this.handleHideActions.bind(this);
     this.state = {
       showFixedHeader: false,
       tableId: uuid(),
@@ -70,10 +71,17 @@ class HierarchyTable extends React.Component {
     });
   }
 
+  handleHideActions() {
+    const { actions } = this.props;
+    if (actions && actions.length > 0 && this._handleHideActions) {
+      this._handleHideActions();
+    }
+  }
+
   getTableRow(row, deep) {
-    const { classes, tableHead, actions } = this.props;
+    const { classes, tableHead, actions, actionsTrigger } = this.props;
     return (
-      <TableRow key={row.id} hover>
+      <TableRow key={row.id} hover onMouseLeave={this.handleHideActions}>
         {tableHead.map((col, key) => {
           let paddingLeft = key === 0 ? ((deep * 30) || defaultPaddingLeft) : defaultPaddingLeft;
           return (
@@ -90,7 +98,11 @@ class HierarchyTable extends React.Component {
           <DataTableCell
             classes={classes}
             actions={actions}
+            actionsTrigger={actionsTrigger}
             row={row}
+            ref={(cell) => {
+              this._handleHideActions = cell && cell.getWrappedInstance().handleHideActions;
+            }}
           />
         ) : null}
       </TableRow>
@@ -151,7 +163,8 @@ HierarchyTable.propTypes = {
   ]),
   tableHead: PropTypes.arrayOf(PropTypes.object),
   tableData: PropTypes.arrayOf(PropTypes.object),
-  actions: PropTypes.array,
+  actions: PropTypes.arrayOf(PropTypes.object),
+  actionsTrigger: PropTypes.func,
 };
 
 export default withStyles(tableStyle)(HierarchyTable);

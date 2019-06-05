@@ -319,7 +319,6 @@ class FormComponent extends React.Component {
   render() {
     const { schema, layout } = this.props;
     const { data } = this.state;
-    console.log(data);
     return this.getFormLayout(data, schema, layout);
   }
 }

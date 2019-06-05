@@ -7,6 +7,7 @@ import {
   Toolbar,
 } from '@material-ui/core';
 import NoteAddIcon from '@material-ui/icons/NoteAdd'
+import FindInPageIcon from '@material-ui/icons/FindInPage'
 import SendIcon from '@material-ui/icons/Send'
 import CustomBreadcrumbs from '../components/customBreadcrumbs';
 import EnhancedTable from '../containers/EnhancedTable';
@@ -59,8 +60,11 @@ class PartnerMemberOrders extends React.Component {
     });
   }
 
+  previewMemberOrder(data) {
+    
+  }
+
   createMemberOrder(data) {
-    console.log(data);
   }
 
   render () {
@@ -117,16 +121,25 @@ class PartnerMemberOrders extends React.Component {
               <HierarchyTable
                 tableHead={list_bp_member_orders_schema}
                 tableData={initData.data.results}
+                actionsTrigger={(data) => (data.parent !== null)}
                 actions={[
+                  {
+                    'icon': <FindInPageIcon />,
+                    'tooltip': '注文書をプレビュー',
+                    'handleClick': this.previewMemberOrder,
+                    'trigger': (data) => (data.parent !== null),
+                  },
                   {
                     'icon': <NoteAddIcon />,
                     'tooltip': '注文書と注文請書を作成',
                     'handleClick': this.createMemberOrder,
+                    'trigger': (data) => (data.parent !== null),
                   },
                   {
                     'icon': <SendIcon />,
                     'tooltip': '注文書と注文請書を送信',
                     'handleClick': this.createMemberOrder,
+                    'trigger': (data) => (data.parent !== null),
                   },
                 ]}
               />

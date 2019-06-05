@@ -342,6 +342,7 @@ export const list_bp_member_orders_schema = [
     "name": "order_no",
     "type": "string",
     "label": "作業期間／注文番号",
+    "url_field": 'order_url',
   },
   {
     "name": "order_file",

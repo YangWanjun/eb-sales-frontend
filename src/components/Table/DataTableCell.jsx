@@ -10,7 +10,7 @@ import {
   Tooltip,
   Fab,
 } from "@material-ui/core";
-import AddIcon from '@material-ui/icons/Add';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
 import CloseIcon from '@material-ui/icons/Close';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
@@ -23,6 +23,7 @@ class DataTableCell extends React.Component {
   constructor(props) {
     super(props);
 
+    this.handleHideActions = this.handleHideActions.bind(this);
     this.state = {
       open: false,
     }
@@ -62,13 +63,13 @@ class DataTableCell extends React.Component {
   };
 
   render() {
-    const { classes, column, row, actions } = this.props;
+    const { classes, column, row, actions, actionsTrigger } = this.props;
     const { open } = this.state;
 
     let style = Object.assign({}, this.props.style);
     let attrs = {};
     let output = null;
-    if (Array.isArray(actions) && actions.length > 0) {
+    if (Array.isArray(actions) && actions.length > 0 && (!actionsTrigger || actionsTrigger(row))) {
       style['padding'] = 0;
       style['width'] = 35;
       style['position'] = 'relative';
@@ -81,14 +82,16 @@ class DataTableCell extends React.Component {
             </IconButton>
           ) : (
             <IconButton style={{padding: 10}} onClick={this.handleShowActions}>
-              <AddIcon />
+              <MoreVertIcon />
             </IconButton>
           )}
           <div className={classes.tableActionWrapper}>
             <Grow in={open}>
-              <div>
+              <div style={{display: open ? 'block' : 'none'}}>
                 {actions.map((action, key) => {
-                  if (action.icon) {
+                  if (action.trigger && !action.trigger(row)) {
+                    return null;
+                  } else if (action.icon) {
                     return (
                       <Tooltip key={key} title={action.tooltip} placement='bottom' enterDelay={300}>
                         <Fab

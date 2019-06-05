@@ -15,7 +15,7 @@ export const common = {
       const int_comma = (num + "").replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
       return int_comma;
     } else {
-      return '0';
+      return '';
     }
   },
 

@@ -21,4 +21,4 @@ const mapDispatchToProps = dispatch => ({
   }
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(DataTableCell);
+export default connect(mapStateToProps, mapDispatchToProps, null, { withRef: true })(DataTableCell);

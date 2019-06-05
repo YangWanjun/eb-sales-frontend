@@ -8,7 +8,7 @@ import NoteAddIcon from '@material-ui/icons/NoteAdd'
 import CustomBreadcrumbs from '../components/customBreadcrumbs';
 import EnhancedTable from '../containers/EnhancedTable';
 import DataProvider from '../components/Table/DataProvider';
-import { FormDialog } from '../components/Form/index';
+import FormDialog from '../containers/FormDialog';
 import {
   list_order_schema,
   edit_order_schema,
