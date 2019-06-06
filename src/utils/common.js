@@ -2,7 +2,7 @@ import { replace } from 'react-router-redux';
 import { authHeader } from '../utils/authHeader';
 import { logoutAndRedirect } from '../actions/auth.actions';
 import { clearMe } from '../actions/user.actions';
-import { changeStatusCode } from '../actions/status.actions';
+import { changeStatusCode, loading } from '../actions/status.actions';
 import { store } from '../utils/store';
 
 export const common = {
@@ -476,5 +476,19 @@ export const common = {
       return false;
     }
     return user.perms.indexOf(perm) >= 0;
-  }
+  },
+
+  /**
+   * ローディング画面を表示
+   */
+  loading: function() {
+    store.dispatch(loading(true));
+  },
+
+  /**
+   * ローディング画面を非表示
+   */
+  loaded: function() {
+    store.dispatch(loading(false));
+  },
 };

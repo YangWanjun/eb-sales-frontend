@@ -55,7 +55,8 @@ class PartnerMemberOrder extends React.Component {
     });
     common.fetchGet(common.formatStr(config.api.partner_member_order_html, params.order_id)).then(data => {
       this.setState({
-        order_html: data.html,
+        order_html: data.html[0],
+        order_request_html: data.html[1],
       });
     });
   }
@@ -67,10 +68,17 @@ class PartnerMemberOrder extends React.Component {
     return false;
   };
 
+  printMemberOrderRequest = () => {
+    var frm = document.getElementById('printMemberOrderRequest').contentWindow;
+    frm.focus();
+    frm.print();
+    return false;
+  };
+
   render() {
     const { classes } = this.props;
     const { params } = this.props.match;
-    const { partner, member, order, order_html } = this.state;
+    const { partner, member, order, order_html, order_request_html } = this.state;
 
     return (
       <div>
@@ -102,6 +110,31 @@ class PartnerMemberOrder extends React.Component {
                   color="primary"
                   className={classes.button}
                   onClick={this.printMemberOrder}
+                >
+                  &nbsp;&nbsp;&nbsp;印刷&nbsp;&nbsp;&nbsp;
+                </Button>
+              </CardFooter>
+            </Card>
+          </GridItem>
+          <GridItem xs={12} sm={12} md={12}>
+            <Card className={ classes.cardStyle }>
+              <CardBody>
+                <iframe
+                  title='注文請書'
+                  id='printMemberOrderRequest'
+                  srcDoc={order_request_html}
+                  frameBorder='0'
+                  width='100%'
+                  height='1260px'
+                >
+                </iframe>
+              </CardBody>
+              <CardFooter chart>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  className={classes.button}
+                  onClick={this.printMemberOrderRequest}
                 >
                   &nbsp;&nbsp;&nbsp;印刷&nbsp;&nbsp;&nbsp;
                 </Button>

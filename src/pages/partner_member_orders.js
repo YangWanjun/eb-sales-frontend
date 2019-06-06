@@ -96,7 +96,7 @@ class PartnerMemberOrders extends React.Component {
           end_month: data.end_month,
         },
         order_create_url: common.formatStr(config.api.partner_member_order_create, params.partner_id, data.parent),
-      })
+      });
     }
   }
 

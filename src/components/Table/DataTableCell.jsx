@@ -58,6 +58,7 @@ class DataTableCell extends React.Component {
   handleActionClick = (method) => () =>  {
     const { row } = this.props;
     if (method) {
+      // common.loading();
       method(row);
     }
   };

@@ -38,6 +38,7 @@ import TurnoverMonthlyDetail from './turnover_monthly_detail';
 import TurnoverMonthlyCustomerDetail from './turnover_monthly_customer_detail';
 import TurnoverMonthlyProjectDetail from './turnover_monthly_project_detail';
 import SimpleSnackbar from '../containers/snackBar';
+import Loading from '../containers/Loading';
 
 const drawerWidth = 240;
 
@@ -199,6 +200,7 @@ class Layout extends React.Component {
           </Switch>
         </main>
         <SimpleSnackbar />
+        <Loading />
       </div>
     );
   }
