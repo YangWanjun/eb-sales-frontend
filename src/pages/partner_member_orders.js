@@ -9,6 +9,7 @@ import {
 import NoteAddIcon from '@material-ui/icons/NoteAdd'
 import FindInPageIcon from '@material-ui/icons/FindInPage'
 import SendIcon from '@material-ui/icons/Send'
+import FormDialog from '../containers/FormDialog';
 import CustomBreadcrumbs from '../components/customBreadcrumbs';
 import EnhancedTable from '../containers/EnhancedTable';
 import DataProvider from '../components/Table/DataProvider';
@@ -18,6 +19,8 @@ import {
   edit_bp_contract_schema,
   edit_bp_contract_layout,
   list_bp_member_orders_schema,
+  create_member_order_form_schema,
+  create_member_order_form_layout,
 } from '../layout/partner_member';
 import {
   setPriceMemo,
@@ -37,9 +40,13 @@ class PartnerMemberOrders extends React.Component {
   constructor(props) {
     super(props);
 
+    this.createMemberOrder = this.createMemberOrder.bind(this);
+    this.onRowAdded = this.onRowAdded.bind(this);
     this.state = { 
       partner: {},
       member: {},
+      order_form_data: {},
+      order_create_url: null,
     };
     this.initialize();
 　}
@@ -61,14 +68,46 @@ class PartnerMemberOrders extends React.Component {
   }
 
   previewMemberOrder(data) {
-    
+
+  }
+
+  getDefaultPublishDate(year, month) {
+    const today = new Date();
+    if (year + month > common.formatDate(today, 'YYYYMM')) {
+      return common.formatDate(today, 'YYYY-MM-DD');
+    } else {
+      const d = new Date(year, parseInt(month, 10) - 1, 1);
+      d.setDate(d.getDate() - 1);
+      return common.formatDate(d, 'YYYY-MM-DD');
+    }
   }
 
   createMemberOrder(data) {
+    if (this.showOrderConfirm) {
+      const { params } = this.props.match;
+      this.showOrderConfirm();
+      this.setState({
+        order_form_data: {
+          __index__: data.__index__,
+          publish_date: this.getDefaultPublishDate(data.year, data.month),
+          year: data.year,
+          month: data.month,
+          end_year: data.end_year,
+          end_month: data.end_month,
+        },
+        order_create_url: common.formatStr(config.api.partner_member_order_create, params.partner_id, data.parent),
+      })
+    }
+  }
+
+  onRowAdded(row) {
+    if (this.handleRowUpdated) {
+      this.handleRowUpdated(row);
+    }
   }
 
   render () {
-    const { partner, member } = this.state;
+    const { partner, member, order_form_data, order_create_url } = this.state;
     const { params } = this.props.match;
     // ＢＰ契約設定
     const formContractProps = {
@@ -142,10 +181,20 @@ class PartnerMemberOrders extends React.Component {
                     'trigger': (data) => (data.parent !== null),
                   },
                 ]}
+                innerRef={(datatable) => { this.handleRowUpdated = datatable && datatable.handleRowUpdated }}
               />
             ) }
           />
         </Paper>
+        <FormDialog
+          innerRef={(dialog) => { this.showOrderConfirm = dialog && dialog.handleOpen }}
+          title={'注文書と注文請書を作成'}
+          schema={create_member_order_form_schema}
+          layout={create_member_order_form_layout}
+          data={order_form_data}
+          add_url={order_create_url}
+          onRowAdded={this.onRowAdded}
+        />
       </div>
     );
   }

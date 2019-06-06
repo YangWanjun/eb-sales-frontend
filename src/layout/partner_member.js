@@ -360,3 +360,67 @@ export const list_bp_member_orders_schema = [
     "label": "送信",
   },
 ];
+
+export const create_member_order_form_schema = [
+  {
+    "name": "publish_date",
+    "type": "date",
+    "label": "発行年月日",
+  },
+  {
+    "name": "year",
+    "type": "choice",
+    "label": "開始年",
+    "choices": Array.from({length: 10}, (v, k) => ({"value": k + 2016 + '', "display_name": k + 2016 + ''})),
+  },
+  {
+    "name": "month",
+    "type": "choice",
+    "label": "開始月",
+    "choices": [
+      { "value": "01", "display_name": "1月" },
+      { "value": "02", "display_name": "2月" },
+      { "value": "03", "display_name": "3月" },
+      { "value": "04", "display_name": "4月" },
+      { "value": "05", "display_name": "5月" },
+      { "value": "06", "display_name": "6月" },
+      { "value": "07", "display_name": "7月" },
+      { "value": "08", "display_name": "8月" },
+      { "value": "09", "display_name": "9月" },
+      { "value": "10", "display_name": "10月" },
+      { "value": "11", "display_name": "11月" },
+      { "value": "12", "display_name": "12月" },
+    ]
+  },
+  {
+    "name": "end_year",
+    "type": "choice",
+    "label": "終了年",
+    "choices": Array.from({length: 10}, (v, k) => ({"value": k + 2016 + '', "display_name": k + 2016 + ''})),
+  },
+  {
+    "name": "end_month",
+    "type": "choice",
+    "label": "終了月",
+    "choices": [
+      { "value": "01", "display_name": "1月" },
+      { "value": "02", "display_name": "2月" },
+      { "value": "03", "display_name": "3月" },
+      { "value": "04", "display_name": "4月" },
+      { "value": "05", "display_name": "5月" },
+      { "value": "06", "display_name": "6月" },
+      { "value": "07", "display_name": "7月" },
+      { "value": "08", "display_name": "8月" },
+      { "value": "09", "display_name": "9月" },
+      { "value": "10", "display_name": "10月" },
+      { "value": "11", "display_name": "11月" },
+      { "value": "12", "display_name": "12月" },
+    ],
+  },
+];
+
+export const create_member_order_form_layout = [
+  'publish_date',
+  ['year', 'month'],
+  ['end_year', 'end_month'],
+];

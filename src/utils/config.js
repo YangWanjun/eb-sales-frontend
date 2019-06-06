@@ -37,6 +37,7 @@ export const config = {
     partner_member_orders: hostApi + '/api/partner/%s/members/%s/orders/',
     partner_member_order_detail: hostApi + '/api/partner-member-order/%s/',
     partner_member_order_html: hostApi + '/api/partner/member/order/%s/',
+    partner_member_order_create: hostApi + '/api/partner/%s/members/%s/orders/create/',
     customer_list: hostApi + '/api/customer/',
     customer_detail: hostApi + '/api/customer/%s/',
     project_list: hostApi + '/api/vproject/',

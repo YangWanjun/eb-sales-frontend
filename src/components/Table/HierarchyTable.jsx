@@ -24,7 +24,9 @@ class HierarchyTable extends React.Component {
     super(props);
 
     this.handleHideActions = this.handleHideActions.bind(this);
+    this.handleRowUpdated = this.handleRowUpdated.bind(this);
     this.state = {
+      tableData: this.initializeData(props.tableData),
       showFixedHeader: false,
       tableId: uuid(),
       fixedHeaderPosition: {
@@ -34,6 +36,13 @@ class HierarchyTable extends React.Component {
       },
       fixedHeaderColsWidth: [],
     }
+  }
+
+  initializeData(data) {
+    if (data) {
+      data.map((row, index) => row['__index__'] = index);
+    }
+    return data;
   }
 
   handleScroll = () => {
@@ -52,7 +61,7 @@ class HierarchyTable extends React.Component {
   }
 
   getAllRows() {
-    const { tableData } = this.props;
+    const { tableData } = this.state;
     const rootRows = common.isEmpty(tableData) ? [] : tableData.filter(row => row.parent === null);
     let rows = [];
     rootRows.map(row => {
@@ -62,7 +71,7 @@ class HierarchyTable extends React.Component {
   }
 
   getChildRows(items, item, deep=0) {
-    const { tableData } = this.props;
+    const { tableData } = this.state;
     const children = tableData.filter(sub => sub.parent === item.id);
 
     items.push(this.getTableRow(item, deep));
@@ -107,6 +116,13 @@ class HierarchyTable extends React.Component {
         ) : null}
       </TableRow>
     );
+  }
+
+  handleRowUpdated(row) {
+    let { tableData } = this.state;
+    let existedRow = common.getColumnByName(tableData, row.__index__, '__index__');
+    Object.assign(existedRow, row);
+    this.setState({tableData});
   }
 
   render () {
