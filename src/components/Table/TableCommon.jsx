@@ -1,13 +1,13 @@
-export function getFixedHeaderOption(tableId, paginationId) {
+export function getFixedHeaderOption(tableId, paginationId, padding=24) {
   const table = document.getElementById(tableId);
   let {left, width, top, height} = table.getBoundingClientRect();
   let fixedHeaderColsWidth = [];
   let colWidth = 0;
   const headerCells = table.querySelector('thead>tr').children;
   Array.prototype.forEach.call(headerCells, function(ele, idx) {
-    colWidth = ele.getBoundingClientRect().width - 24;
+    colWidth = ele.getBoundingClientRect().width - padding;
     if (headerCells.length === (idx) + 1) {
-      colWidth -= 24;
+      colWidth -= padding;
     }
     fixedHeaderColsWidth.push(colWidth);
   });
