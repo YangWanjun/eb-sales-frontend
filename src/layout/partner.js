@@ -417,3 +417,128 @@ export const list_members_order_status = [
     "label": "退職",
   },
 ];
+
+export const list_lump_contract_schema = [
+  {
+    "name": "project_name",
+    "type": "string",
+    "label": "案件名称",
+  },
+  {
+    "name": "salesperson_name",
+    "type": "string",
+    "label": "営業員",
+  },
+  {
+    "name": "start_date",
+    "type": "date",
+    "label": "契約開始日",
+  },
+  {
+    "name": "end_date",
+    "type": "date",
+    "label": "契約終了日",
+  },
+  {
+    "name": "allowance_base",
+    "type": "integer",
+    "label": "契約金額",
+  },
+  {
+    "name": "order_no",
+    "type": "string",
+    "label": "注文番号",
+    "url_field": "order_url",
+  },
+  {
+    "name": "order_file",
+    "type": "file",
+    "label": "注文書",
+  },
+  {
+    "name": "order_request_file",
+    "type": "file",
+    "label": "注文請書",
+  },
+  {
+    "name": "is_sent",
+    "type": "boolean",
+    "label": "送信",
+  },
+];
+
+export const edit_lump_contract_schema = [
+  {
+    "name": "company_name",
+    "type": "string",
+    "label": "雇用会社",
+    "read_only": true,
+  },
+  {
+    "name": "start_date",
+    "type": "date",
+    "label": "契約開始日",
+    "required": true,
+  },
+  {
+    "name": "end_date",
+    "type": "date",
+    "label": "契約終了日",
+    "required": true,
+  },
+  {
+    "name": "delivery_date",
+    "type": "date",
+    "label": "納品日",
+    "required": true,
+  },
+  {
+    "name": "project",
+    "type": "field",
+    "label": "関連案件",
+    "display_field": 'project_name',
+    "required": true,
+    "search_url": '/api/project/search?schema=1',
+  },
+  {
+    "name": "allowance_base",
+    "type": "integer",
+    "label": "契約金額",
+    "required": true,
+    "min_value": 0,
+  },
+  {
+    "name": "allowance_base_tax",
+    "type": "integer",
+    "label": "消費税",
+    "required": true,
+    "min_value": 0,
+  },
+  {
+    "name": "allowance_base_total",
+    "type": "integer",
+    "label": "合計額",
+    "required": true,
+    "min_value": 0,
+  },
+  {
+    "name": "project_content",
+    "type": "string",
+    "label": "作業内容",
+  },
+  {
+    "name": "workload",
+    "type": "string",
+    "label": "作業量",
+  },
+  {
+    "name": "project_result",
+    "type": "string",
+    "label": "納入成果品",
+  },
+  {
+    "name": "comment",
+    "type": "text",
+    "label": "備考",
+  },
+]

@@ -13,9 +13,13 @@ import CardHeader from '../components/Card/CardHeader';
 import CardBody from "../components/Card/CardBody.jsx";
 import CustomBreadcrumbs from '../components/customBreadcrumbs';
 import SimpleTable from '../components/Table/SimpleTable';
+import EnhancedTable from '../containers/EnhancedTable';
+import DataProvider from '../components/Table/DataProvider';
 import {
   list_monthly_status,
   list_members_order_status,
+  list_lump_contract_schema,
+  edit_lump_contract_schema,
 } from '../layout/partner';
 import { config } from '../utils/config';
 import { common } from '../utils/common';
@@ -87,6 +91,18 @@ class PartnerPreview extends React.Component {
     const { classes } = this.props;
     const { partner, monthly_status, member_order_status } = this.state;
     const avatar = defaultAvatar;
+    // 一括契約設定
+    const formLumpContractProps = {
+      schema: edit_lump_contract_schema,
+      layout: [],
+      title: '一括契約設定',
+      data: {
+        company: params.pk,
+        company_name: partner.name,
+      },
+      add_url: config.api.partner_lump_contract_list,
+      edit_url: config.api.partner_lump_contract_detail,
+    }
 
     return (
       <div>
@@ -131,6 +147,8 @@ class PartnerPreview extends React.Component {
                   </CardBody>
                 </Card>
               </GridItem>
+              {/* <GridItem xs={12} sm={12} md={12}>
+              </GridItem> */}
             </GridContainer>
           </GridItem>
           <GridItem xs={12} sm={12} md={4}>
@@ -169,6 +187,20 @@ class PartnerPreview extends React.Component {
             </Card>
           </GridItem>
         </GridContainer>
+        <DataProvider
+          endpoint={ common.formatStr(config.api.partner_lump_contract_list, params.pk) }
+          render={ (initData) => (
+            <EnhancedTable
+              tableTitle='一括契約一覧'
+              { ...initData }
+              columns={list_lump_contract_schema}
+              isClientSide={true}
+              selectable='single'
+              formComponentProps={formLumpContractProps}
+              deleteUrl={config.api.partner_lump_contract_detail}
+            />
+          ) } 
+        />
       </div>
     );
   }
