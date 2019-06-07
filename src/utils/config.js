@@ -67,6 +67,8 @@ export const config = {
     mst_bank_list: hostApi + '/api/bank/',
     mst_bank_account_list: hostApi + '/api/bank-account/',
     attachment_download: hostApi + '/api/attachment/download/%s',
+    mail_send: hostApi + '/api/mail/send/',
+    mail_partner_order_preview: hostApi + '/api/partner-member-order/%s/mail/',
   },
   rowsPerPage: 15,
   toastHideDuration: 6000,

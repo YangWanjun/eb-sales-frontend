@@ -38,7 +38,7 @@ const styles = theme => ({
     padding: theme.spacing.unit * 4,
     outline: 'none',
     width: '100%',
-    maxWidth: 600,
+    maxWidth: 750,
     [theme.breakpoints.up('sm')]: {
       width: '50%',
     },

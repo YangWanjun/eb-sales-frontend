@@ -366,12 +366,14 @@ export const create_member_order_form_schema = [
     "name": "publish_date",
     "type": "date",
     "label": "発行年月日",
+    "required": true,
   },
   {
     "name": "year",
     "type": "choice",
     "label": "開始年",
     "choices": Array.from({length: 10}, (v, k) => ({"value": k + 2016 + '', "display_name": k + 2016 + ''})),
+    "required": true,
   },
   {
     "name": "month",
@@ -390,13 +392,15 @@ export const create_member_order_form_schema = [
       { "value": "10", "display_name": "10月" },
       { "value": "11", "display_name": "11月" },
       { "value": "12", "display_name": "12月" },
-    ]
+    ],
+    "required": true,
   },
   {
     "name": "end_year",
     "type": "choice",
     "label": "終了年",
     "choices": Array.from({length: 10}, (v, k) => ({"value": k + 2016 + '', "display_name": k + 2016 + ''})),
+    "required": true,
   },
   {
     "name": "end_month",
@@ -416,6 +420,7 @@ export const create_member_order_form_schema = [
       { "value": "11", "display_name": "11月" },
       { "value": "12", "display_name": "12月" },
     ],
+    "required": true,
   },
 ];
 

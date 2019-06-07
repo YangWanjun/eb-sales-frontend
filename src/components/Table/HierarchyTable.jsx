@@ -120,9 +120,16 @@ class HierarchyTable extends React.Component {
 
   handleRowUpdated(row) {
     let { tableData } = this.state;
-    let existedRow = common.getColumnByName(tableData, row.__index__, '__index__');
-    Object.assign(existedRow, row);
-    this.setState({tableData});
+    let existedRow = null;
+    if (row.__index__) {
+      existedRow = common.getColumnByName(tableData, row.__index__, '__index__');
+    } else {
+      existedRow = common.getColumnByName(tableData, row.id, 'id');
+    }
+    if (existedRow) {
+      Object.assign(existedRow, row);
+      this.setState({tableData});
+    }
   }
 
   render () {

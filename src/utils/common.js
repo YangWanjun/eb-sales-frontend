@@ -125,16 +125,18 @@ export const common = {
    * @param {String} value 
    */
   getColumnByName: function(columns, value, key='id') {
-    if (columns.length === 0) {
-      return 0;
+    if (!columns) {
+      return {};
+    } else if (columns.length === 0) {
+      return {};
     } else if (typeof value === 'undefined') {
-      return null;
+      return {};
     } else {
       if (typeof value === 'string') {
         value = value.split('__')[0];
       }
       let cols = columns.filter(col => col[key] === value);
-      return cols.length > 0 ? cols[0] : null;
+      return cols.length > 0 ? cols[0] : {};
     }
   },
 
@@ -414,7 +416,11 @@ export const common = {
       // credentials: 'same-origin',
     };
     if (params && !this.isEmpty(params)) {
-      requestOptions['body'] = JSON.stringify(params)
+      if (method === 'GET') {
+        url = this.addUrlParameter(url, params);
+      } else {
+        requestOptions['body'] = JSON.stringify(params)
+      }
     }
 
     url = this.addUrlParameter(url, {'format': 'json'});

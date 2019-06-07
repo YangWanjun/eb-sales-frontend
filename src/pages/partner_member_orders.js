@@ -7,13 +7,13 @@ import {
   Toolbar,
 } from '@material-ui/core';
 import NoteAddIcon from '@material-ui/icons/NoteAdd'
-import FindInPageIcon from '@material-ui/icons/FindInPage'
 import SendIcon from '@material-ui/icons/Send'
 import FormDialog from '../containers/FormDialog';
 import CustomBreadcrumbs from '../components/customBreadcrumbs';
 import EnhancedTable from '../containers/EnhancedTable';
 import DataProvider from '../components/Table/DataProvider';
 import HierarchyTable from '../components/Table/HierarchyTable';
+import MailForm from '../components/Form/MailForm';
 import {
   list_bp_contract_schema,
   edit_bp_contract_schema,
@@ -41,6 +41,7 @@ class PartnerMemberOrders extends React.Component {
     super(props);
 
     this.createMemberOrder = this.createMemberOrder.bind(this);
+    this.sendMemberOrder = this.sendMemberOrder.bind(this);
     this.onRowAdded = this.onRowAdded.bind(this);
     this.state = { 
       partner: {},
@@ -67,10 +68,6 @@ class PartnerMemberOrders extends React.Component {
     });
   }
 
-  previewMemberOrder(data) {
-
-  }
-
   getDefaultPublishDate(year, month) {
     const today = new Date();
     if (year + month > common.formatDate(today, 'YYYYMM')) {
@@ -85,7 +82,6 @@ class PartnerMemberOrders extends React.Component {
   createMemberOrder(data) {
     if (this.showOrderConfirm) {
       const { params } = this.props.match;
-      this.showOrderConfirm();
       this.setState({
         order_form_data: {
           __index__: data.__index__,
@@ -96,6 +92,17 @@ class PartnerMemberOrders extends React.Component {
           end_month: data.end_month,
         },
         order_create_url: common.formatStr(config.api.partner_member_order_create, params.partner_id, data.parent),
+      });
+      this.showOrderConfirm();
+    }
+  }
+
+  sendMemberOrder(data) {
+    if (this.showSendMailConfirm) {
+      common.fetchGet(
+        common.formatStr(config.api.mail_partner_order_preview, data.id),
+      ).then(mail_data => {
+        this.showSendMailConfirm(mail_data);
       });
     }
   }
@@ -163,12 +170,6 @@ class PartnerMemberOrders extends React.Component {
                 actionsTrigger={(data) => (data.parent !== null)}
                 actions={[
                   {
-                    'icon': <FindInPageIcon />,
-                    'tooltip': '注文書をプレビュー',
-                    'handleClick': this.previewMemberOrder,
-                    'trigger': (data) => (data.parent !== null),
-                  },
-                  {
                     'icon': <NoteAddIcon />,
                     'tooltip': '注文書と注文請書を作成',
                     'handleClick': this.createMemberOrder,
@@ -177,7 +178,7 @@ class PartnerMemberOrders extends React.Component {
                   {
                     'icon': <SendIcon />,
                     'tooltip': '注文書と注文請書を送信',
-                    'handleClick': this.createMemberOrder,
+                    'handleClick': this.sendMemberOrder,
                     'trigger': (data) => (data.parent !== null),
                   },
                 ]}
@@ -193,6 +194,13 @@ class PartnerMemberOrders extends React.Component {
           layout={create_member_order_form_layout}
           data={order_form_data}
           add_url={order_create_url}
+          onRowAdded={this.onRowAdded}
+        />
+        <MailForm
+          ref={(dialog) => {
+            this.showSendMailConfirm = dialog && dialog.handleOpen;
+          }}
+          title={'注文書を送信'}
           onRowAdded={this.onRowAdded}
         />
       </div>

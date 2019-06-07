@@ -86,8 +86,6 @@ class ControlCreateor extends React.Component {
             name={name}
             value={value}
             label={label}
-            rows="2"
-            rowsMax="6"
             placeholder={this.props.placeholder}
             InputLabelProps={this.props.placeholder ? { shrink: true,} : null}
             onChange={this.props.handleChange}
@@ -177,7 +175,7 @@ class ControlCreateor extends React.Component {
               </div>
             )}
           >
-            {column.choices.map(item => {
+            {column.choices && column.choices.map(item => {
               return (
                 <MenuItem key={item.value} value={item.value}>
                   <Checkbox checked={value.indexOf(item.value) > -1} />
