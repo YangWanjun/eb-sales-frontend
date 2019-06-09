@@ -30,6 +30,7 @@ export const config = {
     partner_member_contract_detail: hostApi + '/api/partner-contracts/%s/',
     partner_lump_contract_list: hostApi + '/api/partner/%s/lump-contract/',
     partner_lump_contract_detail: hostApi + '/api/partner-lump-contract/%s/',
+    partner_lump_order_html: hostApi + '/api/partner/lump/order/%s/',
     partner_pay_notify_recipient_list: hostApi + '/api/partner-pay-notify-recipient/',
     partner_pay_notify_recipient_detial: hostApi + '/api/partner-pay-notify-recipient/%s/',
     partner_bank_account_list: hostApi + '/api/partner-bank-account/',

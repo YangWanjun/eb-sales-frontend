@@ -5,6 +5,7 @@ import {
   Typography,
   Button,
 } from '@material-ui/core';
+import NoteAddIcon from '@material-ui/icons/NoteAdd'
 import GridContainer from '../components/Grid/GridContainer';
 import GridItem from '../components/Grid/GridItem';
 import Card from "../components/Card/Card";
@@ -56,6 +57,7 @@ class PartnerPreview extends React.Component {
   constructor(props) {
     super(props);
 
+    this.createLumpOrder = this.createLumpOrder.bind(this);
     this.state = { 
       partner: {},
       monthly_status: [],
@@ -84,6 +86,10 @@ class PartnerPreview extends React.Component {
         member_order_status: data.results,
       });
     });
+  }
+
+  createLumpOrder(data) {
+    
   }
 
   render () {
@@ -198,6 +204,13 @@ class PartnerPreview extends React.Component {
               selectable='single'
               formComponentProps={formLumpContractProps}
               deleteUrl={config.api.partner_lump_contract_detail}
+              actions={[
+                {
+                  'tooltip': '注文書作成',
+                  'icon': <NoteAddIcon/>,
+                  'handleClick': this.createLumpOrder,
+                },
+              ]}
             />
           ) } 
         />
