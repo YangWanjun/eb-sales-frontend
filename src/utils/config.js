@@ -73,6 +73,7 @@ export const config = {
     attachment_download: hostApi + '/api/attachment/download/%s',
     mail_send: hostApi + '/api/mail/send/',
     mail_partner_order_preview: hostApi + '/api/partner-member-order/%s/mail/',
+    mail_partner_lump_order_preview: hostApi + '/api/partner-lump-order/%s/mail/'
   },
   rowsPerPage: 15,
   toastHideDuration: 6000,

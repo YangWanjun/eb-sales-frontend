@@ -296,16 +296,22 @@ class FormComponent extends React.Component {
       );
     } else {
       const message = errors[col.name] || null;
-      if (col.type === 'choices' && data[col.name + '_choices']) {
+      const choices = data[col.name + '_choices'];
+      let value = data[col.name];
+      if (col.type === 'choices' && choices) {
         // 複数選択時、選択肢はデータから取得する場合
-        col['choices'] = data[col.name + '_choices'];
+        col['choices'] = choices;
+        if (common.isEmpty(choices)) {
+          value = null;
+          data[col.name] = null;
+        }
       }
       return (
         <GridItem key={key} xs={12} sm={12} md={colSpan}>
           <ControlCreateor
             name={col.name} 
             column={col} 
-            value={data[col.name]}
+            value={value}
             data={data}
             label={col.label}
             placeholder={col.help_text}

@@ -35,6 +35,7 @@ export const send_mail_schema = [
     "name": "attachment_list",
     "type": "choices",
     "label": "添付ファイル",
+    "required": true,
   },
   {
     "name": "mail_body",

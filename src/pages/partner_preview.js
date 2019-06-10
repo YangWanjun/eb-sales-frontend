@@ -6,6 +6,7 @@ import {
   Button,
 } from '@material-ui/core';
 import NoteAddIcon from '@material-ui/icons/NoteAdd'
+import SendIcon from '@material-ui/icons/Send'
 import GridContainer from '../components/Grid/GridContainer';
 import GridItem from '../components/Grid/GridItem';
 import Card from "../components/Card/Card";
@@ -17,6 +18,7 @@ import SimpleTable from '../components/Table/SimpleTable';
 import EnhancedTable from '../containers/EnhancedTable';
 import DataProvider from '../components/Table/DataProvider';
 import FormDialog from '../containers/FormDialog';
+import MailForm from '../components/Form/MailForm';
 import {
   list_monthly_status,
   list_members_order_status,
@@ -60,6 +62,7 @@ class PartnerPreview extends React.Component {
 
     this.createLumpOrder = this.createLumpOrder.bind(this);
     this.onOrderCreated = this.onOrderCreated.bind(this);
+    this.sendOrders = this.sendOrders.bind(this);
     this.state = { 
       partner: {},
       monthly_status: [],
@@ -107,6 +110,16 @@ class PartnerPreview extends React.Component {
   onOrderCreated(row) {
     if (this.handleRowUpdated) {
       this.handleRowUpdated(row);
+    }
+  }
+
+  sendOrders(data) {
+    if (this.showSendMailConfirm) {
+      common.fetchGet(
+        common.formatStr(config.api.mail_partner_lump_order_preview, data.order_id),
+      ).then(mail_data => {
+        this.showSendMailConfirm(mail_data);
+      });
     }
   }
 
@@ -224,9 +237,14 @@ class PartnerPreview extends React.Component {
               deleteUrl={config.api.partner_lump_contract_detail}
               actions={[
                 {
-                  'tooltip': '注文書作成',
+                  'tooltip': '注文書と注文請書を作成',
                   'icon': <NoteAddIcon/>,
                   'handleClick': this.createLumpOrder,
+                },
+                {
+                  'icon': <SendIcon />,
+                  'tooltip': '注文書と注文請書を送信',
+                  'handleClick': this.sendOrders,
                 },
               ]}
               innerRef={(datatable) => { this.handleRowUpdated = datatable && datatable.handleRowUpdated }}
@@ -245,6 +263,13 @@ class PartnerPreview extends React.Component {
             },
           ]}
           add_url={order_create_url}
+          onRowAdded={this.onOrderCreated}
+        />
+        <MailForm
+          ref={(dialog) => {
+            this.showSendMailConfirm = dialog && dialog.handleOpen;
+          }}
+          title={'注文書を送信'}
           onRowAdded={this.onOrderCreated}
         />
       </div>

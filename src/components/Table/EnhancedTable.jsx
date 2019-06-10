@@ -225,8 +225,8 @@ const toolbarStyles = theme => ({
   },
   actions: {
     color: theme.palette.text.secondary,
-    minWidth: '150px',
     textAlign: 'right',
+    whiteSpace: 'nowrap',
   },
   title: {
     flex: '0 0 auto',
