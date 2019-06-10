@@ -61,20 +61,6 @@ class PartnerMemberOrder extends React.Component {
     });
   }
 
-  printMemberOrder = () => {
-    var frm = document.getElementById('printMemberOrder').contentWindow;
-    frm.focus();
-    frm.print();
-    return false;
-  };
-
-  printMemberOrderRequest = () => {
-    var frm = document.getElementById('printMemberOrderRequest').contentWindow;
-    frm.focus();
-    frm.print();
-    return false;
-  };
-
   render() {
     const { classes } = this.props;
     const { params } = this.props.match;
@@ -109,7 +95,7 @@ class PartnerMemberOrder extends React.Component {
                   variant="contained"
                   color="primary"
                   className={classes.button}
-                  onClick={this.printMemberOrder}
+                  onClick={() => (common.printIframe('printMemberOrder'))}
                 >
                   &nbsp;&nbsp;&nbsp;印刷&nbsp;&nbsp;&nbsp;
                 </Button>
@@ -134,7 +120,7 @@ class PartnerMemberOrder extends React.Component {
                   variant="contained"
                   color="primary"
                   className={classes.button}
-                  onClick={this.printMemberOrderRequest}
+                  onClick={() => (common.printIframe('printMemberOrderRequest'))}
                 >
                   &nbsp;&nbsp;&nbsp;印刷&nbsp;&nbsp;&nbsp;
                 </Button>

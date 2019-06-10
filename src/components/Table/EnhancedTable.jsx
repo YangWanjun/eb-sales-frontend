@@ -778,7 +778,12 @@ class EnhancedTable extends React.Component {
 
   handleRowUpdated(row) {
     let { data } = this.state;
-    let existedRow = common.getColumnByName(data.results, row.__index__, '__index__');
+    let existedRow = null;
+    if (row.__index__) {
+      existedRow = common.getColumnByName(data.results, row.__index__, '__index__');
+    } else {
+      existedRow = common.getColumnByName(data.results, row.id, 'id');
+    }
     Object.assign(existedRow, row);
     this.setState({data});
   }

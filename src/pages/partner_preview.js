@@ -16,6 +16,7 @@ import CustomBreadcrumbs from '../components/customBreadcrumbs';
 import SimpleTable from '../components/Table/SimpleTable';
 import EnhancedTable from '../containers/EnhancedTable';
 import DataProvider from '../components/Table/DataProvider';
+import FormDialog from '../containers/FormDialog';
 import {
   list_monthly_status,
   list_members_order_status,
@@ -58,10 +59,12 @@ class PartnerPreview extends React.Component {
     super(props);
 
     this.createLumpOrder = this.createLumpOrder.bind(this);
+    this.onOrderCreated = this.onOrderCreated.bind(this);
     this.state = { 
       partner: {},
       monthly_status: [],
       member_order_status: [],
+      order_create_url: null,
     };
     this.initialize();
 　}
@@ -89,13 +92,28 @@ class PartnerPreview extends React.Component {
   }
 
   createLumpOrder(data) {
-    
+    if (this.showOrderConfirm) {
+      if (!data.publish_date) {
+        data['publish_date'] = common.formatDate(new Date(), 'YYYY-MM-DD');
+      }
+      const { params } = this.props.match;
+      this.setState({
+        order_create_url: common.formatStr(config.api.partner_lump_order_create, params.pk, data.id),
+      });
+      this.showOrderConfirm(data);
+    }
+  }
+
+  onOrderCreated(row) {
+    if (this.handleRowUpdated) {
+      this.handleRowUpdated(row);
+    }
   }
 
   render () {
     const { params } = this.props.match;
     const { classes } = this.props;
-    const { partner, monthly_status, member_order_status } = this.state;
+    const { partner, monthly_status, member_order_status, order_create_url } = this.state;
     const avatar = defaultAvatar;
     // 一括契約設定
     const formLumpContractProps = {
@@ -211,8 +229,23 @@ class PartnerPreview extends React.Component {
                   'handleClick': this.createLumpOrder,
                 },
               ]}
+              innerRef={(datatable) => { this.handleRowUpdated = datatable && datatable.handleRowUpdated }}
             />
           ) } 
+        />
+        <FormDialog
+          innerRef={(dialog) => { this.showOrderConfirm = dialog && dialog.handleOpen }}
+          title={'注文書と注文請書を作成'}
+          schema={[
+            {
+              "name": "publish_date",
+              "type": "date",
+              "label": "発行年月日",
+              "required": true,
+            },
+          ]}
+          add_url={order_create_url}
+          onRowAdded={this.onOrderCreated}
         />
       </div>
     );

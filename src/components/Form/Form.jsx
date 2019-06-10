@@ -205,7 +205,7 @@ class FormComponent extends React.Component {
           this.setState({errors});
           this.toastError(errors);
         });
-      } else if (!formData.id && this.props.add_url) {
+      } else if (this.props.add_url) {
         // 追加
         common.fetchPost(this.props.add_url, formData).then(json => {
           json['__index__'] = __index__;

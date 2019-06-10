@@ -55,20 +55,6 @@ class PartnerOrder extends React.Component {
     });
   }
 
-  printOrder = () => {
-    var frm = document.getElementById('printOrder').contentWindow;
-    frm.focus();
-    frm.print();
-    return false;
-  };
-
-  printOrderRequest = () => {
-    var frm = document.getElementById('printOrderRequest').contentWindow;
-    frm.focus();
-    frm.print();
-    return false;
-  };
-
   render() {
     const { classes } = this.props;
     const { params } = this.props.match;
@@ -100,7 +86,7 @@ class PartnerOrder extends React.Component {
                   variant="contained"
                   color="primary"
                   className={classes.button}
-                  onClick={this.printOrder}
+                  onClick={() => (common.printIframe('printOrder'))}
                 >
                   &nbsp;&nbsp;&nbsp;印刷&nbsp;&nbsp;&nbsp;
                 </Button>
@@ -125,7 +111,7 @@ class PartnerOrder extends React.Component {
                   variant="contained"
                   color="primary"
                   className={classes.button}
-                  onClick={this.printOrderRequest}
+                  onClick={() => (common.printIframe('printOrderRequest'))}
                 >
                   &nbsp;&nbsp;&nbsp;印刷&nbsp;&nbsp;&nbsp;
                 </Button>

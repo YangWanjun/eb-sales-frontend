@@ -345,6 +345,13 @@ export const common = {
     tempLink.click();
   },
 
+  printIframe: function(ifrm_id) {
+    var frm = document.getElementById(ifrm_id).contentWindow;
+    frm.focus();
+    frm.print();
+    return false;
+  },
+  
   /**
    * 
    * @param {String} url ＵＲＬ
