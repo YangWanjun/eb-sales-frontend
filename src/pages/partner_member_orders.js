@@ -168,7 +168,7 @@ class PartnerMemberOrders extends React.Component {
                 tableHead={list_bp_member_orders_schema}
                 tableData={initData.data.results}
                 actionsTrigger={(data) => (data.parent !== null)}
-                actions={[
+                rowActions={[
                   {
                     'icon': <NoteAddIcon />,
                     'tooltip': '注文書と注文請書を作成',

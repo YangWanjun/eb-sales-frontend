@@ -28,6 +28,7 @@ import PartnerMember from './partner_member_detail';
 import PartnerMemberOrders from './partner_member_orders';
 import PartnerMemberOrder from './partner_member_order';
 import PartnerOrder from './partner_order';
+import PartnerDivisionsByMonth from './partner_divisions_by_month';
 import ProjectList from './project_list';
 import ProjectDetail from './project_detail';
 import ProjectAttendance from './project_attendance';
@@ -180,6 +181,7 @@ class Layout extends React.Component {
             <Route path='/partner/:partner_id/order/:order_id' component={PartnerOrder} />
             <Route path='/partner/:pk/member/add' component={PartnerMemberAdd} />
             <Route path='/partner/:pk/detail' component={PartnerDetail} />
+            <Route path='/partner/:partner_id/division/:year/:month' component={PartnerDivisionsByMonth} />
             <Route path='/partner/:partner_id/members/:member_id/orders/:order_id' component={PartnerMemberOrder} />
             <Route path='/partner/:partner_id/members/:member_id/orders' component={PartnerMemberOrders} />
             <Route path='/partner/:partner_id/members/:member_id' component={PartnerMember} />

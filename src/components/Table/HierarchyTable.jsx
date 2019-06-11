@@ -25,6 +25,7 @@ class HierarchyTable extends React.Component {
 
     this.handleHideActions = this.handleHideActions.bind(this);
     this.handleRowUpdated = this.handleRowUpdated.bind(this);
+    this.handleRowClick = this.handleRowClick.bind(this);
     this.state = {
       tableData: this.initializeData(props.tableData),
       showFixedHeader: false,
@@ -35,6 +36,7 @@ class HierarchyTable extends React.Component {
         top: 0,
       },
       fixedHeaderColsWidth: [],
+      selected: [],
     }
   }
 
@@ -81,16 +83,40 @@ class HierarchyTable extends React.Component {
   }
 
   handleHideActions() {
-    const { actions } = this.props;
-    if (actions && actions.length > 0 && this._handleHideActions) {
+    const { rowActions } = this.props;
+    if (rowActions && rowActions.length > 0 && this._handleHideActions) {
       this._handleHideActions();
     }
   }
 
+  handleRowClick = (data) => (event) => {
+    const { selectable, onRowClick } = this.props;
+    const { selected } = this.state;
+    console.log(event);
+    if (selectable === 'single') {
+      let newSelected = [];
+      if (selected.length === 0 || selected[0] !== data.__index__) {
+        newSelected.push(data.__index__);
+      } 
+      this.setState({selected: newSelected});
+      if (onRowClick) {
+        onRowClick(newSelected.length > 0 ? data : null);
+      }
+    }
+  };
+
   getTableRow(row, deep) {
-    const { classes, tableHead, actions, actionsTrigger } = this.props;
+    const { classes, tableHead, rowActions, actionsTrigger } = this.props;
+    const { selected } = this.state;
+
     return (
-      <TableRow key={row.id} hover onMouseLeave={this.handleHideActions}>
+      <TableRow
+        key={row.id}
+        hover
+        onMouseLeave={this.handleHideActions}
+        onClick={this.handleRowClick(row)}
+        className={selected.indexOf(row.__index__) >= 0 ? classes.tableRowSelected : null}
+      >
         {tableHead.map((col, key) => {
           let paddingLeft = key === 0 ? ((deep * 30) || defaultPaddingLeft) : defaultPaddingLeft;
           return (
@@ -103,10 +129,10 @@ class HierarchyTable extends React.Component {
             />
           );
         })}
-        {actions.length > 0 ? (
+        {rowActions.length > 0 ? (
           <DataTableCell
             classes={classes}
-            actions={actions}
+            actions={rowActions}
             actionsTrigger={actionsTrigger}
             row={row}
             ref={(cell) => {
@@ -133,7 +159,7 @@ class HierarchyTable extends React.Component {
   }
 
   render () {
-    const { classes, tableHeaderColor, tableHead, actions } = this.props;
+    const { classes, tableHeaderColor, tableHead, tableActions, rowActions } = this.props;
     const { showFixedHeader, tableId, fixedHeaderPosition, fixedHeaderColsWidth } = this.state;
     const rows = this.getAllRows()
 
@@ -142,7 +168,7 @@ class HierarchyTable extends React.Component {
         <Table className={classes.table} id={tableId}>
           <DataTableHead
             {...{classes, tableHeaderColor, tableHead}}
-            actions={actions}
+            actions={tableActions ? tableActions : (rowActions ? true : false)}
           />
           <TableBody>
             {rows.map(row => {
@@ -158,8 +184,8 @@ class HierarchyTable extends React.Component {
               <DataTableHead
                 {...{classes, tableHeaderColor, tableHead}}
                 colsWidth={fixedHeaderColsWidth} 
-                actions={actions}
-              />
+                actions={tableActions ? tableActions : (rowActions ? true : false)}
+                />
             }
           />
         ) : null}
@@ -167,11 +193,6 @@ class HierarchyTable extends React.Component {
     );
   }
 }
-
-HierarchyTable.defaultProps = {
-  tableHeaderColor: "gray",
-  actions: [],
-};
 
 HierarchyTable.propTypes = {
   classes: PropTypes.object.isRequired,
@@ -186,8 +207,17 @@ HierarchyTable.propTypes = {
   ]),
   tableHead: PropTypes.arrayOf(PropTypes.object),
   tableData: PropTypes.arrayOf(PropTypes.object),
-  actions: PropTypes.arrayOf(PropTypes.object),
+  tableActions: PropTypes.arrayOf(PropTypes.object),
+  rowActions: PropTypes.arrayOf(PropTypes.object),
   actionsTrigger: PropTypes.func,
+  selectable: PropTypes.oneOf(['none', 'single', 'multiple']),
+};
+
+HierarchyTable.defaultProps = {
+  tableHeaderColor: "gray",
+  tableActions: [],
+  rowActions: [],
+  selectable: 'none',
 };
 
 export default withStyles(tableStyle)(HierarchyTable);

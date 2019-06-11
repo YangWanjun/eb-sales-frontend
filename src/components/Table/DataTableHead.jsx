@@ -4,10 +4,27 @@ import {
   TableRow,
   TableCell,
 } from "@material-ui/core";
+import DataTableCell from '../../containers/dataTableCell';
 
 class DataTableHead extends React.Component {
+
+  getActions() {
+    const { actions } = this.props;
+    if (!actions) {
+      return null;
+    } else if (Array.isArray(actions) && actions.length > 0) {
+      return (
+        <DataTableCell {...this.props}
+        />
+      );
+    } else {
+      return null;
+    }
+  }
+
   render() {
-    const { classes, tableHeaderColor, tableHead, colsWidth, actions } = this.props;
+    const { classes, tableHeaderColor, tableHead, colsWidth } = this.props;
+    const actionCell = this.getActions();
 
     if (tableHead === undefined) {
       return null;
@@ -38,9 +55,7 @@ class DataTableHead extends React.Component {
                 </TableCell>
               );
             })}
-            { actions && actions.length > 0 ? (
-              <TableCell />
-            ) : null }
+            {actionCell}
           </TableRow>
         </TableHead>
       );

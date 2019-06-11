@@ -76,6 +76,9 @@ const tableStyle = theme => ({
     right: '50px',
     whiteSpace: 'nowrap',
   },
+  tableRowSelected: {
+    backgroundColor: '#fff0c3',
+  },
 });
 
 export default tableStyle;

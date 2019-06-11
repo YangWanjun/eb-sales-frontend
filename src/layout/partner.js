@@ -361,6 +361,7 @@ export const list_monthly_status = [
     "name": "name",
     "type": "string",
     "label": "対象年月",
+    "url_field": 'url',
   },
   {
     "name": "member_count",
@@ -540,5 +541,47 @@ export const edit_lump_contract_schema = [
     "name": "comment",
     "type": "text",
     "label": "備考",
+  },
+]
+
+export const list_partner_divsion_schema = [
+  {
+    "name": "division_name",
+    "type": "string",
+    "label": "事業部",
+  },
+  {
+    "name": "member_count",
+    "type": "integer",
+    "label": "人数",
+  },
+  {
+    "name": "pay_notify_filename_pdf",
+    "type": "file",
+    "label": "支払通知書",
+  },
+  {
+    "name": "filename_pdf",
+    "type": "file",
+    "label": "請求書",
+  },
+  {
+    "name": "is_sent",
+    "type": "boolean",
+    "label": "送信",
+  },
+];
+
+export const list_partner_division_details_schema = [
+  {
+    "name": "name",
+    "type": "string",
+    "label": "名前",
+    "url_field": 'member_url',
+  },
+  {
+    "name": "project_name",
+    "type": "string",
+    "label": "案件名称",
   },
 ]

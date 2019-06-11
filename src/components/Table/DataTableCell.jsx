@@ -38,15 +38,20 @@ class DataTableCell extends React.Component {
     );
   }
 
-  handleShowActions = () => {
+  handleShowActions = (event) => {
+    event.stopPropagation();
     this.setState({open: true});
   };
 
-  handleHideActions = () => {
+  handleHideActions = (event) => {
+    if (event) {
+      event.stopPropagation();
+    }
     this.setState({open: false});
   };
 
-  handleFileDownload = file_id => () => {
+  handleFileDownload = file_id => (event) => {
+    event.stopPropagation();
     common.fetchGet(common.formatStr(config.api.attachment_download, file_id)).then(data => {
       const blob = common.toBlob(data.blob);
       common.downloadBlog(blob, data.name);
@@ -55,7 +60,8 @@ class DataTableCell extends React.Component {
     });
   }
 
-  handleActionClick = (method) => () =>  {
+  handleActionClick = (method) => (event) =>  {
+    event.stopPropagation();
     const { row } = this.props;
     if (method) {
       // common.loading();

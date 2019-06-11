@@ -80,7 +80,7 @@ class PartnerPreview extends React.Component {
         partner: data,
       });
     });
-    // 月別状況一覧
+    // 月別支払状況一覧
     common.fetchGet(common.formatStr(config.api.partner_monthly_status, params.pk)).then(data => {
       this.setState({
         monthly_status: data.results,
@@ -153,7 +153,7 @@ class PartnerPreview extends React.Component {
               <GridItem xs={12} sm={12} md={12}>
                 <Card>
                   <CardHeader color="success">
-                    <h4 className={classes.cardTitleWhite}>月別状況</h4>
+                    <h4 className={classes.cardTitleWhite}>月別支払状況</h4>
                     <p className={classes.cardCategoryWhite}>
                       毎月の稼働社員数とコストを示します。
                     </p>
