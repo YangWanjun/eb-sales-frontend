@@ -11,7 +11,7 @@ class MemberList extends React.Component {
   render () {
     return (
       <DataProvider
-        endpoint={ config.api.member_list }
+        endpoint={ config.api.member.quick_list }
         render={ (initData) => (
           <EnhancedTable
             tableTitle='作業メンバー一覧'

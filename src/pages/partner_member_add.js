@@ -81,7 +81,7 @@ class PartnerMemberAdd extends React.Component {
       this.setState({organizations});
     });
     // 営業担当一覧を初期化する
-    common.fetchGet(config.api.salesperson_list).then(data => {
+    common.fetchGet(config.api.salesperson.list).then(data => {
       let salesperson = [];
       data.results.map(row => (
         salesperson.push({value: row.id, display_name: row.full_name})

@@ -134,6 +134,11 @@ export const list_salesperson_schema = [
 
 export const detail_member_schema = [
   {
+    "name": "code",
+    "type": "string",
+    "label": "社員コード",
+  },
+  {
     "name": "full_name",
     "type": "string",
     "label": "名前",
@@ -247,7 +252,7 @@ export const detail_member_schema = [
 
 export const edit_member_schema = [
   {
-    "name": "employee_id",
+    "name": "code",
     "type": "string",
     "label": "社員ID",
     "required": true,

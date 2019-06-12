@@ -60,7 +60,7 @@ class PartnerMemberOrders extends React.Component {
         partner: data,
       });
     });
-    const url_member_detail = common.formatStr(config.api.member_detail, params.member_id) + '?schema=1';
+    const url_member_detail = common.formatStr(config.api.member.detail, params.member_id) + '?schema=1';
     common.fetchGet(url_member_detail).then(data => {
       this.setState({
         member: data,

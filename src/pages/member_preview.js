@@ -61,7 +61,7 @@ class MemberPreview extends React.Component {
 
   initialize() {
     const { params } = this.props.match;
-    const url_member_detail = common.formatStr(config.api.member_details, params.member_id) + '?schema=1';
+    const url_member_detail = common.formatStr(config.api.member.history, params.member_id) + '?schema=1';
     common.fetchGet(url_member_detail).then(data => {
       this.setState({
         member: data.member,

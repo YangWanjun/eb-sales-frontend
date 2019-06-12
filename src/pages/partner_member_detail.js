@@ -57,7 +57,7 @@ class PartnerMember extends React.Component {
         partner: data,
       });
     });
-    const url_member_detail = common.formatStr(config.api.member_detail, params.member_id) + '?schema=1';
+    const url_member_detail = common.formatStr(config.api.member.detail, params.member_id) + '?schema=1';
     common.fetchGet(url_member_detail).then(data => {
       this.setState({
         member: data,
@@ -72,7 +72,7 @@ class PartnerMember extends React.Component {
       this.setState({organizations});
     });
     // 営業担当一覧を初期化する
-    common.fetchGet(config.api.salesperson_list).then(data => {
+    common.fetchGet(config.api.salesperson.list).then(data => {
       let salesperson = [];
       data.results.map(row => (
         salesperson.push({value: row.id, display_name: row.full_name})
@@ -87,7 +87,7 @@ class PartnerMember extends React.Component {
     const formProjectProps = {
       schema: edit_member_schema,
       title: member.full_name + 'を変更',
-      edit_url: common.formatStr(config.api.member_detail, params.member_id),
+      edit_url: common.formatStr(config.api.member.detail, params.member_id),
     };
     // 所属部署の設定
     let colOrg = common.getColumnByName(edit_member_organization_schema, 'organization', 'name');
@@ -101,8 +101,8 @@ class PartnerMember extends React.Component {
         member: params.member_id,
         member_name: member.full_name,
       },
-      add_url: config.api.member_organization_period_list,
-      edit_url: config.api.member_organization_period_detail,
+      add_url: config.api.organization_period.list,
+      edit_url: config.api.organization_period.detail,
     };
     // 営業担当の設定
     let colSalesperson = common.getColumnByName(edit_salesperson_schema, 'salesperson', 'name');
@@ -115,8 +115,8 @@ class PartnerMember extends React.Component {
         member: params.member_id,
         member_name: member.full_name,
       },
-      add_url: config.api.salesperson_period_list,
-      edit_url: config.api.salesperson_period_detail,
+      add_url: config.api.salesperson_period.list,
+      edit_url: config.api.salesperson_period.detail,
     };
     // ＢＰ契約設定
     const formContractProps = {
@@ -147,7 +147,7 @@ class PartnerMember extends React.Component {
           formComponentProps={formProjectProps}
         />
         <DataProvider 
-          endpoint={ config.api.member_organization_period_list + '?member=' + params.member_id } 
+          endpoint={ common.formatStr(config.api.member.organization_periods, params.member_id) } 
           render={ (initData) => {
             return (
               <EnhancedTable
@@ -157,13 +157,13 @@ class PartnerMember extends React.Component {
                 isClientSide={true}
                 selectable='single'
                 formComponentProps={formMemberOrganizationProps}
-                deleteUrl={config.api.member_organization_period_detail}
+                deleteUrl={config.api.organization_period.detail}
               />
             );
           } }
         />
         <DataProvider 
-          endpoint={ config.api.salesperson_period_list + '?member=' + params.member_id } 
+          endpoint={ common.formatStr(config.api.member.salesperson_periods, params.member_id) } 
           render={ (initData) => {
             return (
               <EnhancedTable
@@ -173,7 +173,7 @@ class PartnerMember extends React.Component {
                 isClientSide={true}
                 selectable='single'
                 formComponentProps={formSalespersonProps}
-                deleteUrl={config.api.salesperson_period_detail}
+                deleteUrl={config.api.salesperson_period.detail}
               />
             );
           } }
