@@ -9,12 +9,14 @@ import {
   Button,
   Tooltip,
   Fab,
+  Typography,
 } from "@material-ui/core";
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import CloseIcon from '@material-ui/icons/Close';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import ArchiveIcon from '@material-ui/icons/Archive';
+import BadgeLabel from '../badgeLabel';
 import { common } from '../../utils/common';
 import { config } from '../../utils/config';
 
@@ -153,14 +155,34 @@ class DataTableCell extends React.Component {
           <ArchiveIcon />
         </IconButton>
       ) : null);
+    } else if (column.type === 'choice') {
+      let value = row[column.name];
+      if (column.choices && !common.isEmpty(column.choices)) {
+        const choice = common.getColumnByName(column.choices, value, 'value');
+        const display_name = choice ? choice.display_name : null;
+        if (column.choiceClasses && !common.isEmpty(column.choiceClasses)) {
+          output = (
+            <BadgeLabel
+              color={column.choiceClasses[value]}
+              badgeContent={ display_name || value }
+            />
+          );
+        } else {
+          output = this.getOutput(display_name || value);
+        }
+      } else {
+        output = this.getOutput(value);
+      }
     } else {
       let value = row[column.name];
       output = this.getOutput(value);
     }
 
-    return (
+    return column.visible === false ? null : (
       <TableCell className={classes.tableCell} key={uuid()} style={style} {...attrs}>
-        {output}
+        <Typography noWrap style={{ maxWidth: 260, }}>
+          {output}
+        </Typography>
       </TableCell>
     );
   }
