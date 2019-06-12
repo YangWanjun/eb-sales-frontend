@@ -14,6 +14,7 @@ const styles = theme => ({
     textAlign: 'center',
     color: theme.palette.text.secondary,
     minHeight: 200,
+    marginBottom: theme.spacing.unit * 3,
   },
 });
 
