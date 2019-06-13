@@ -14,6 +14,7 @@ import TopBar from '../containers/topBar';
 import Status405 from '../containers/status_405';
 import Status404 from '../containers/status_404';
 import Status500 from '../containers/status_500';
+import {MemberDashboard} from './member/index';
 import MemberList from './member_list';
 import MemberPreview from './member_preview';
 import MemberDetail from './member_detail';
@@ -175,7 +176,7 @@ class Layout extends React.Component {
           <Switch>
             <Route path='/member/:member_id/detail' component={MemberDetail} />
             <Route path='/member/:member_id/' component={MemberPreview} />
-            <Route path='/member' component={MemberList} />
+            <Route path='/member' component={MemberDashboard} />
             <Route path='/organization/:pk/' component={OrganizationDetail} />
             <Route path='/organization' component={OrganizationList} />
             <Route path='/partner/:partner_id/order/:order_id' component={PartnerOrder} />
