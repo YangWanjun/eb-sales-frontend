@@ -60,7 +60,7 @@ class ProjectDetail extends React.Component {
       this.setState({project_stages});
     });
     // 部署一覧
-    common.fetchGet(config.api.organization_list + '?is_on_sales=true').then(data => {
+    common.fetchGet(config.api.organization.list + '?is_on_sales=true').then(data => {
       let organizations = [];
       data.results.map(row => (
         organizations.push({value: row.id, display_name: row.name, parent: row.parent})

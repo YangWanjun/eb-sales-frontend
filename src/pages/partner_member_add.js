@@ -73,7 +73,7 @@ class PartnerMemberAdd extends React.Component {
       });
     });
     // 事業部一覧を初期化する
-    common.fetchGet(config.api.organization_list).then(data => {
+    common.fetchGet(config.api.organization.list).then(data => {
       let organizations = [];
       data.results.map(row => (
         organizations.push({value: row.id, display_name: row.name, parent: row.parent, disabled: row.is_on_sales !== true})

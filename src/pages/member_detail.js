@@ -51,7 +51,7 @@ class MemberDetail extends React.Component {
       });
     });
     // 事業部一覧を初期化する
-    common.fetchGet(config.api.organization_list).then(data => {
+    common.fetchGet(config.api.organization.list).then(data => {
       let organizations = [];
       data.results.map(row => (
         organizations.push({value: row.id, display_name: row.name, parent: row.parent, disabled: row.is_on_sales !== true})
@@ -120,7 +120,7 @@ class MemberDetail extends React.Component {
           formComponentProps={formProjectProps}
         />
         <DataProvider 
-          endpoint={ common.formatStr(config.api.member.organization_periods, params.member_id) } 
+          endpoint={ common.formatStr(config.api.member.organizations, params.member_id) } 
           render={ (initData) => {
             return (
               <EnhancedTable
@@ -136,7 +136,7 @@ class MemberDetail extends React.Component {
           } }
         />
         <DataProvider 
-          endpoint={ common.formatStr(config.api.member.salesperson_periods, params.member_id) } 
+          endpoint={ common.formatStr(config.api.member.salesperson, params.member_id) } 
           render={ (initData) => {
             return (
               <EnhancedTable

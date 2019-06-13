@@ -38,14 +38,14 @@ class OrganizationDetail extends React.Component {
 　}
 
   initialize(params) {
-    const url_detail = common.formatStr(config.api.organization_detail, params.pk);
+    const url_detail = common.formatStr(config.api.organization.detail, params.pk);
     common.fetchGet(url_detail).then(data => {
       this.setState({
         organization: data,
       });
     });
     // 組織一覧を初期化する
-    common.fetchGet(config.api.organization_list).then(data => {
+    common.fetchGet(config.api.organization.list).then(data => {
       let organizations = [];
       data.results.map(row => (
         organizations.push({value: row.id, display_name: row.name, parent: row.parent, disabled: row.is_on_sales !== true})
@@ -70,7 +70,7 @@ class OrganizationDetail extends React.Component {
     const formOrganizationProps = {
       schema: edit_organization_schema,
       title: organization.name + 'を変更',
-      edit_url: common.formatStr(config.api.organization_detail, params.pk),
+      edit_url: common.formatStr(config.api.organization.detail, params.pk),
     };
     // 職位を設定する
     const formPositionShipProps = {
@@ -80,8 +80,8 @@ class OrganizationDetail extends React.Component {
       data: {
         organization: params.pk,
       },
-      add_url: config.api.position_ship_list,
-      edit_url: config.api.position_ship_detail,
+      add_url: config.api.position_ship.list,
+      edit_url: config.api.position_ship.detail,
     };
 
     return (
@@ -95,11 +95,11 @@ class OrganizationDetail extends React.Component {
           data={organization}
           schema={detail_organization_schema}
           formComponentProps={formOrganizationProps}
-          deleteUrl={common.formatStr(config.api.organization_detail, params.pk)}
+          deleteUrl={common.formatStr(config.api.organization.detail, params.pk)}
           deletedNext="/organization"
         />
         <DataProvider 
-          endpoint={ config.api.position_ship_list + '?organization=' + params.pk } 
+          endpoint={ common.formatStr(config.api.organization.positions, params.pk) } 
           render={ (initData) => {
             return (
               <EnhancedTable
@@ -109,13 +109,13 @@ class OrganizationDetail extends React.Component {
                 isClientSide={true}
                 selectable='single'
                 formComponentProps={formPositionShipProps}
-                deleteUrl={config.api.position_ship_detail}
+                deleteUrl={config.api.position_ship.detail}
               />
             );
           } }
         />
         <DataProvider 
-          endpoint={ common.formatStr(config.api.organization_member_list, params.pk) } 
+          endpoint={ common.formatStr(config.api.organization.members, params.pk) } 
           render={ (initData) => {
             return (
               <EnhancedTable
