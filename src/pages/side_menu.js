@@ -6,13 +6,16 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import HomeIcon from '@material-ui/icons/Home';
-import People from '@material-ui/icons/People';
-import GroupWork from '@material-ui/icons/GroupWork';
-import Business from '@material-ui/icons/Business';
-import RecentActors from '@material-ui/icons/RecentActors';
-import FolderShared from '@material-ui/icons/FolderShared';
-import LibraryBooks from '@material-ui/icons/LibraryBooks';
-import PieChart from '@material-ui/icons/PieChart';
+import {
+  People,
+  GroupWork,
+  Business,
+  RecentActors,
+  FolderShared,
+  LibraryBooks,
+  PieChart,
+  Dashboard,
+} from '@material-ui/icons';
 import { common } from '../utils/common';
 
 export const HomeListItems = () => (
@@ -30,9 +33,15 @@ export const MemberListItems = () => (
   <div>
     <ListItem button component={Link} to='/member'>
       <ListItemIcon>
+        <Dashboard />
+      </ListItemIcon>
+      <ListItemText primary="メンバー" />
+    </ListItem>
+    <ListItem button component={Link} to='/member/members'>
+      <ListItemIcon>
         <People />
       </ListItemIcon>
-      <ListItemText primary="社員一覧" />
+      <ListItemText primary="メンバー一覧" />
     </ListItem>
     <ListItem button component={Link} to='/organization'>
       <ListItemIcon>
