@@ -93,7 +93,7 @@ function getSalespersonStatusOption(data) {
           style: {
             color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
           },
-          distance: 10,
+          distance: -30,
         }
       }
     },
