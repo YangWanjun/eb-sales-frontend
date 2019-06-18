@@ -1,4 +1,5 @@
 import { replace } from 'react-router-redux';
+import { vsprintf } from 'sprintf-js';
 import { authHeader } from '../utils/authHeader';
 import { logoutAndRedirect } from '../actions/auth.actions';
 import { clearMe } from '../actions/user.actions';
@@ -11,11 +12,11 @@ export const common = {
    * @param {Integer} num 数字
    */
   toNumComma: function(num) {
-    if (num) {
+    if (num === null || num === undefined) {
+      return '';
+    } else {
       const int_comma = (num + "").replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
       return int_comma;
-    } else {
-      return '';
     }
   },
 
@@ -35,7 +36,10 @@ export const common = {
    * 使用方法：utils.format('This is argument: %s', arg1);
    */
   formatStr: function(format) {
-    var i = 0,
+    if (arguments && arguments.length === 2 && this.isJSON(arguments[1])) {
+      return vsprintf(format, arguments[1]);
+    } else {
+      var i = 0,
         j = 0,
         r = "",
         next = function(args){
@@ -43,18 +47,19 @@ export const common = {
           return args[j] !== void 0 ? args[j] : "";
         };
 
-    for(i=0; i<format.length; i++){
-      if(format.charCodeAt(i) === 37){
-        switch(format.charCodeAt(i+1)){
-          case 115: r += next(arguments); break;
-          case 100: r += Number(next(arguments)); break;
-          default: r += format[i]; break;
+      for(i=0; i<format.length; i++){
+        if(format.charCodeAt(i) === 37){
+          switch(format.charCodeAt(i+1)){
+            case 115: r += next(arguments); break;
+            case 100: r += Number(next(arguments)); break;
+            default: r += format[i]; break;
+          }
+        } else {
+          r += format[i];
         }
-      } else {
-        r += format[i];
       }
+      return r;
     }
-    return r;
   },
 
   /**
@@ -98,6 +103,14 @@ export const common = {
         return false;
     }
     return true;
+  },
+
+  /**
+   * JSONかどうかを判定する関数
+   * @param {Object} arg 
+   */
+  isJSON: function(arg) {
+    return typeof arg === 'object';
   },
 
   /**

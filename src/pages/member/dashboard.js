@@ -16,6 +16,10 @@ import CardBody from "../../components/Card/CardBody";
 import CardFooter from "../../components/Card/CardFooter";
 import Danger from "../../components/Typography/Danger";
 import Warning from "../../components/Typography/Warning";
+import SimpleTable from "../../components/Table/SimpleTable";
+import {
+  list_member_dashboard_salesperson_schema,
+} from "../../layout/member";
 import { common } from '../../utils/common';
 import { config } from '../../utils/config';
 
@@ -69,32 +73,31 @@ function getWorkingStatusOption(data) {
 function getSalespersonStatusOption(data) {
   return {
     chart: {
-      plotBackgroundColor: null,
-      plotBorderWidth: null,
-      plotShadow: false,
-      type: 'pie',
+      type: 'column',
+      backgroundColor: 'rgba(255, 255, 255, 0.0)',
     },
     credits: {
       enabled: false,
     },
     title: {
-      text: data.name
+      text: ''
+    },
+    xAxis: {
+      categories: data.categories,
+    },
+    yAxis: {
+      visible: false,
     },
     tooltip: {
-      pointFormat: '{series.name}: <b>{point.y}</b>'
+      formatter: function () {
+        return '<b>' + this.x + '</b><br/>' +
+          this.series.name + ': ' + this.y + '<br/>' +
+          '合計: ' + this.point.stackTotal;
+      }
     },
     plotOptions: {
-      pie: {
-        allowPointSelect: true,
-        cursor: 'pointer',
-        dataLabels: {
-          enabled: true,
-          format: '<b>{point.name}</b>: {point.percentage:.1f} %',
-          style: {
-            color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
-          },
-          distance: -30,
-        }
+      column: {
+        stacking: 'normal'
       }
     },
     series: data.series
@@ -180,7 +183,7 @@ class Dashboard extends Component {
                     <Icon>warning</Icon>
                   </Warning>
                   <a href="#pablo" onClick={e => e.preventDefault()}>
-                    リリース人数
+                    今月、来月と再来月のリリース人数
                   </a>
                 </div>
               </CardFooter>
@@ -248,22 +251,39 @@ class Dashboard extends Component {
           </GridItem>
         </GridContainer>
         <GridContainer>
-          {!common.isEmpty(salesperson_status) ? (
-            <React.Fragment>
-              {salesperson_status.map((status, key) => (
-                <GridItem key={key} xs={12} sm={12} md={6} lg={4}>
-                  <Card>
-                    <CardBody>
-                      <HighchartsReact
-                        highcharts={Highcharts}
-                        options={getSalespersonStatusOption(status)}
-                      />
-                    </CardBody>
-                  </Card>
-                </GridItem>
-              ))}
-            </React.Fragment>
-          ) : null}
+          <GridItem xs={12} sm={12} md={12}>
+            <Card chart>
+              <CardHeader color="info">
+                <HighchartsReact
+                  highcharts={Highcharts}
+                  options={getSalespersonStatusOption(salesperson_status)}
+                  containerProps={{ style: {height: 300} }}
+                />
+              </CardHeader>
+              <CardBody>
+                <h4 className={classes.cardTitle}>各担当者が担当分のメンバー稼働状況一覧</h4>
+              </CardBody>
+            </Card>
+          </GridItem>
+          <GridItem xs={12} sm={12} md={12}>
+            <Card>
+              <CardHeader color="success">
+                <h4 className={classes.cardTitleWhite}>各担当者が担当分のメンバー稼働状況一覧</h4>
+                <p className={classes.cardCategoryWhite}>
+                  本日の稼働、待機状況と今月、来月、再来月のリリース人数
+                </p>
+              </CardHeader>
+              <CardBody>
+                <SimpleTable
+                  tableHeaderColor="warning"
+                  tableHead={list_member_dashboard_salesperson_schema}
+                  tableData={salesperson_status.raw_data || []}
+                  rowsPerPage={20}
+                  tableProps={{size: 'small'}}
+                />
+              </CardBody>
+            </Card>
+          </GridItem>
         </GridContainer>
       </div>
     );

@@ -29,13 +29,13 @@ class SimpleTable extends React.Component {
   };
 
   render () {
-    const { classes, tableHeaderColor, tableHead, tableData } = this.props;
+    const { classes, tableHeaderColor, tableHead, tableData, rowsPerPage, tableProps } = this.props;
     const { page } = this.state;
-    const rowsPerPage = 10;
+    console.log(tableProps)
 
     return (
       <div className={classes.tableResponsive}>
-        <Table className={classes.table}>
+        <Table className={classes.table} {...tableProps}>
           <DataTableHead
             {...{classes, tableHeaderColor, tableHead}}
           />
@@ -82,7 +82,10 @@ class SimpleTable extends React.Component {
 }
 
 SimpleTable.defaultProps = {
-  tableHeaderColor: "gray"
+  tableHeaderColor: "gray",
+  tableHead: [],
+  tableData: [],
+  rowsPerPage: 10,
 };
 
 SimpleTable.propTypes = {
@@ -97,7 +100,9 @@ SimpleTable.propTypes = {
     "gray"
   ]),
   tableHead: PropTypes.arrayOf(PropTypes.object),
-  tableData: PropTypes.arrayOf(PropTypes.object)
+  tableData: PropTypes.arrayOf(PropTypes.object),
+  rowsPerPage: PropTypes.number,
+  tableProps: PropTypes.object,
 };
 
 export default withStyles(tableStyle)(SimpleTable);

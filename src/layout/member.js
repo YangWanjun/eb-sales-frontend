@@ -445,3 +445,41 @@ export const edit_salesperson_schema = [
     "label": "終了日",
   },
 ];
+
+export const list_member_dashboard_salesperson_schema = [
+  {
+    "name": "name",
+    "type": "string",
+    "label": "営業",
+  },
+  {
+    "name": "member_count",
+    "type": "integer",
+    "label": "担当数",
+  },
+  {
+    "name": "working_count",
+    "type": "integer",
+    "label": "稼働数",
+  },
+  {
+    "name": "waiting_count",
+    "type": "integer",
+    "label": "待機数",
+  },
+  {
+    "name": "curr_release_count",
+    "type": "integer",
+    "label": "今月リリース",
+  },
+  {
+    "name": "next_release_count",
+    "type": "integer",
+    "label": "来月リリース",
+  },
+  {
+    "name": "next_2_release_count",
+    "type": "integer",
+    "label": "再来月リリース",
+  },
+];
