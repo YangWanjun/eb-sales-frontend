@@ -8,8 +8,8 @@ const styles = theme => ({
     display: 'inline-flex',
     position: 'relative',
     verticalAlign: 'middle',
-    marginLeft: theme.spacing.unit * 3,
-    marginRight: theme.spacing.unit * 3,
+    marginLeft: theme.spacing(3),
+    marginRight: theme.spacing3,
   },
   content: {
     color: theme.palette.textColor,

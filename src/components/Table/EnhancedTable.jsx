@@ -208,7 +208,7 @@ class EnhancedTableFooter extends React.Component {
 
 const toolbarStyles = theme => ({
   root: {
-    paddingRight: theme.spacing.unit,
+    paddingRight: theme.spacing(1),
   },
   highlight:
     theme.palette.type === 'light'
@@ -331,7 +331,7 @@ class EnhancedTableToolbar extends React.Component {
       toolComponent = <ChipsArray chipData={filters} columns={columns} onChangeFilter={this.handleDeleteFilter} />;
     } else {
       toolComponent = (
-        <Typography variant="title" id="tableTitle">
+        <Typography variant="subtitle1" id="tableTitle">
           {tableTitle}
         </Typography>
       );
@@ -453,7 +453,7 @@ EnhancedTableToolbar = withStyles(toolbarStyles)(EnhancedTableToolbar);
 const styles = theme => ({
   root: {
     width: '100%',
-    marginBottom: theme.spacing.unit * 3,
+    marginBottom: theme.spacing(3),
   },
   table: {
     /* minWidth: 1020, */
@@ -475,7 +475,7 @@ const paginationActionsStyles = theme => ({
   root: {
     flexShrink: 0,
     color: theme.palette.text.secondary,
-    marginLeft: theme.spacing.unit * 2.5,
+    marginLeft: theme.spacing(2.5),
   },
 });
 

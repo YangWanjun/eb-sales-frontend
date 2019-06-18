@@ -22,7 +22,7 @@ import { constant } from '../utils/constants';
 
 const styles = theme => ({
   button: {
-    margin: theme.spacing.unit,
+    margin: theme.spacing(1),
     color: 'white',
   },
 });

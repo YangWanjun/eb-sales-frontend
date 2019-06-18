@@ -9,12 +9,12 @@ import { common } from '../utils/common';
 
 const styles = theme => ({
   paper: {
-    padding: theme.spacing.unit * 2,
+    padding: theme.spacing(2),
     paddingTop: 100,
     textAlign: 'center',
     color: theme.palette.text.secondary,
     minHeight: 200,
-    marginBottom: theme.spacing.unit * 3,
+    marginBottom: theme.spacing(3),
   },
 });
 

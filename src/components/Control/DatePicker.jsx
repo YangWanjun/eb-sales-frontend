@@ -12,7 +12,7 @@ import {
 const styles = theme => ({
   formControl: {
     width: '100%',
-    margin: theme.spacing.unit,
+    margin: theme.spacing(1),
   },
 });
 

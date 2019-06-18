@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom'
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official'
+import { SimpleTable } from 'mui-enhanced-datatable';
 import withStyles from "@material-ui/core/styles/withStyles";
 import {
   Icon,
@@ -16,7 +17,6 @@ import CardBody from "../../components/Card/CardBody";
 import CardFooter from "../../components/Card/CardFooter";
 import Danger from "../../components/Typography/Danger";
 import Warning from "../../components/Typography/Warning";
-import SimpleTable from "../../components/Table/SimpleTable";
 import {
   list_member_dashboard_salesperson_schema,
 } from "../../layout/member";
@@ -105,6 +105,7 @@ function getSalespersonStatusOption(data) {
 }
 
 class Dashboard extends Component {
+  _isMounted = false;
 
   constructor(props) {
     super(props);
@@ -119,9 +120,18 @@ class Dashboard extends Component {
   }
 
   componentDidMount() {
+    this._isMounted = true;
     // 年間売上
     common.fetchGet(config.api.member_dashboard)
-    .then(data => this.setState(data));
+    .then(data => {
+      if (this._isMounted) {
+        this.setState(data);
+      }
+    });
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   render() {

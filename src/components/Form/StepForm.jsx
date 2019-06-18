@@ -19,21 +19,21 @@ const styles = theme => ({
     width: '100%',
   },
   button: {
-    marginTop: theme.spacing.unit,
-    marginRight: theme.spacing.unit,
+    marginTop: theme.spacing(1),
+    marginRight: theme.spacing(1),
   },
   actionsContainer: {
-    marginBottom: theme.spacing.unit * 2,
+    marginBottom: theme.spacing(2),
   },
   resetContainer: {
-    padding: theme.spacing.unit,
+    padding: theme.spacing(1),
     borderTop: '1px solid lightgray',
   },
   errorStepLabel: {
     color: 'red',
   },
   formControl: {
-    margin: theme.spacing.unit,
+    margin: theme.spacing(1),
     minWidth: 120,
     width: '100%',
   },

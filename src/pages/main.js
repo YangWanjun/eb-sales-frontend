@@ -97,9 +97,9 @@ const styles = theme => ({
       duration: theme.transitions.duration.leavingScreen,
     }),
     overflowX: 'hidden',
-    width: theme.spacing.unit * 7 + 1,
+    width: theme.spacing(7) + 1,
     [theme.breakpoints.up('sm')]: {
-      width: theme.spacing.unit * 9 + 1,
+      width: theme.spacing(9) + 1,
     },
   },
   toolbar: {
@@ -112,7 +112,7 @@ const styles = theme => ({
   content: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
-    padding: theme.spacing.unit * 1,
+    padding: theme.spacing(1),
   },
 });
 
@@ -175,35 +175,35 @@ class Layout extends React.Component {
         <main className={classes.content}>
           <div className={classes.toolbar} />
           <Switch>
-            <Route path='/member/members/:member_id/detail' component={MemberDetail} />
-            <Route path='/member/members/:member_id/' component={MemberPreview} />
-            <Route path='/member/members/' component={MemberList} />
-            <Route path='/member' component={MemberDashboard} />
-            <Route path='/organization/:pk/' component={OrganizationDetail} />
-            <Route path='/organization' component={OrganizationList} />
-            <Route path='/partner/:partner_id/order/:order_id' component={PartnerOrder} />
-            <Route path='/partner/:pk/member/add' component={PartnerMemberAdd} />
-            <Route path='/partner/:pk/detail' component={PartnerDetail} />
-            <Route path='/partner/:partner_id/division/:year/:month' component={PartnerDivisionsByMonth} />
-            <Route path='/partner/:partner_id/members/:member_id/orders/:order_id' component={PartnerMemberOrder} />
-            <Route path='/partner/:partner_id/members/:member_id/orders' component={PartnerMemberOrders} />
-            <Route path='/partner/:partner_id/members/:member_id' component={PartnerMember} />
-            <Route path='/partner/:pk/members' component={PartnerMembers} />
-            <Route path='/partner/:pk' component={PartnerPreview} />
-            <Route path='/partner' component={PartnerList} />
-            <Route path='/project/:project_id/attendance/:year/:month' component={ProjectAttendance} />
-            <Route path='/project/:project_id/request/:request_no' component={ProjectRequestDetail} />
-            <Route path='/project/:project_id/request' component={ProjectRequestList} />
-            <Route path='/project/:project_id/' component={ProjectDetail} />
-            <Route path='/project' component={ProjectList} />
-            <Route path='/turnover/month/:ym/project/:project_id' component={TurnoverMonthlyProjectDetail} />
-            <Route path='/turnover/month/:ym/customer/:customer_id' component={TurnoverMonthlyCustomerDetail} />
-            <Route path='/turnover/monthly/:ym' component={TurnoverMonthlyDetail} />
-            <Route path='/turnover/monthly' component={TurnoverMonthlyList} />
-            <Route path='/turnover' component={TurnoverDashboard} />
-            <Route exact path='/forbidden' component={Status405} />
-            <Route exact path='/notfound' component={Status404} />
-            <Route exact path='/error' component={Status500} />
+            <Route path='/member/members/:member_id/detail' component={() => <MemberDetail/>} />
+            <Route path='/member/members/:member_id/' component={() => <MemberPreview/>} />
+            <Route path='/member/members/' component={() => <MemberList/>} />
+            <Route path='/member' component={() => <MemberDashboard/>} />
+            <Route path='/organization/:pk/' component={() => <OrganizationDetail/>} />
+            <Route path='/organization' component={() => <OrganizationList/>} />
+            <Route path='/partner/:partner_id/order/:order_id' component={() => <PartnerOrder/>} />
+            <Route path='/partner/:pk/member/add' component={() => <PartnerMemberAdd/>} />
+            <Route path='/partner/:pk/detail' component={() => <PartnerDetail/>} />
+            <Route path='/partner/:partner_id/division/:year/:month' component={() => <PartnerDivisionsByMonth/>} />
+            <Route path='/partner/:partner_id/members/:member_id/orders/:order_id' component={() => <PartnerMemberOrder/>} />
+            <Route path='/partner/:partner_id/members/:member_id/orders' component={() => <PartnerMemberOrders/>} />
+            <Route path='/partner/:partner_id/members/:member_id' component={() => <PartnerMember/>} />
+            <Route path='/partner/:pk/members' component={() => <PartnerMembers/>} />
+            <Route path='/partner/:pk' component={() => <PartnerPreview/>} />
+            <Route path='/partner' component={() => <PartnerList/>} />
+            <Route path='/project/:project_id/attendance/:year/:month' component={() => <ProjectAttendance/>} />
+            <Route path='/project/:project_id/request/:request_no' component={() => <ProjectRequestDetail/>} />
+            <Route path='/project/:project_id/request' component={() => <ProjectRequestList/>} />
+            <Route path='/project/:project_id/' component={() => <ProjectDetail/>} />
+            <Route path='/project' component={() => <ProjectList/>} />
+            <Route path='/turnover/month/:ym/project/:project_id' component={() => <TurnoverMonthlyProjectDetail/>} />
+            <Route path='/turnover/month/:ym/customer/:customer_id' component={() => <TurnoverMonthlyCustomerDetail/>} />
+            <Route path='/turnover/monthly/:ym' component={() => <TurnoverMonthlyDetail/>} />
+            <Route path='/turnover/monthly' component={() => <TurnoverMonthlyList/>} />
+            <Route path='/turnover' component={() => <TurnoverDashboard/>} />
+            <Route exact path='/forbidden' component={() => <Status405/>} />
+            <Route exact path='/notfound' component={() => <Status404/>} />
+            <Route exact path='/error' component={() => <Status500/>} />
           </Switch>
         </main>
         <SimpleSnackbar />

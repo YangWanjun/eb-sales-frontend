@@ -20,12 +20,12 @@ const styles = theme => ({
     flexWrap: 'wrap',
   },
   formControl: {
-    margin: theme.spacing.unit,
+    margin: theme.spacing(1),
     minWidth: 120,
     width: '100%',
   },
   selectEmpty: {
-    marginTop: theme.spacing.unit * 2,
+    marginTop: theme.spacing(2),
   },
   rightAlign: {
     textAlign: 'right',
@@ -35,7 +35,7 @@ const styles = theme => ({
     position: 'absolute',
     backgroundColor: 'transparent',
     // boxShadow: theme.shadows[5],
-    padding: theme.spacing.unit * 4,
+    padding: theme.spacing(4),
     outline: 'none',
     width: '100%',
     maxWidth: 750,
