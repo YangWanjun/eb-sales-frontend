@@ -76,7 +76,7 @@ export const list_project_schema = [
     "name": "name",
     "type": "string",
     "label": "案件名称",
-    "url_field": "url",
+    "link": "/project/%(id)s/",
   },
   {
     "name": "start_date",

@@ -17,6 +17,7 @@ import { common } from '../../utils/common';
 
 
 class MemberList extends React.Component {
+  _isMounted = false;
 
   constructor(props) {
     super(props);
@@ -24,18 +25,24 @@ class MemberList extends React.Component {
     this.state = {
       salesperson_list: [],
     };
-    this.initialize();
   }
 
-  initialize() {
+  componentWillMount() {
+    this._isMounted = true;
     // 営業担当一覧を初期化する
     common.fetchGet(config.api.salesperson.list).then(data => {
       let salesperson_list = [];
       data.results.map(row => (
         salesperson_list.push({value: row.id, display_name: row.name})
       ));
-      this.setState({salesperson_list});
+      if (this._isMounted) {
+        this.setState({salesperson_list});
+      }
     });
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   getDefaultFilter() {
@@ -66,7 +73,7 @@ class MemberList extends React.Component {
         </CustomBreadcrumbs>
         <Card>
           <CardHeader color="info">
-          メンバー一覧
+            メンバー一覧
           </CardHeader>
           <CardBody>
             <DataSource

@@ -1,27 +1,27 @@
 import React from 'react';
 import { Link } from 'react-router-dom'
+import { SimpleTable } from 'mui-enhanced-datatable';
 import withStyles from "@material-ui/core/styles/withStyles";
 import {
   Typography,
   Button,
 } from '@material-ui/core';
-import GridContainer from '../components/Grid/GridContainer';
-import GridItem from '../components/Grid/GridItem';
-import Card from "../components/Card/Card";
-import CardAvatar from "../components/Card/CardAvatar";
-import CardHeader from '../components/Card/CardHeader';
-import CardBody from "../components/Card/CardBody.jsx";
-import CustomBreadcrumbs from '../components/customBreadcrumbs';
-import SimpleTable from '../components/Table/SimpleTable';
+import GridContainer from '../../components/Grid/GridContainer';
+import GridItem from '../../components/Grid/GridItem';
+import Card from "../../components/Card/Card";
+import CardAvatar from "../../components/Card/CardAvatar";
+import CardHeader from '../../components/Card/CardHeader';
+import CardBody from "../../components/Card/CardBody.jsx";
+import CustomBreadcrumbs from '../../components/customBreadcrumbs';
 import {
   list_project_schema,
   list_organization_schema,
   list_salesperson_schema,
-} from '../layout/member';
-import { config } from '../utils/config';
-import { common } from '../utils/common';
+} from '../../layout/member';
+import { config } from '../../utils/config';
+import { common } from '../../utils/common';
 
-import defaultAvatar from "../assets/img/avatar.png";
+import defaultAvatar from "../../assets/img/avatar.png";
 
 const styles = {
   cardCategoryWhite: {
@@ -43,9 +43,15 @@ const styles = {
   cardProfile: {
     marginTop: 60,
   },
+  cardAvatar: {
+    maxHeight: 110,
+    maxWidth: 110,
+    verticalAlign: 'middle'
+  },
 };
 
-class MemberPreview extends React.Component {
+class _MemberPreview extends React.Component {
+  _isMounted = false;
 
   constructor(props) {
     super(props);
@@ -56,20 +62,26 @@ class MemberPreview extends React.Component {
       organizations: [],
       salesperson: [],
     };
-    this.initialize();
 　}
 
-  initialize() {
-    const { params } = this.props.match;
+componentWillMount() {
+  this._isMounted = true;
+  const { params } = this.props.match;
     const url_member_detail = common.formatStr(config.api.member.history, params.member_id) + '?schema=1';
     common.fetchGet(url_member_detail).then(data => {
-      this.setState({
-        member: data.member,
-        projects: data.projects,
-        organizations: data.organizations,
-        salesperson: data.salesperson,
-      });
+      if (this._isMounted) {
+        this.setState({
+          member: data.member,
+          projects: data.projects,
+          organizations: data.organizations,
+          salesperson: data.salesperson,
+        });
+      }
     });
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   render () {
@@ -142,9 +154,10 @@ class MemberPreview extends React.Component {
           </GridItem>
           <GridItem xs={12} sm={12} md={4}>
             <Card profile className={classes.cardProfile}>
-              <CardAvatar profile>
+              <CardAvatar profile style={{width: 110, height: 110}}>
+                <span style={{display: 'inline-block', height: '100%', verticalAlign: 'middle',}}></span>
                 <a href="#pablo" onClick={e => e.preventDefault()}>
-                  <img src={avatar} alt="..." />
+                  <img src={avatar} alt="..." className={classes.cardAvatar} />
                 </a>
               </CardAvatar>
               <CardBody profile>
@@ -156,7 +169,7 @@ class MemberPreview extends React.Component {
                   {member.skill_description}<br/>
                   {member.comment}
                 </p>
-                <Link to={'/member/' + params.member_id + '/detail'}>
+                <Link to={'/member/members/' + params.member_id + '/detail'}>
                   <Button
                     variant="contained"
                     color="primary"
@@ -174,4 +187,5 @@ class MemberPreview extends React.Component {
   }
 }
 
-export default withStyles(styles)(MemberPreview);
+const MemberPreview = withStyles(styles)(_MemberPreview);
+export {MemberPreview}

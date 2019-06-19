@@ -15,10 +15,8 @@ import Status405 from '../containers/status_405';
 import Status404 from '../containers/status_404';
 import Status500 from '../containers/status_500';
 import {
-  MemberDashboard, MemberList,
+  MemberDashboard, MemberList, MemberPreview, MemberDetail,
 } from './member/index';
-import MemberPreview from './member_preview';
-import MemberDetail from './member_detail';
 import OrganizationList from './organization_list';
 import OrganizationDetail from './organization_detail';
 import PartnerList from './partner_list';
@@ -175,35 +173,35 @@ class Layout extends React.Component {
         <main className={classes.content}>
           <div className={classes.toolbar} />
           <Switch>
-            <Route path='/member/members/:member_id/detail' component={() => <MemberDetail/>} />
-            <Route path='/member/members/:member_id/' component={() => <MemberPreview/>} />
-            <Route path='/member/members/' component={MemberList} />
-            <Route path='/member' component={() => <MemberDashboard/>} />
-            <Route path='/organization/:pk/' component={() => <OrganizationDetail/>} />
-            <Route path='/organization' component={() => <OrganizationList/>} />
-            <Route path='/partner/:partner_id/order/:order_id' component={() => <PartnerOrder/>} />
-            <Route path='/partner/:pk/member/add' component={() => <PartnerMemberAdd/>} />
-            <Route path='/partner/:pk/detail' component={() => <PartnerDetail/>} />
-            <Route path='/partner/:partner_id/division/:year/:month' component={() => <PartnerDivisionsByMonth/>} />
-            <Route path='/partner/:partner_id/members/:member_id/orders/:order_id' component={() => <PartnerMemberOrder/>} />
-            <Route path='/partner/:partner_id/members/:member_id/orders' component={() => <PartnerMemberOrders/>} />
-            <Route path='/partner/:partner_id/members/:member_id' component={() => <PartnerMember/>} />
-            <Route path='/partner/:pk/members' component={() => <PartnerMembers/>} />
-            <Route path='/partner/:pk' component={() => <PartnerPreview/>} />
-            <Route path='/partner' component={() => <PartnerList/>} />
-            <Route path='/project/:project_id/attendance/:year/:month' component={() => <ProjectAttendance/>} />
-            <Route path='/project/:project_id/request/:request_no' component={() => <ProjectRequestDetail/>} />
-            <Route path='/project/:project_id/request' component={() => <ProjectRequestList/>} />
-            <Route path='/project/:project_id/' component={() => <ProjectDetail/>} />
-            <Route path='/project' component={() => <ProjectList/>} />
-            <Route path='/turnover/month/:ym/project/:project_id' component={() => <TurnoverMonthlyProjectDetail/>} />
-            <Route path='/turnover/month/:ym/customer/:customer_id' component={() => <TurnoverMonthlyCustomerDetail/>} />
-            <Route path='/turnover/monthly/:ym' component={() => <TurnoverMonthlyDetail/>} />
-            <Route path='/turnover/monthly' component={() => <TurnoverMonthlyList/>} />
-            <Route path='/turnover' component={() => <TurnoverDashboard/>} />
-            <Route exact path='/forbidden' component={() => <Status405/>} />
-            <Route exact path='/notfound' component={() => <Status404/>} />
-            <Route exact path='/error' component={() => <Status500/>} />
+            <Route path='/member/members/:member_id/detail' component={(props) => <MemberDetail {...props}/>} />
+            <Route path='/member/members/:member_id/' component={(props) => <MemberPreview {...props}/>} />
+            <Route path='/member/members/' component={(props) => <MemberList {...props} />} />
+            <Route path='/member' component={(props) => <MemberDashboard {...props}/>} />
+            <Route path='/organization/:pk/' component={(props) => <OrganizationDetail {...props}/>} />
+            <Route path='/organization' component={(props) => <OrganizationList {...props}/>} />
+            <Route path='/partner/:partner_id/order/:order_id' component={(props) => <PartnerOrder {...props}/>} />
+            <Route path='/partner/:pk/member/add' component={(props) => <PartnerMemberAdd {...props}/>} />
+            <Route path='/partner/:pk/detail' component={(props) => <PartnerDetail {...props}/>} />
+            <Route path='/partner/:partner_id/division/:year/:month' component={(props) => <PartnerDivisionsByMonth {...props}/>} />
+            <Route path='/partner/:partner_id/members/:member_id/orders/:order_id' component={(props) => <PartnerMemberOrder {...props}/>} />
+            <Route path='/partner/:partner_id/members/:member_id/orders' component={(props) => <PartnerMemberOrders {...props}/>} />
+            <Route path='/partner/:partner_id/members/:member_id' component={(props) => <PartnerMember {...props}/>} />
+            <Route path='/partner/:pk/members' component={(props) => <PartnerMembers {...props}/>} />
+            <Route path='/partner/:pk' component={(props) => <PartnerPreview {...props}/>} />
+            <Route path='/partner' component={(props) => <PartnerList {...props}/>} />
+            <Route path='/project/:project_id/attendance/:year/:month' component={(props) => <ProjectAttendance {...props}/>} />
+            <Route path='/project/:project_id/request/:request_no' component={(props) => <ProjectRequestDetail {...props}/>} />
+            <Route path='/project/:project_id/request' component={(props) => <ProjectRequestList {...props}/>} />
+            <Route path='/project/:project_id/' component={(props) => <ProjectDetail {...props}/>} />
+            <Route path='/project' component={(props) => <ProjectList {...props}/>} />
+            <Route path='/turnover/month/:ym/project/:project_id' component={(props) => <TurnoverMonthlyProjectDetail {...props}/>} />
+            <Route path='/turnover/month/:ym/customer/:customer_id' component={(props) => <TurnoverMonthlyCustomerDetail {...props}/>} />
+            <Route path='/turnover/monthly/:ym' component={(props) => <TurnoverMonthlyDetail {...props}/>} />
+            <Route path='/turnover/monthly' component={(props) => <TurnoverMonthlyList {...props}/>} />
+            <Route path='/turnover' component={(props) => <TurnoverDashboard {...props}/>} />
+            <Route exact path='/forbidden' component={(props) => <Status405 {...props}/>} />
+            <Route exact path='/notfound' component={(props) => <Status404 {...props}/>} />
+            <Route exact path='/error' component={(props) => <Status500 {...props}/>} />
           </Switch>
         </main>
         <SimpleSnackbar />

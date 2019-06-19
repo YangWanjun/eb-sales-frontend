@@ -31,7 +31,6 @@ class SimpleTable extends React.Component {
   render () {
     const { classes, tableHeaderColor, tableHead, tableData, rowsPerPage, tableProps } = this.props;
     const { page } = this.state;
-    console.log(tableProps)
 
     return (
       <div className={classes.tableResponsive}>

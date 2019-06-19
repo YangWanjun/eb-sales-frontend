@@ -1,13 +1,18 @@
 import React from 'react';
 import { Link } from 'react-router-dom'
+import { EnhancedTable } from 'mui-enhanced-datatable';
 import withStyles from "@material-ui/core/styles/withStyles";
 import {
   Typography,
 } from '@material-ui/core';
-import CustomBreadcrumbs from '../components/customBreadcrumbs';
-import DetailPanel from '../containers/detail';
-import EnhancedTable from '../containers/EnhancedTable';
-import DataProvider from '../components/Table/DataProvider';
+import CustomBreadcrumbs from '../../components/customBreadcrumbs';
+import DetailPanel from '../../containers/detail';
+import EnhancedTable2 from '../../containers/EnhancedTable';
+import DataProvider from '../../components/Table/DataProvider';
+import DataSource from '../../components/DataSource';
+import Card from "../../components/Card/Card";
+import CardHeader from "../../components/Card/CardHeader.jsx";
+import CardBody from "../../components/Card/CardBody";
 import {
   detail_member_schema,
   edit_member_schema,
@@ -15,12 +20,12 @@ import {
   list_salesperson_schema,
   edit_member_organization_schema,
   edit_salesperson_schema,
-} from '../layout/member';
+} from '../../layout/member';
 import {
   checkDepartment,
-} from './common';
-import { config } from '../utils/config';
-import { common } from '../utils/common';
+} from '../common';
+import { config } from '../../utils/config';
+import { common } from '../../utils/common';
 
 const styles = theme => ({
   button: {
@@ -29,7 +34,8 @@ const styles = theme => ({
   },
 });
 
-class MemberDetail extends React.Component {
+class _MemberDetail extends React.Component {
+  _isMounted = false;
 
   constructor(props) {
     super(props);
@@ -39,16 +45,18 @@ class MemberDetail extends React.Component {
       organizations: [],
       salesperson: [],
     };
-    this.initialize();
 　}
 
-  initialize() {
+  componentWillMount() {
+    this._isMounted = true;
     const { params } = this.props.match;
     const url_member_detail = common.formatStr(config.api.member.detail, params.member_id) + '?schema=1';
     common.fetchGet(url_member_detail).then(data => {
-      this.setState({
-        member: data,
-      });
+      if (this._isMounted) {
+        this.setState({
+          member: data,
+        });
+      }
     });
     // 事業部一覧を初期化する
     common.fetchGet(config.api.organization.list).then(data => {
@@ -56,7 +64,9 @@ class MemberDetail extends React.Component {
       data.results.map(row => (
         organizations.push({value: row.id, display_name: row.name, parent: row.parent, disabled: row.is_on_sales !== true})
       ));
-      this.setState({organizations});
+      if (this._isMounted) {
+        this.setState({organizations});
+      }
     });
     // 営業担当一覧を初期化する
     common.fetchGet(config.api.salesperson.list).then(data => {
@@ -64,8 +74,14 @@ class MemberDetail extends React.Component {
       data.results.map(row => (
         salesperson.push({value: row.id, display_name: row.name})
       ));
-      this.setState({salesperson});
+      if (this._isMounted) {
+        this.setState({salesperson});
+      }
     });
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   render () {
@@ -119,27 +135,33 @@ class MemberDetail extends React.Component {
           schema={detail_member_schema}
           formComponentProps={formProjectProps}
         />
-        <DataProvider 
-          endpoint={ common.formatStr(config.api.member.organizations, params.member_id) } 
-          render={ (initData) => {
-            return (
-              <EnhancedTable
-                tableTitle='所属部署'
-                { ...initData }
-                columns={list_organization_schema}
-                isClientSide={true}
-                selectable='single'
-                formComponentProps={formMemberOrganizationProps}
-                deleteUrl={config.api.organization_period.detail}
-              />
-            );
-          } }
-        />
+        <Card>
+          <CardHeader color="info">
+            所属部署
+          </CardHeader>
+          <CardBody>
+            <DataSource
+              endpoint={common.formatStr(config.api.member.organizations, params.member_id)}
+              render={(initData) => {
+                return (
+                  <EnhancedTable
+                    title='所属部署'
+                    tableHead={list_organization_schema}
+                    tableData={initData.results}
+                    selectable='single'
+                    formComponentProps={formMemberOrganizationProps}
+                    deleteUrl={config.api.organization_period.detail}
+                  />
+                );
+              }}
+            />
+          </CardBody>
+        </Card>
         <DataProvider 
           endpoint={ common.formatStr(config.api.member.salesperson, params.member_id) } 
           render={ (initData) => {
             return (
-              <EnhancedTable
+              <EnhancedTable2
                 tableTitle='営業担当一覧'
                 { ...initData }
                 columns={list_salesperson_schema}
@@ -156,4 +178,5 @@ class MemberDetail extends React.Component {
   }
 }
 
-export default withStyles(styles)(MemberDetail);
+const MemberDetail = withStyles(styles)(_MemberDetail);
+export { MemberDetail };
