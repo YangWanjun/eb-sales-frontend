@@ -4,57 +4,67 @@ export const list_member_schema = [
     "type": "string",
     "label": "名前",
     'searchable': true,
-    "url_field": "url",
+    "link": "/member/members/%(id)s/",
+    "sortable": true,
   },
   {
     "name": "division_name",
     "type": "string",
     "label": "事業部",
+    "sortable": true,
   },
   {
     "name": "department_name",
     "type": "string",
     "label": "部署",
+    "sortable": true,
   },
   {
     "name": "section_name",
     "type": "string",
     "label": "課",
+    "sortable": true,
   },
   {
     "name": "partner_name",
     "type": "string",
     "label": "協力会社",
     'searchable': true,
+    "sortable": true,
   },
   {
     "name": "is_working",
     "type": "boolean",
     "label": "稼働",
     'searchable': true,
+    "sortable": true,
   },
   {
     "name": "release_date",
     "type": "date",
     "label": "リリース予定日",
+    "sortable": true,
   },
   {
-    "name": "salesperson_name",
-    "type": "string",
+    "name": "salesperson_id",
+    "type": "choice",
     "label": "営業員",
     'searchable': true,
+    "sortable": true,
+    "choices": [],
   },
   {
     "name": "salesoff_reason_name",
     "type": "string",
     "label": "営業対象外",
+    "sortable": true,
   },
   {
     "name": "is_retired",
     "type": "boolean",
     "label": "退職",
     "visible": false,
-    "styles": {
+    "rowStyles": {
       1: {'backgroundColor': 'lightgray'}
     },
     'searchable': true,
@@ -456,16 +466,19 @@ export const list_member_dashboard_salesperson_schema = [
     "name": "member_count",
     "type": "integer",
     "label": "担当数",
+    "link": '/member/members?salesperson_id=%(id)s&is_retired=false'
   },
   {
     "name": "working_count",
     "type": "integer",
     "label": "稼働数",
+    "link": '/member/members?salesperson_id=%(id)s&is_working=true&is_retired=false'
   },
   {
     "name": "waiting_count",
     "type": "integer",
     "label": "待機数",
+    "link": '/member/members?salesperson_id=%(id)s&is_working=false&is_retired=false'
   },
   {
     "name": "curr_release_count",

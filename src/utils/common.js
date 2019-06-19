@@ -194,7 +194,13 @@ export const common = {
     var decode = (isDecode) ? decodeURIComponent : function(a) { return a; };
     return this.trim(text, '?').split(sep).reduce(function(obj, v) {
       var pair = v.split(eq);
-      obj[pair[0]] = decode(pair[1]);
+      var value = decode(pair[1]);
+      if (value === 'true') {
+        value = true;
+      } else if (value === 'false') {
+        value = false;
+      }
+      obj[pair[0]] = value;
       return obj;
     }, {});
   },
@@ -363,6 +369,10 @@ export const common = {
     frm.focus();
     frm.print();
     return false;
+  },
+
+  getFixedHeaderHeight: function() {
+    return 64;
   },
   
   /**

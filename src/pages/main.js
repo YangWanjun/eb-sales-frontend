@@ -177,7 +177,7 @@ class Layout extends React.Component {
           <Switch>
             <Route path='/member/members/:member_id/detail' component={() => <MemberDetail/>} />
             <Route path='/member/members/:member_id/' component={() => <MemberPreview/>} />
-            <Route path='/member/members/' component={() => <MemberList/>} />
+            <Route path='/member/members/' component={MemberList} />
             <Route path='/member' component={() => <MemberDashboard/>} />
             <Route path='/organization/:pk/' component={() => <OrganizationDetail/>} />
             <Route path='/organization' component={() => <OrganizationList/>} />

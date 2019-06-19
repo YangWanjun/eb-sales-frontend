@@ -2,9 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { withStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
-import { config } from '../utils/config';
 import { common } from '../utils/common';
 
 const styles = theme => ({
@@ -19,6 +17,7 @@ const styles = theme => ({
 });
 
 class DataSource extends Component {
+  _isMounted = false;
 
   constructor(props) {
     super(props);
@@ -28,18 +27,25 @@ class DataSource extends Component {
       loaded: false,
       placeholder: "Loading..."
     };
-    this.initialize(props);
   }
 
-  initialize(props) {
-    if (props.endpoint) {
-      common.fetchGet(props.endpoint).then(data => {
-        this.setState({
-          data,
-          loaded: true,
+  componentWillMount() {
+    this._isMounted = true;
+    if (this.props.endpoint) {
+      common.fetchGet(this.props.endpoint)
+        .then(data => {
+          if (this._isMounted) {
+            this.setState({
+              data,
+              loaded: true,
+            })
+          }
         });
-      });
     }
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   render() {
@@ -47,15 +53,15 @@ class DataSource extends Component {
     const { data, loaded, placeholder } = this.state;
     
     if (loaded) {
-      return this.props.render({data});
+      return this.props.render(data);
     } else {
       return (
-        <Paper className={classes.paper}>
+        <div className={classes.paper}>
           <CircularProgress />
           <Typography component="p">
             {placeholder}
           </Typography>
-        </Paper>
+        </div>
       );
     }
   }

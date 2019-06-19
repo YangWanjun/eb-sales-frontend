@@ -70,39 +70,39 @@ function getWorkingStatusOption(data) {
   };
 }
 
-function getSalespersonStatusOption(data) {
-  return {
-    chart: {
-      type: 'column',
-      backgroundColor: 'rgba(255, 255, 255, 0.0)',
-    },
-    credits: {
-      enabled: false,
-    },
-    title: {
-      text: ''
-    },
-    xAxis: {
-      categories: data.categories,
-    },
-    yAxis: {
-      visible: false,
-    },
-    tooltip: {
-      formatter: function () {
-        return '<b>' + this.x + '</b><br/>' +
-          this.series.name + ': ' + this.y + '<br/>' +
-          '合計: ' + this.point.stackTotal;
-      }
-    },
-    plotOptions: {
-      column: {
-        stacking: 'normal'
-      }
-    },
-    series: data.series
-  };
-}
+// function getSalespersonStatusOption(data) {
+//   return {
+//     chart: {
+//       type: 'column',
+//       backgroundColor: 'rgba(255, 255, 255, 0.0)',
+//     },
+//     credits: {
+//       enabled: false,
+//     },
+//     title: {
+//       text: ''
+//     },
+//     xAxis: {
+//       categories: data.categories,
+//     },
+//     yAxis: {
+//       visible: false,
+//     },
+//     tooltip: {
+//       formatter: function () {
+//         return '<b>' + this.x + '</b><br/>' +
+//           this.series.name + ': ' + this.y + '<br/>' +
+//           '合計: ' + this.point.stackTotal;
+//       }
+//     },
+//     plotOptions: {
+//       column: {
+//         stacking: 'normal'
+//       }
+//     },
+//     series: data.series
+//   };
+// }
 
 class Dashboard extends Component {
   _isMounted = false;
@@ -151,7 +151,13 @@ class Dashboard extends Component {
                 <h3 className={classes.cardTitle}>
                   {!common.isEmpty(member_status) ? (
                     <React.Fragment>
-                      {member_status.waiting_count} / <Link to={'/member/members/'}>{member_status.member_count}</Link> <small>人</small>
+                      <Link to={{pathname: '/member/members/', search: 'is_working=true&is_retired=false'}}>
+                        {member_status.waiting_count}
+                      </Link> / 
+                      <Link to={{pathname: '/member/members/', search: 'is_retired=false'}}>
+                        {member_status.member_count}
+                      </Link> 
+                      <small>人</small>
                     </React.Fragment>
                   ) : null}
                 </h3>
@@ -161,13 +167,11 @@ class Dashboard extends Component {
                   <Danger>
                     <Icon>warning</Icon>
                   </Danger>
-                  <a href="#pablo" onClick={e => e.preventDefault()}>
-                    {!common.isEmpty(member_status) ? (
-                      <React.Fragment>
-                        現在の待機率は&nbsp;{member_status.waiting_rate}&nbsp;％
-                      </React.Fragment>
-                    ) : null}
-                  </a>
+                  {!common.isEmpty(member_status) ? (
+                    <React.Fragment>
+                      現在の待機率は&nbsp;{member_status.waiting_rate}&nbsp;％
+                    </React.Fragment>
+                  ) : null}
                 </div>
               </CardFooter>
             </Card>
@@ -192,9 +196,7 @@ class Dashboard extends Component {
                   <Warning>
                     <Icon>warning</Icon>
                   </Warning>
-                  <a href="#pablo" onClick={e => e.preventDefault()}>
-                    今月、来月と再来月のリリース人数
-                  </a>
+                  今月、来月と再来月のリリース人数
                 </div>
               </CardFooter>
             </Card>
@@ -217,14 +219,12 @@ class Dashboard extends Component {
               <CardFooter stats>
                 <div className={classes.stats}>
                   <Icon>info</Icon>
-                  <a href="#pablo" onClick={e => e.preventDefault()}>
-                    {!common.isEmpty(member_status) ? (
-                      <React.Fragment>
-                        ＢＰ割合&nbsp;{member_status.bp_member_rate}&nbsp;％、
-                        個人事業主割合&nbsp;{member_status.individual_rate}&nbsp;％
-                      </React.Fragment>
-                    ) : null}
-                  </a>
+                  {!common.isEmpty(member_status) ? (
+                    <React.Fragment>
+                      ＢＰ割合&nbsp;{member_status.bp_member_rate}&nbsp;％、
+                      個人事業主割合&nbsp;{member_status.individual_rate}&nbsp;％
+                    </React.Fragment>
+                  ) : null}
                 </div>
               </CardFooter>
             </Card>
@@ -261,20 +261,6 @@ class Dashboard extends Component {
           </GridItem>
         </GridContainer>
         <GridContainer>
-          <GridItem xs={12} sm={12} md={12}>
-            <Card chart>
-              <CardHeader color="info">
-                <HighchartsReact
-                  highcharts={Highcharts}
-                  options={getSalespersonStatusOption(salesperson_status)}
-                  containerProps={{ style: {height: 300} }}
-                />
-              </CardHeader>
-              <CardBody>
-                <h4 className={classes.cardTitle}>各担当者が担当分のメンバー稼働状況一覧</h4>
-              </CardBody>
-            </Card>
-          </GridItem>
           <GridItem xs={12} sm={12} md={12}>
             <Card>
               <CardHeader color="success">
