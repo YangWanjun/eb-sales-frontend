@@ -1,15 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom'
-import { EnhancedTable } from 'mui-enhanced-datatable';
 import withStyles from "@material-ui/core/styles/withStyles";
 import {
   Typography,
 } from '@material-ui/core';
 import CustomBreadcrumbs from '../../components/customBreadcrumbs';
 import DetailPanel from '../../containers/detail';
-import EnhancedTable2 from '../../containers/EnhancedTable';
-import DataProvider from '../../components/Table/DataProvider';
 import DataSource from '../../components/DataSource';
+import DataTable from '../../containers/DataTable';
 import Card from "../../components/Card/Card";
 import CardHeader from "../../components/Card/CardHeader.jsx";
 import CardBody from "../../components/Card/CardBody";
@@ -95,38 +93,16 @@ class _MemberDetail extends React.Component {
     // 所属部署の設定
     let colOrg = common.getColumnByName(edit_member_organization_schema, 'organization', 'name');
     colOrg['choices'] = organizations;
-    const formMemberOrganizationProps = {
-      schema: edit_member_organization_schema,
-      layout: [],
-      title: member.full_name + 'に所属部署を設定',
-      checker: [checkDepartment],
-      data: {
-        member: params.member_id,
-        member_name: member.full_name,
-      },
-      add_url: config.api.organization_period.list,
-      edit_url: config.api.organization_period.detail,
-    };
     // 営業担当の設定
     let colSalesperson = common.getColumnByName(edit_salesperson_schema, 'salesperson', 'name');
     colSalesperson['choices'] = salesperson;
-    const formSalespersonProps = {
-      schema: edit_salesperson_schema,
-      layout: [],
-      title: member.full_name + 'に営業員を設定',
-      data: {
-        member: params.member_id,
-        member_name: member.full_name,
-      },
-      add_url: config.api.salesperson_period.list,
-      edit_url: config.api.salesperson_period.detail,
-    };
 
     return (
       <div>
         <CustomBreadcrumbs>
-          <Link to="/member" >作業メンバー一覧</Link>
-          <Link to={"/member/" + params.member_id} >{member.full_name}</Link>
+          <Link to="/member/">メンバー管理</Link>
+          <Link to="/member/members/" >作業メンバー一覧</Link>
+          <Link to={"/member/members/" + params.member_id} >{member.full_name}</Link>
           <Typography color="textPrimary">変更</Typography>
         </CustomBreadcrumbs>
         <DetailPanel
@@ -136,7 +112,7 @@ class _MemberDetail extends React.Component {
           formComponentProps={formProjectProps}
         />
         <Card>
-          <CardHeader color="info">
+          <CardHeader color='info'>
             所属部署
           </CardHeader>
           <CardBody>
@@ -144,35 +120,81 @@ class _MemberDetail extends React.Component {
               endpoint={common.formatStr(config.api.member.organizations, params.member_id)}
               render={(initData) => {
                 return (
-                  <EnhancedTable
+                  <DataTable
                     title='所属部署'
                     tableHead={list_organization_schema}
                     tableData={initData.results}
                     selectable='single'
-                    formComponentProps={formMemberOrganizationProps}
-                    deleteUrl={config.api.organization_period.detail}
+                    addOption={{
+                      'tooltip': '所属部署を追加',
+                      'schema': edit_member_organization_schema,
+                      'title': member.full_name + 'に所属部署を追加',
+                      'data': {
+                        member: params.member_id,
+                        member_name: member.full_name,
+                      },
+                      'checker': [checkDepartment],
+                      'post_url': config.api.organization_period.list,
+                    }}
+                    editOption={{
+                      'tooltip': '所属部署を変更',
+                      'schema': edit_member_organization_schema,
+                      'title': member.full_name + 'に所属部署を変更',
+                      'checker': [checkDepartment],
+                      'put_url': config.api.organization_period.detail,
+                    }}
+                    deleteOption={{
+                      'tooltip': '所属部署を削除',
+                      'verbose_name': '%(division_name)s（%(start_date)s～%(end_date)s）',
+                      'delete_url': config.api.organization_period.detail,
+                    }}
                   />
                 );
               }}
             />
           </CardBody>
         </Card>
-        <DataProvider 
-          endpoint={ common.formatStr(config.api.member.salesperson, params.member_id) } 
-          render={ (initData) => {
-            return (
-              <EnhancedTable2
-                tableTitle='営業担当一覧'
-                { ...initData }
-                columns={list_salesperson_schema}
-                isClientSide={true}
-                selectable='single'
-                formComponentProps={formSalespersonProps}
-                deleteUrl={config.api.salesperson_period.detail}
-              />
-            );
-          } }
-        />
+        <Card>
+          <CardHeader color='info'>
+            営業担当一覧
+          </CardHeader>
+          <CardBody>
+            <DataSource
+              endpoint={common.formatStr(config.api.member.salesperson, params.member_id)}
+              render={(initData) => {
+                return (
+                  <DataTable
+                    title='営業担当一覧'
+                    tableHead={list_salesperson_schema}
+                    tableData={initData.results}
+                    selectable='single'
+                    addOption={{
+                      'tooltip': '営業担当を追加',
+                      'schema': edit_salesperson_schema,
+                      'title': member.full_name + 'に営業担当を追加',
+                      'data': {
+                        member: params.member_id,
+                        member_name: member.full_name,
+                      },
+                      'post_url': config.api.salesperson_period.list,
+                    }}
+                    editOption={{
+                      'tooltip': '営業担当を変更',
+                      'schema': edit_salesperson_schema,
+                      'title': member.full_name + 'に営業担当を変更',
+                      'put_url': config.api.salesperson_period.detail,
+                    }}
+                    deleteOption={{
+                      'tooltip': '営業担当を削除',
+                      'verbose_name': '%(salesperson_name)s（%(start_date)s～%(end_date)s）',
+                      'delete_url': config.api.salesperson_period.detail,
+                    }}
+                  />
+                );
+              } }
+            />
+          </CardBody>
+        </Card>
       </div>
     );
   }

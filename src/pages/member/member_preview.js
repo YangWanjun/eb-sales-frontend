@@ -93,7 +93,8 @@ componentWillMount() {
     return (
       <div>
         <CustomBreadcrumbs>
-          <Link to="/member" >作業メンバー一覧</Link>
+          <Link to="/member/">メンバー管理</Link>
+          <Link to="/member/members/" >作業メンバー一覧</Link>
           <Typography color="textPrimary">{ member.full_name }</Typography>
         </CustomBreadcrumbs>
         <GridContainer>

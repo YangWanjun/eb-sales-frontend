@@ -86,6 +86,7 @@ class MemberList extends React.Component {
                   rowsPerPage={config.rowsPerPage}
                   pushpinTop={common.getFixedHeaderHeight()}
                   filters={filters}
+                  allowCsv={true}
                 />
               ) } 
             />

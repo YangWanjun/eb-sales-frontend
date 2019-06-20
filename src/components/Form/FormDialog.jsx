@@ -84,7 +84,7 @@ class FormDialog extends React.Component {
     this.state = {
       open: false,
       data: {},
-    }
+    };
   }
 
   handleOpen = (initial) => {

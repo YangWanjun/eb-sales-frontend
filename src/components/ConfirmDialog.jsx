@@ -7,7 +7,9 @@ import {
   DialogContent,
   DialogActions,
   Dialog,
+  Typography,
 } from '@material-ui/core';
+import { constant } from '../utils/constants';
 
 const styles = theme => ({
   root: {
@@ -31,11 +33,12 @@ class ConfirmDialog extends React.Component {
     this.handleOk = this.handleOk.bind(this);
     this.state = {
       open: false,
+      content: null,
     }
   }
 
-  handleOpen() {
-    this.setState({open: true,})
+  handleOpen(content) {
+    this.setState({open: true, content: content,})
   }
 
   handleCancel() {
@@ -52,19 +55,23 @@ class ConfirmDialog extends React.Component {
 
   render() {
     const { title } = this.props;
-    const { open } = this.state;
+    const { open, content } = this.state;
 
     return (
       <Dialog
         open={open}
-        disableBackdropClick
-        disableEscapeKeyDown
         maxWidth="xs"
         onEntering={this.handleEntering}
         aria-labelledby="confirmation-dialog-title"
       >
         <DialogTitle id="confirmation-dialog-title">{ title }</DialogTitle>
         <DialogContent>
+          {content ? (
+            constant.INFO.DELETE_CONFIRM
+          ) : null}
+          <Typography style={{whiteSpace: 'pre-line'}}>
+            {content}
+          </Typography>
         </DialogContent>
         <DialogActions>
           <Button onClick={this.handleCancel} color="secondary">

@@ -3,7 +3,7 @@ import { vsprintf } from 'sprintf-js';
 import { authHeader } from '../utils/authHeader';
 import { logoutAndRedirect } from '../actions/auth.actions';
 import { clearMe } from '../actions/user.actions';
-import { changeStatusCode, loading } from '../actions/status.actions';
+import { loading } from '../actions/status.actions';
 import { store } from '../utils/store';
 
 export const common = {
@@ -461,7 +461,7 @@ export const common = {
 
   handleStatus: function(response) {
     if (!response.ok) {
-      store.dispatch(changeStatusCode(response.status));
+      // store.dispatch(changeStatusCode(response.status));
       if (response.status === 401) {
         // auto logout if 401 response returned from api
         store.dispatch(logoutAndRedirect());
@@ -478,6 +478,7 @@ export const common = {
         store.dispatch(replace('/error'));
       }
       return common.handleResponse(response).then(data => {
+        console.log(data);
         return Promise.reject(data);
       });
     } else {

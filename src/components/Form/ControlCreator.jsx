@@ -49,7 +49,7 @@ class ControlCreateor extends React.Component {
           <TextField
             { ...error }
             name={name}
-            value={value}
+            value={value || ''}
             label={label}
             type="date"
             InputLabelProps={{

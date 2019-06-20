@@ -11,6 +11,7 @@ import { common } from "../../utils/common";
 import { constant } from "../../utils/constants";
 
 class FormComponent extends React.Component {
+  _isMounted = false;
 
   constructor(props) {
     super(props);
@@ -40,6 +41,14 @@ class FormComponent extends React.Component {
     } else {
       return {};
     }
+  }
+
+  componentWillMount() {
+    this._isMounted = true;
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   handleChange(event) {
@@ -191,31 +200,33 @@ class FormComponent extends React.Component {
     const formData = this.clean();
     if (formData) {
       const __index__ = formData.__index__;
-      if (formData.id && this.props.edit_url) {
+      if (formData.id && this.props.put_url) {
         // 更新
-        const url = common.formatStr(this.props.edit_url, formData.id);
+        const url = common.formatStr(this.props.put_url, formData.id);
         common.fetchPut(url, formData).then(json => {
           json['__index__'] = __index__;
           this.props.showSuccessMsg(constant.SUCCESS.SAVED);
           this.props.handleClose();
-          if (this.props.onRowUpdated) {
-            this.props.onRowUpdated(json);
+          if (this.props.onDataPutted) {
+            this.props.onDataPutted(json);
           }
         }).catch(errors => {
           this.setState({errors});
           this.toastError(errors);
         });
-      } else if (this.props.add_url) {
+      } else if (this.props.post_url) {
         // 追加
-        common.fetchPost(this.props.add_url, formData).then(json => {
+        common.fetchPost(this.props.post_url, formData).then(json => {
           json['__index__'] = __index__;
           this.props.showSuccessMsg(constant.SUCCESS.SAVED);
           this.props.handleClose();
-          if (this.props.onRowAdded) {
-            this.props.onRowAdded(json);
+          if (this.props.onDataPosted) {
+            this.props.onDataPosted(json);
           }
         }).catch(errors => {
-          this.setState({errors});
+          if (this._isMounted) {
+            this.setState({errors});
+          }
           this.toastError(errors);
         });
       } else {
