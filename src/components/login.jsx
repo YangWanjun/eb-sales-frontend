@@ -82,7 +82,7 @@ class Login extends Component {
             <Avatar className={classes.avatar}>
               <LockIcon />
             </Avatar>
-            <Typography variant="headline">ログインしてはじめよう！</Typography>
+            <Typography variant="subtitle1">ログインしてはじめよう！</Typography>
             {this.props.error ?
               <p className={classes.alert}>ユーザー名またはパスワードが正しくありません。</p>
               : ''

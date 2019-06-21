@@ -61,7 +61,6 @@ class ConfirmDialog extends React.Component {
       <Dialog
         open={open}
         maxWidth="xs"
-        onEntering={this.handleEntering}
         aria-labelledby="confirmation-dialog-title"
       >
         <DialogTitle id="confirmation-dialog-title">{ title }</DialogTitle>
