@@ -195,6 +195,14 @@ export const common = {
     }
   },
 
+  /**
+   * テーブルのヘッダー部分を固定する
+   * @param {String} wrapperId 固定部分のＩＤ
+   * @param {String} toolbarId ToolbarのＩＤ
+   * @param {String} srcTabelid テーブルのＩＤ
+   * @param {String} fixedTableId 固定部分のテーブルＩＤ
+   * @param {Integer} offset 
+   */
   setFixedTableHeader: function(wrapperId, toolbarId, srcTabelid, fixedTableId, offset=0) {
     const wrapper = document.getElementById(wrapperId);
     const srcTable = document.getElementById(srcTabelid);
@@ -226,19 +234,6 @@ export const common = {
     } else {
       wrapper.style.display = 'none';
     }
-  },
-
-  /**
-   * ヘッダー部分の項目長さを設定
-   * @param {String} tableId テーブルＩＤ
-   * @param {Array} colsWidth ヘッダーの各項目の長さ
-   */
-  setFixedHeaderColsWidth: function(tableId, colsWidth) {
-    const table = document.getElementById(tableId);
-    const headerCells = table.querySelector('thead>tr').children;
-    Array.prototype.forEach.call(headerCells, function(ele, idx) {
-      ele.style.width = colsWidth[idx] + 'px';
-    });
   },
 
   /**

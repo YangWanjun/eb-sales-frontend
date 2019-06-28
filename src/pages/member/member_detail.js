@@ -5,7 +5,8 @@ import {
   Typography,
 } from '@material-ui/core';
 import CustomBreadcrumbs from '../../components/customBreadcrumbs';
-import DetailPanel from '../../containers/detail';
+// import DetailPanel from '../../containers/detail';
+import {TableDetail} from '../../datatable/index';
 import DataSource from '../../components/DataSource';
 import DataTable from '../../containers/DataTable';
 import Card from "../../components/Card/Card";
@@ -82,6 +83,10 @@ class _MemberDetail extends React.Component {
     this._isMounted = false;
   }
 
+  handleEdit = (data) => {
+
+  }
+
   render () {
     const { member, organizations, salesperson } = this.state;
     const { params } = this.props.match;
@@ -96,6 +101,7 @@ class _MemberDetail extends React.Component {
     // 営業担当の設定
     let colSalesperson = common.getColumnByName(edit_salesperson_schema, 'salesperson', 'name');
     colSalesperson['choices'] = salesperson;
+    console.log({'member': member})
 
     return (
       <div>
@@ -105,11 +111,13 @@ class _MemberDetail extends React.Component {
           <Link to={"/member/members/" + params.member_id} >{member.full_name}</Link>
           <Typography color="textPrimary">変更</Typography>
         </CustomBreadcrumbs>
-        <DetailPanel
+        <TableDetail
+          avatar={member.last_name}
           title={member.full_name + 'の詳細情報'}
           data={member}
           schema={detail_member_schema}
-          formComponentProps={formProjectProps}
+          onDelete={true}
+          onEdit={this.handleEdit}
         />
         <Card>
           <CardHeader color='info'>
