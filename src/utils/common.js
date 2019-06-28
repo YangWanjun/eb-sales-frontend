@@ -206,6 +206,45 @@ export const common = {
   },
 
   /**
+   * ＵＲＬをＪＳＯＮに変換する
+   * @param {String} url URL
+   */
+  urlToJson: function(url) {
+    if (!url) {
+      return {};
+    }
+    var hash;
+    var json = {};
+    var hashes = url.slice(url.indexOf('?') + 1).split('&');
+    for (var i = 0; i < hashes.length; i++) {
+        hash = hashes[i].split('=');
+        json[hash[0]] = hash[1] === 'true' ? true : hash[1] === 'false' ? false : hash[1];
+        // If you want to get in native datatypes
+        // json[hash[0]] = JSON.parse(hash[1]); 
+    }
+    return json;
+  },
+
+  /**
+   * ＵＲＬからフィルターを取得する
+   * @param {String} location ＵＲＬ
+   */
+  loadFilters: function(location) {
+    if (location && location.search) {
+      let json = this.urlToJson(location.search);
+      Object.keys(json).map(key => {
+        if (key.slice(0, 2) === '__') {
+          delete json[key];
+        }
+        return true;
+      });
+      return json;
+    } else {
+      return {};
+    }
+  },
+
+  /**
    * 二つのＵＲＬを結合する
    * @param {String} url1 ＵＲＬ
    * @param {String} url2 ＵＲＬ

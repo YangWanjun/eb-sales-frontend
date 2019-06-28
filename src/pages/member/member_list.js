@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom'
-import { EnhancedTable } from 'mui-enhanced-datatable';
+import { EnhancedTable } from '../../datatable/index';
 import {
   Typography,
 } from '@material-ui/core';
@@ -48,7 +48,7 @@ class MemberList extends React.Component {
   getDefaultFilter() {
     const { location } = this.props;
     if (location && location.search) {
-      const params = common.parseQuerystring(location.search, '&', '=', true);
+      const params = common.loadFilters(location);
       if ('salesperson_id' in params) {
         params['salesperson_id'] = common.toInteger(params['salesperson_id']);
       }
@@ -87,6 +87,7 @@ class MemberList extends React.Component {
                   pushpinTop={common.getFixedHeaderHeight()}
                   filters={filters}
                   allowCsv={true}
+                  urlReflect={false}
                 />
               ) } 
             />

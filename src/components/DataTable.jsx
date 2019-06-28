@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { EnhancedTable } from 'mui-enhanced-datatable';
+import { EnhancedTable } from '../datatable/index';
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
