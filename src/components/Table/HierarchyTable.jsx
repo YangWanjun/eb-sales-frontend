@@ -92,7 +92,6 @@ class HierarchyTable extends React.Component {
   handleRowClick = (data) => (event) => {
     const { selectable, onRowClick } = this.props;
     const { selected } = this.state;
-    console.log(event);
     if (selectable === 'single') {
       let newSelected = [];
       if (selected.length === 0 || selected[0] !== data.__index__) {

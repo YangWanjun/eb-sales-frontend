@@ -84,24 +84,20 @@ class _MemberDetail extends React.Component {
   }
 
   handleEdit = (data) => {
-
+    const { params } = this.props.match;
+    const url = common.formatStr(config.api.member.detail, params.member_id);
+    return common.fetchPut(url, data);
   }
 
   render () {
     const { member, organizations, salesperson } = this.state;
     const { params } = this.props.match;
-    const formProjectProps = {
-      schema: edit_member_schema,
-      title: member.full_name + 'を変更',
-      edit_url: common.formatStr(config.api.member.detail, params.member_id),
-    };
     // 所属部署の設定
     let colOrg = common.getColumnByName(edit_member_organization_schema, 'organization', 'name');
     colOrg['choices'] = organizations;
     // 営業担当の設定
     let colSalesperson = common.getColumnByName(edit_salesperson_schema, 'salesperson', 'name');
     colSalesperson['choices'] = salesperson;
-    console.log({'member': member})
 
     return (
       <div>
@@ -112,12 +108,15 @@ class _MemberDetail extends React.Component {
           <Typography color="textPrimary">変更</Typography>
         </CustomBreadcrumbs>
         <TableDetail
-          avatar={member.last_name}
+          avatar={member.avatar_url}
           title={member.full_name + 'の詳細情報'}
           data={member}
           schema={detail_member_schema}
-          onDelete={true}
-          onEdit={this.handleEdit}
+          editProps={{
+            title: member.full_name + 'の詳細情報変更',
+            schema: edit_member_schema,
+            handleEdit: this.handleEdit,
+          }}
         />
         <Card>
           <CardHeader color='info'>

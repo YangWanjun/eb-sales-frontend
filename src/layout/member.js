@@ -175,17 +175,17 @@ export const detail_member_schema = [
   },
   {
     "name": "birthday",
-    "type": "string",
+    "type": "date",
     "label": "生年月日",
   },
   {
     "name": "graduate_date",
-    "type": "string",
+    "type": "date",
     "label": "卒業年月日",
   },
   {
     "name": "join_date",
-    "type": "string",
+    "type": "date",
     "label": "入社年月日",
   },
   {
