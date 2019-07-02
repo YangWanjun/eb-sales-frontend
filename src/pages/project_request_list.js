@@ -83,7 +83,7 @@ class ProjectRequestList extends React.Component {
     const { project_detail, bank_accounts, request_data, request_create_url } = this.state;
     const url = common.formatStr(config.api.project_order_list, params.project_id);
     // 銀行口座の選択肢を設定
-    let column = common.getColumnByName(edit_order_schema, 'bank_account', 'name');
+    let column = common.getFromJsonList(edit_order_schema, 'name', 'bank_account');
     column.choices = bank_accounts;
     // 注文書追加／編集
     const formOrderProps = {
@@ -95,7 +95,7 @@ class ProjectRequestList extends React.Component {
       add_url: config.api.project_order_add,
       edit_url: config.api.project_order_detail,
     };
-    let col2 = common.getColumnByName(create_form_schema, 'bank_account_id', 'name');
+    let col2 = common.getFromJsonList(create_form_schema, 'name', 'bank_account_id');
     col2.choices = bank_accounts;
 
     return (

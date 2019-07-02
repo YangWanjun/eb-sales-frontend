@@ -88,7 +88,7 @@ class DataProvider extends Component {
     if (loaded) {
         // フィルター項目はColumnsに存在しないなら除外する
         for (var key in filters) {
-          if (!common.getColumnByName(data.columns, key, 'name')) {
+          if (!common.getFromJsonList(data.columns, 'name', key)) {
             delete filters[key];
           }
         }

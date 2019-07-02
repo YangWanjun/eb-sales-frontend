@@ -170,7 +170,7 @@ class ControlCreateor extends React.Component {
             renderValue={selected => (
               <div className={classes.chips}>
                 {selected.map(value => (
-                  <Chip key={value} label={common.getColumnByName(column.choices, value, 'value').display_name} className={classes.chip} />
+                  <Chip key={value} label={common.getFromJsonList(column.choices, 'value', value).display_name} className={classes.chip} />
                 ))}
               </div>
             )}

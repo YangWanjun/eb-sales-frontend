@@ -24,7 +24,7 @@ class CascadeSelect extends React.Component {
     fields.map(field => {
       const value = data[field.name] || null;
       if (value) {
-        retVal[field.name] = common.getColumnByName(choices, value, 'value');
+        retVal[field.name] = common.getFromJsonList(choices, 'value', value);
       }
       return true;
     });
@@ -53,7 +53,7 @@ class CascadeSelect extends React.Component {
     const name = event.target.name;
     const value = event.target.value;
     let { selectedData } = this.state;
-    selectedData[name] = common.getColumnByName(this.props.choices, value, 'value');
+    selectedData[name] = common.getFromJsonList(this.props.choices, 'value', value);
     const childFields = this.getChildFields(name);
     childFields.map(name => (selectedData[name] = null));
     this.setState({selectedData});

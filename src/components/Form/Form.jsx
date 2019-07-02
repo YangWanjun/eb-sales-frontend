@@ -260,14 +260,14 @@ class FormComponent extends React.Component {
   getRowLayout(row, key, data) {
     const { schema } = this.props;
     if (typeof row === 'string') {
-      const col = common.getColumnByName(schema, row, 'name');
+      const col = common.getFromJsonList(schema, 'name', row);
       return col ? this.createFormField(col, row, 12, data) : null;
     } else if (Array.isArray(row)) {
       const colSpan = Math.floor(12 / row.length);
       return (
         <React.Fragment key={key}>
           {row.map((fieldName, key) => {
-            const col = common.getColumnByName(schema, fieldName, 'name');
+            const col = common.getFromJsonList(schema, 'name', fieldName);
             return col ? this.createFormField(col, key, colSpan, data) : null;
           })}
         </React.Fragment>

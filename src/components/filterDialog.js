@@ -66,7 +66,7 @@ class FilterDialog extends React.Component {
   handleChange(event) {
     let value = event.target.value;
     let name = event.target.name;
-    let col = common.getColumnByName(this.props.columns, name, 'name');
+    let col = common.getFromJsonList(this.props.columns, 'name', name);
     if (col.type === 'boolean') {
       if (value === 'true') {
         value = true;

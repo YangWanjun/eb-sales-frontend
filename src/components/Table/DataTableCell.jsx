@@ -158,7 +158,7 @@ class DataTableCell extends React.Component {
     } else if (column.type === 'choice') {
       let value = row[column.name];
       if (column.choices && !common.isEmpty(column.choices)) {
-        const choice = common.getColumnByName(column.choices, value, 'value');
+        const choice = common.getFromJsonList(column.choices, 'value', value);
         const display_name = choice ? choice.display_name : null;
         if (column.choiceClasses && !common.isEmpty(column.choiceClasses)) {
           output = (

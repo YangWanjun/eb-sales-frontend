@@ -147,9 +147,9 @@ class HierarchyTable extends React.Component {
     let { tableData } = this.state;
     let existedRow = null;
     if (row.__index__) {
-      existedRow = common.getColumnByName(tableData, row.__index__, '__index__');
+      existedRow = common.getFromJsonList(tableData, '__index__', row.__index__);
     } else {
-      existedRow = common.getColumnByName(tableData, row.id, 'id');
+      existedRow = common.getFromJsonList(tableData, 'id', row.id);
     }
     if (existedRow) {
       Object.assign(existedRow, row);

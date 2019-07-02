@@ -90,7 +90,7 @@ class PartnerMember extends React.Component {
       edit_url: common.formatStr(config.api.member.detail, params.member_id),
     };
     // 所属部署の設定
-    let colOrg = common.getColumnByName(edit_member_organization_schema, 'organization', 'name');
+    let colOrg = common.getFromJsonList(edit_member_organization_schema, 'name', 'organization');
     colOrg['choices'] = organizations;
     const formMemberOrganizationProps = {
       schema: edit_member_organization_schema,
@@ -105,7 +105,7 @@ class PartnerMember extends React.Component {
       edit_url: config.api.organization_period.detail,
     };
     // 営業担当の設定
-    let colSalesperson = common.getColumnByName(edit_salesperson_schema, 'salesperson', 'name');
+    let colSalesperson = common.getFromJsonList(edit_salesperson_schema, 'name', 'salesperson');
     colSalesperson['choices'] = salesperson;
     const formSalespersonProps = {
       schema: edit_salesperson_schema,

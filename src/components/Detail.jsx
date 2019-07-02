@@ -154,7 +154,7 @@ class DetailPanel extends React.Component {
                     let display_name = value;
                     let badgeColor = null;
                     if (!common.isEmpty(data) && value != null && col.type === 'choice' && col.choices) {
-                      const colChoice = common.getColumnByName(col.choices, value, 'value')
+                      const colChoice = common.getFromJsonList(col.choices, 'value', value);
                       display_name = colChoice ? colChoice.display_name : '';
                     } else if (!common.isEmpty(data) && col.type === 'boolean') {
                       display_name = value === true ? 'はい' : 'いいえ';

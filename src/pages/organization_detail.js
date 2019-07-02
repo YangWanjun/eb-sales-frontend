@@ -65,7 +65,7 @@ class OrganizationDetail extends React.Component {
     const { organization, organizations } = this.state;
     // 部署を変更する
     // 所属部署の設定
-    let colOrg = common.getColumnByName(edit_organization_schema, 'parent', 'name');
+    let colOrg = common.getFromJsonList(edit_organization_schema, 'name', 'parent');
     colOrg['choices'] = organizations;
     const formOrganizationProps = {
       schema: edit_organization_schema,

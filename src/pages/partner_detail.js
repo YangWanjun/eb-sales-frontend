@@ -49,7 +49,7 @@ class PartnerDetail extends React.Component {
   render() {
     const { params } = this.props.match;
     const { partner } = this.state;
-    let colMember = common.getColumnByName(edit_pay_notify_schema, 'member', 'name');
+    let colMember = common.getFromJsonList(edit_pay_notify_schema, 'name', 'member');
     colMember['dataSource'] = common.formatStr(config.api.partner_employee_choice, params.pk);
     const formPartnerProps = {
       schema: edit_partner_schema,

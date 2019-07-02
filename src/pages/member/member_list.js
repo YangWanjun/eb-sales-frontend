@@ -62,7 +62,7 @@ class MemberList extends React.Component {
     const { salesperson_list } = this.state;
     const filters = this.getDefaultFilter();
     // 営業担当の設定
-    let colSalesperson = common.getColumnByName(list_member_schema, 'salesperson_id', 'name');
+    let colSalesperson = common.getFromJsonList(list_member_schema, 'name', 'salesperson_id');
     colSalesperson['choices'] = salesperson_list;
     
     return (

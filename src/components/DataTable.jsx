@@ -28,7 +28,7 @@ class DataTable extends Component {
   handleDataAdded = (data) => {
     if (data.__index__ !== null && data.__index__ !== undefined) {
       let { tableData } = this.state;
-      let existedRow = common.getColumnByName(tableData, data.__index__, '__index__');
+      let existedRow = common.getFromJsonList(tableData, '__index__', data.__index__);
       Object.assign(existedRow, data);
       this.setState({tableData});
     } else {
@@ -49,7 +49,7 @@ class DataTable extends Component {
   handleDataEdited = (data) => {
     if (data.__index__ !== null && data.__index__ !== undefined) {
       let { tableData } = this.state;
-      let existedRow = common.getColumnByName(tableData, data.__index__, '__index__');
+      let existedRow = common.getFromJsonList(tableData, '__index__', data.__index__);
       Object.assign(existedRow, data);
       this.setState({tableData});
     }

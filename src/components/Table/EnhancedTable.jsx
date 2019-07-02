@@ -267,7 +267,7 @@ class EnhancedTableToolbar extends React.Component {
     if (selected.length > 1) {
       this.props.showErrorMsg(constant.ERROR.REQUIRE_SINGLE_SELECT);
     } else if (this.showModel) {
-      let row = Object.assign({}, common.getColumnByName(results, selected[0], '__index__'));
+      let row = Object.assign({}, common.getFromJsonList(results, '__index__', selected[0]));
       formComponentProps.schema.map(col => {
         if (col.type === 'field' && col.display_field) {
           row[col.name] = [{value: row[col.name], display_name: row[col.display_field]}]
@@ -295,7 +295,7 @@ class EnhancedTableToolbar extends React.Component {
     } else if (common.isEmpty(selected)) {
       this.props.showErrorMsg(constant.ERROR.REQUIRE_SELECTED_DATA);
     } else if (selected.length === 1) {
-      const row = common.getColumnByName(results, selected[0], '__index__');
+      const row = common.getFromJsonList(results, '__index__', selected[0]);
       method(row);
     } else {
       this.props.showErrorMsg(constant.ERROR.REQUIRE_SINGLE_SELECT);
@@ -762,7 +762,7 @@ class EnhancedTable extends React.Component {
   handleRowAdded(row) {
     let { data } = this.state;
     if (row.__index__ !== null && row.__index__ !== undefined) {
-      let existedRow = common.getColumnByName(data.results, row.__index__, '__index__');
+      let existedRow = common.getFromJsonList(data.results, '__index__', row.__index__);
       Object.assign(existedRow, row);
       this.setState({data});
     } else {
@@ -780,9 +780,9 @@ class EnhancedTable extends React.Component {
     let { data } = this.state;
     let existedRow = null;
     if (row.__index__) {
-      existedRow = common.getColumnByName(data.results, row.__index__, '__index__');
+      existedRow = common.getFromJsonList(data.results, '__index__', row.__index__);
     } else {
-      existedRow = common.getColumnByName(data.results, row.id, 'id');
+      existedRow = common.getFromJsonList(data.results, 'id', row.id);
     }
     Object.assign(existedRow, row);
     this.setState({data});
@@ -792,7 +792,7 @@ class EnhancedTable extends React.Component {
     let { selected, data } = this.state;
     let deletedPks = [];
     for (var index of selected) {
-      const pk = common.getColumnByName(data.results, index, '__index__').id;
+      const pk = common.getFromJsonList(data.results, '__index__', index).id;
       const response = common.fetchDelete(common.formatStr(this.props.deleteUrl, pk));
       await response.then(this.deleteSuccess(pk, deletedPks)).catch(() => {});
     }
@@ -933,7 +933,7 @@ class EnhancedTable extends React.Component {
                               // 非表示の場合
                               return <React.Fragment key={col.name}/>;
                             } else if (col.choices && !common.isEmpty(col.choices)) {
-                              const choice = common.getColumnByName(col.choices, n[col.name], 'value');
+                              const choice = common.getFromJsonList(col.choices, 'value', n[col.name]);
                               const display_name = choice ? choice.display_name : null;
                               // 選択肢のある項目の場合
                               if (col.choiceClasses && !common.isEmpty(col.choiceClasses)) {

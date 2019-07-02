@@ -38,13 +38,13 @@ class ChipsArray extends React.Component {
         {Object.keys(chipData).map(key => {
           let icon = null;
           const value = chipData[key];
-          const col = common.getColumnByName(columns, key, 'name');
+          const col = common.getFromJsonList(columns, 'name', key);
           if (!col) {
             return (<React.Fragment/>);
           } else if (value || value === false) {
             let label = value;
             if (col.choices && !common.isEmpty(col.choices)) {
-              let item = common.getColumnByName(col.choices, value, 'value');
+              let item = common.getFromJsonList(col.choices, 'value', value);
               if (item) {
                 label = item.display_name;
               }

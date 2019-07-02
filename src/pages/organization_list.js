@@ -17,7 +17,7 @@ class OrganizationList extends React.Component {
     return (
       <Paper>
         <Toolbar>
-          <Typography variant="title">
+          <Typography variant="subtitle1">
             {'部署一覧'}
           </Typography>
         </Toolbar>

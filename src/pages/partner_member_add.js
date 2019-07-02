@@ -97,10 +97,10 @@ class PartnerMemberAdd extends React.Component {
     // ＢＰの場合社員ＩＤは自動採番なので、非表示にする
     delete edit_member_schema[0];
     // 所属部署の設定
-    let colOrg = common.getColumnByName(edit_partner_member_org_schema, 'organization', 'name');
+    let colOrg = common.getFromJsonList(edit_partner_member_org_schema, 'name', 'organization');
     colOrg['choices'] = organizations;
     // 営業担当の設定
-    let colSalesperson = common.getColumnByName(edit_partner_member_salesperson_schema, 'salesperson', 'name');
+    let colSalesperson = common.getFromJsonList(edit_partner_member_salesperson_schema, 'name', 'salesperson');
     colSalesperson['choices'] = salesperson;
     let steps = [
       {

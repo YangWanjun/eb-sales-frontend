@@ -104,7 +104,7 @@ class ProjectDetail extends React.Component {
     const { params } = this.props.match;
 
     // 作業工程の選択肢を設定
-    let column = common.getColumnByName(add_project_member_schema, 'stages', 'name');
+    let column = common.getFromJsonList(add_project_member_schema, 'name', 'stages');
     column.choices = project_stages;
     // メンバー追加設定
     const formMemberProps = {
@@ -122,7 +122,7 @@ class ProjectDetail extends React.Component {
       edit_url: config.api.project_member_edit + '?project=' + params.project_id,
     };
     // 案件編集
-    let col_org = common.getColumnByName(edit_project_schema, 'organization', 'name');
+    let col_org = common.getFromJsonList(edit_project_schema, 'name', 'organization');
     col_org['choices'] = organizations;
     const formProjectProps = {
       schema: edit_project_schema,

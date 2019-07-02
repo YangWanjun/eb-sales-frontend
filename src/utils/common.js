@@ -134,13 +134,14 @@ export const common = {
 
   /**
    * JSON項目のリストから項目を取得
-   * @param {Array} columns 
+   * @param {Array} json_list 
+   * @param {String} key 
    * @param {String} value 
    */
-  getColumnByName: function(columns, value, key='id') {
-    if (!columns) {
+  getFromJsonList: function(json_list, key, value) {
+    if (!json_list) {
       return {};
-    } else if (columns.length === 0) {
+    } else if (json_list.length === 0) {
       return {};
     } else if (typeof value === 'undefined') {
       return {};
@@ -148,7 +149,7 @@ export const common = {
       if (typeof value === 'string') {
         value = value.split('__')[0];
       }
-      let cols = columns.filter(col => col[key] === value);
+      let cols = json_list.filter(col => col[key] === value);
       return cols.length > 0 ? cols[0] : {};
     }
   },
