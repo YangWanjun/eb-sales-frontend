@@ -36,7 +36,7 @@ class ControlCreator extends React.Component {
     }
 
     if (this.props.handleChange) {
-      this.props.handleChange(name, value, type);
+      this.props.handleChange(name, value, type)(event);
     }
   };
 

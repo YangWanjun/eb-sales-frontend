@@ -38,6 +38,7 @@ export const list_member_schema = [
     "label": "稼働",
     'searchable': true,
     "sortable": true,
+    'variant': 'select',
   },
   {
     "name": "release_date",
@@ -68,6 +69,7 @@ export const list_member_schema = [
       1: {'backgroundColor': 'lightgray'}
     },
     'searchable': true,
+    'variant': 'select',
   },
 ];
 

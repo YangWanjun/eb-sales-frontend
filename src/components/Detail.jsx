@@ -43,10 +43,14 @@ const styles = theme => ({
     textAlign: 'right',
     width: '25%',
     minWidth: 100,
+    fontSize: '12px',
   },
   cardStyle: {
     marginTop: 0,
     marginBottom: 15,
+    "& p": {
+      fontSize: '12px',
+    }
   },
   button: {
     margin: theme.spacing(1),
@@ -207,7 +211,7 @@ class DetailPanel extends React.Component {
                 <FormDialog
                   innerRef={(dialog) => { this.showModel = dialog && dialog.handleOpen }}
                   {...formComponentProps}
-                  onRowUpdated={this.handleDataUpdated}
+                  onDataPutted={this.handleDataUpdated}
                 />
               ) : <React.Fragment /> }
               <ConfirmDialog

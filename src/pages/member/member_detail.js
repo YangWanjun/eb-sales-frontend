@@ -5,8 +5,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import CustomBreadcrumbs from '../../components/customBreadcrumbs';
-// import DetailPanel from '../../containers/detail';
-import {TableDetail} from '../../datatable/index';
+import DetailPanel from '../../containers/detail';
 import DataSource from '../../components/DataSource';
 import DataTable from '../../containers/DataTable';
 import Card from "../../components/Card/Card";
@@ -39,6 +38,7 @@ class _MemberDetail extends React.Component {
   constructor(props) {
     super(props);
 
+    this.handleDataUpdated = this.handleDataUpdated.bind(this);
     this.state = { 
       member: {},
       organizations: [],
@@ -82,16 +82,21 @@ class _MemberDetail extends React.Component {
   componentWillUnmount() {
     this._isMounted = false;
   }
-
-  handleEdit = (data) => {
-    const { params } = this.props.match;
-    const url = common.formatStr(config.api.member.detail, params.member_id);
-    return common.fetchPut(url, data);
+  
+  handleDataUpdated(newData) {
+    let { member } = this.state;
+    Object.assign(member, newData);
+    this.setState({member});
   }
 
   render () {
     const { member, organizations, salesperson } = this.state;
     const { params } = this.props.match;
+    const formProjectProps = {
+      schema: edit_member_schema,
+      title: member.full_name + 'を変更',
+      put_url: common.formatStr(config.api.member.detail, params.member_id),
+    };
     // 所属部署の設定
     let colOrg = common.getColumnByName(edit_member_organization_schema, 'organization', 'name');
     colOrg['choices'] = organizations;
@@ -107,16 +112,12 @@ class _MemberDetail extends React.Component {
           <Link to={"/member/members/" + params.member_id} >{member.full_name}</Link>
           <Typography color="textPrimary">変更</Typography>
         </CustomBreadcrumbs>
-        <TableDetail
-          avatar={member.avatar_url}
+        <DetailPanel
           title={member.full_name + 'の詳細情報'}
           data={member}
           schema={detail_member_schema}
-          editProps={{
-            title: member.full_name + 'の詳細情報変更',
-            schema: edit_member_schema,
-            handleEdit: this.handleEdit,
-          }}
+          formComponentProps={formProjectProps}
+          sendDataUpdated={this.handleDataUpdated}
         />
         <Card>
           <CardHeader color='info'>
