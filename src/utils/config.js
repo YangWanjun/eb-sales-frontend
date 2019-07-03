@@ -4,6 +4,9 @@ export const config = {
   api: {
     authenticate: hostApi + '/api/token-auth/',
     me: hostApi + '/api/me/',
+    contract: {
+      member_list: hostApi + '/api/contract/members/',
+    },
     member_dashboard: hostApi + '/api/member/',
     member: {
       list: hostApi + '/api/member/members/',
@@ -12,6 +15,7 @@ export const config = {
       history: hostApi + '/api/member/members/%s/history/',
       salesperson: hostApi + '/api/member/members/%s/salesperson/',
       organizations: hostApi + '/api/member/members/%s/organizations/',
+      duplicated: hostApi + '/api/member/members/duplicated',
     },
     salesperson: {
       list: hostApi + '/api/member/salesperson/',

@@ -1,5 +1,6 @@
 import { common } from '../utils/common';
 import { constant } from '../utils/constants';
+import { config } from '../utils/config';
 
 export function get_minus_per_hour_memo (basic_price, min_hour, show_formula=true, minus_per_hour=null) {
   if (minus_per_hour === null) {
@@ -127,5 +128,18 @@ export function setPriceMemo(name, data) {
     }
   } else {
     return null;
+  }
+};
+
+/**
+ * 同じ名前のメンバーが存在するかどうか
+ * @param {String} name 変更する項目名
+ * @param {JSON} data 変更後のデータ
+ */
+export function checkSameMember(name, data) {
+  if (['first_name', 'last_name'].indexOf(name) > -1) {
+    const first_name = data.first_name;
+    const last_name = data.last_name;
+    common.fetchPost(config.api.member.duplicated, {first_name, last_name});
   }
 };

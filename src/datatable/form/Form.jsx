@@ -46,7 +46,13 @@ class MyForm extends React.Component {
     }
   }
 
-  handleChange(name, value, type) {
+  componentWillReceiveProps(nextProps) {
+    if (JSON.stringify(nextProps.errors) !== JSON.stringify(this.props.errors)) {
+      this.setState({errors: nextProps.errors});
+    }
+  }
+
+  handleChange = (name, value, type) => (event) => {
     this.setState((state) => {
       let data = state.data;
       data[name] = value;
@@ -71,13 +77,21 @@ class MyForm extends React.Component {
     const { data } = this.state;
     let valid = true;
     let errors = {};
-    // 必須項目チェック
+    // 項目の定義からチェック
     this.props.schema.map(col => {
-      const value = data[col.name];
+      const name = col.name;
+      const value = data[name];
       if (col.required === true) {
+        // 必須項目チェック
         if (value === null || value === '' || value === undefined || (typeof value === 'object' && common.isEmpty(value))) {
           valid = false;
-          this.pushError(col.name, common.formatStr(constant.ERROR.REQUIRE_FIELD, {name: col.label}), errors);
+          this.pushError(name, common.formatStr(constant.ERROR.REQUIRE_FIELD, {name: col.label}), errors);
+        }
+      } else if (value && col.regex) {
+        // 正規表現チェック
+        const regex = new RegExp(col.regex);
+        if (regex.test(value) === false) {
+          this.pushError(name, constant.ERROR.INVALID_DATA, errors);
         }
       }
       return true;

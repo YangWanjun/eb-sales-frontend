@@ -1,10 +1,12 @@
-import { replace } from 'react-router-redux';
+import { push, replace } from 'react-router-redux';
 import { vsprintf } from 'sprintf-js';
 import { authHeader } from '../utils/authHeader';
 import { logoutAndRedirect } from '../actions/auth.actions';
 import { clearMe } from '../actions/user.actions';
 import { loading } from '../actions/status.actions';
 import { store } from '../utils/store';
+import { msgConstants } from '../constants/msg.constants';
+import { errorMessage, warningMessage, successMessage, infoMessage } from '../actions/msg.actions';
 
 export const common = {
   /**
@@ -567,5 +569,53 @@ export const common = {
    */
   loaded: function() {
     store.dispatch(loading(false));
+  },
+
+  /**
+   * 画面を遷移する
+   * @param {String} url ＵＲＬ
+   */
+  redirect: function(url) {
+    store.dispatch(push(url));
+  },
+
+  /**
+   * 成功メッセージを表示する
+   * @param {String} message メッセージ内容
+   */
+  showSuccess: function(message) {
+    this.showMessage(msgConstants.SUCCESS_MESSAGE, message);
+  },
+
+  /**
+   * エラーメッセージを表示する
+   * @param {String} message メッセージ内容
+   */
+  showError: function(message) {
+    this.showMessage(msgConstants.ERROR_MESSAGE, message);
+  },
+
+  /**
+   * メッセージを表示する
+   * @param {String} level ERROR/WARNING/SUCCESS/INFO
+   * @param {String} message メッセージ内容
+   */
+  showMessage: function(level, message) {
+    switch (level) {
+      case msgConstants.ERROR_MESSAGE:
+        store.dispatch(errorMessage(message));
+        break;
+      case msgConstants.WARNING_MESSAGE:
+        store.dispatch(warningMessage(message));
+        break;
+      case msgConstants.SUCCESS_MESSAGE:
+        store.dispatch(successMessage(message));
+        break;
+      case msgConstants.INFO_MESSAGE:
+        store.dispatch(infoMessage(message));
+        break;
+      default:
+        break;
+    }
   },
 };

@@ -24,7 +24,7 @@ class TopBar extends React.Component {
   }
 
   render() {
-    const { classes, loggedIn } = this.props;
+    const { classes, loggedIn, appName } = this.props;
 
     return (
       <AppBar
@@ -41,7 +41,7 @@ class TopBar extends React.Component {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" color="inherit" noWrap className={classes.grow}>
-            システム
+            {appName}
           </Typography>
           { loggedIn ? (
             <div className={classes.sectionDesktop}>
@@ -70,6 +70,7 @@ class TopBar extends React.Component {
 
 TopBar.propTypes = {
   classes: PropTypes.object.isRequired,
+  appName: PropTypes.string.isRequired,
 };
 
 export default TopBar;

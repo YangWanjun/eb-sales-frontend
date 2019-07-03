@@ -41,7 +41,7 @@ class ControlCreator extends React.Component {
   };
 
   render() {
-    const { classes, column, errors } = this.props;
+    const { classes, column, errors, placeholder } = this.props;
     let control = null;
     let { value } = this.props;
     let label = column.label + (column.required === true ? '（*）' : '');
@@ -54,6 +54,13 @@ class ControlCreator extends React.Component {
         </React.Fragment>
       ) : null
     );
+    let placeholderProps = null;
+    if (placeholder) {
+      placeholderProps = {
+        placeholder: placeholder,
+        InputLabelProps: { shrink: true,},
+      };
+    }
 
     if (column.type === 'boolean') {
       // チェックボックスを表示
@@ -116,7 +123,7 @@ class ControlCreator extends React.Component {
     } else if (column.type === 'date') {
       control = (
         <TextField
-          { ...error }
+          error={error}
           name={column.name}
           value={value}
           label={label}
@@ -130,13 +137,12 @@ class ControlCreator extends React.Component {
     } else if (column.type === 'text') {
       control = (
         <TextField
-          { ...error }
+          error={error}
           multiline
           name={column.name}
           value={value}
           label={label}
-          placeholder={this.props.placeholder}
-          InputLabelProps={this.props.placeholder ? { shrink: true,} : null}
+          {...placeholderProps}
           onChange={this.handleChange}
         />
       );
@@ -147,6 +153,8 @@ class ControlCreator extends React.Component {
           name={column.name}
           label={label}
           value={value}
+          {...placeholderProps}
+          inputProps={{maxLength: column.max_length}}
           onChange={this.handleChange}
         />
       );
