@@ -73,6 +73,20 @@ class MyForm extends React.Component {
     });
   }
 
+  handleBlur = (event, name) => {
+    this.props.onBlurs.map(method => {
+      const data = this.state.data;
+      const retVal = method(name, data);
+      if (retVal) {
+        this.setState((state) => {
+          let data = Object.assign({}, state.data, retVal);
+          return {data: data};
+        });
+      }
+      return true;
+    });
+  };
+
   validate = () => {
     const { data } = this.state;
     let valid = true;
@@ -237,6 +251,7 @@ class MyForm extends React.Component {
             label={col.label}
             placeholder={col.help_text}
             errors={errors}
+            handleBlur={this.handleBlur}
             handleChange={this.handleChange}
           />
         </Grid>
@@ -272,6 +287,7 @@ MyForm.propTypes = {
   layout: PropTypes.array,
   data: PropTypes.object,
   onChanges: PropTypes.arrayOf(PropTypes.func),
+  onBlurs: PropTypes.arrayOf(PropTypes.func),
   checkList: PropTypes.arrayOf(PropTypes.func),
   errors: PropTypes.object,
 };
@@ -280,6 +296,7 @@ MyForm.defaultProps = {
   layout: [],
   data: {},
   onChanges: [],
+  onBlurs: [],
   checkList: [],
 };
 

@@ -40,6 +40,12 @@ class ControlCreator extends React.Component {
     }
   };
 
+  handleBlur = (name) => (event) => {
+    if (this.props.handleBlur) {
+      this.props.handleBlur(event, name);
+    }
+  }
+
   render() {
     const { classes, column, errors, placeholder } = this.props;
     let control = null;
@@ -156,6 +162,7 @@ class ControlCreator extends React.Component {
           {...placeholderProps}
           inputProps={{maxLength: column.max_length}}
           onChange={this.handleChange}
+          onBlur={this.handleBlur(column.name)}
         />
       );
     }

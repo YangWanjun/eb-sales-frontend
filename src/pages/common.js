@@ -1,3 +1,4 @@
+import uuid from 'uuid';
 import { common } from '../utils/common';
 import { constant } from '../utils/constants';
 import { config } from '../utils/config';
@@ -136,10 +137,23 @@ export function setPriceMemo(name, data) {
  * @param {String} name 変更する項目名
  * @param {JSON} data 変更後のデータ
  */
-export function checkSameMember(name, data) {
+export function checkDuplicatedMember(name, data, redirectUrl=null) {
   if (['first_name', 'last_name'].indexOf(name) > -1) {
     const first_name = data.first_name;
     const last_name = data.last_name;
-    common.fetchPost(config.api.member.duplicated, {first_name, last_name});
+    const full_name = last_name + ' ' + first_name;
+    common.fetchPost(config.api.member.duplicated, {first_name, last_name}).then(json => {
+      if (Array.isArray(json) && json.length > 0) {
+        common.showNotification({
+          id: uuid(),
+          title: common.formatStr('%(name)sの名前を持つ社員が%(count)s名いる', {name: full_name, count: json.length}),
+          description: '下記社員も同じ名前を持っています、同じ人だったら、新たに追加は不要です。',
+          actions: json.map(row => ({
+            name: common.formatStr('%(name)s（生年月日:%(birthday)s）', {name: row.full_name, birthday: row.birthday}),
+            href: common.formatStr('/contract/members/%s/', row.id),
+          })),
+        });
+      }
+    });
   }
 };

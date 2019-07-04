@@ -2,20 +2,25 @@ import React from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom'
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
+import {
+  AppBar,
+  Toolbar,
+  IconButton,
+  Typography,
+  Button,
+  Badge,
+  ClickAwayListener,
+} from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
-import MailIcon from '@material-ui/icons/Mail';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import AccountCircle from '@material-ui/icons/AccountCircle';
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import Badge from '@material-ui/core/Badge';
+import Notifications from './Notifications';
 
 class TopBar extends React.Component {
+
   constructor(props) {
     super(props);
+
     this.handleMenuClick = this.handleMenuClick.bind(this);
   }
 
@@ -23,15 +28,27 @@ class TopBar extends React.Component {
     this.props.handleDrawerOpen();
   }
 
+  handleShowNotifications = (event) => {
+    if (this._openNotifications) {
+      this._openNotifications();
+    }
+  };
+
+  handleClickAway = () => {
+    if (this._closeNotifications) {
+      this._closeNotifications();
+    }
+  }
+
   render() {
-    const { classes, loggedIn, appName } = this.props;
+    const { classes, loggedIn, appName, notifications } = this.props;
 
     return (
       <AppBar
         position="fixed"
         className={classNames(classes.appBar, this.props.open && classes.appBarShift)}
       >
-        <Toolbar disableGutters={!this.props.open} style={{paddingRight: 24}}>
+        <Toolbar disableGutters={!this.props.open} style={{paddingRight: 24}} ref={bar => (this._toolBar = bar)}>
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -45,16 +62,27 @@ class TopBar extends React.Component {
           </Typography>
           { loggedIn ? (
             <div className={classes.sectionDesktop}>
-              <IconButton color="inherit">
-                <Badge badgeContent={4} color="secondary">
-                  <MailIcon />
-                </Badge>
-              </IconButton>
-              <IconButton color="inherit">
-                <Badge badgeContent={17} color="secondary">
-                  <NotificationsIcon />
-                </Badge>
-              </IconButton>
+              <ClickAwayListener onClickAway={this.handleClickAway}>
+                <span style={{float: 'left'}}>
+                  <IconButton color="inherit" onClick={this.handleShowNotifications}>
+                    {notifications && notifications.length > 0 ? (
+                      <Badge badgeContent={notifications.length} color="secondary">
+                      <NotificationsIcon />
+                    </Badge>
+                    ) : (
+                      <NotificationsIcon />
+                    )}
+                  </IconButton>
+                  <Notifications
+                    notifications={notifications}
+                    anchorEl={this._toolBar}
+                    innerRef={popper => {
+                      this._openNotifications = popper && popper.handleOpen;
+                      this._closeNotifications = popper && popper.handleClose;
+                    }}
+                  />
+                </span>
+              </ClickAwayListener>
               <IconButton color="inherit">
                 <AccountCircle />
               </IconButton>

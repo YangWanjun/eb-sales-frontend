@@ -8,3 +8,4 @@ export const httpStatusConstants = {
 export const loadingStatusConstants = {
   LOADING: 'LOADING'
 };
+export * from './notice.constants';

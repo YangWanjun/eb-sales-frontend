@@ -19,6 +19,7 @@ import { Form } from '../../datatable';
 import { common } from '../../utils/common';
 import { constant } from '../../utils/constants';
 import { config } from '../../utils/config';
+import { checkDuplicatedMember } from '../common';
 
 class MemberAdd extends React.Component {
 
@@ -54,7 +55,6 @@ class MemberAdd extends React.Component {
 
   render() {
     const { errors } = this.state;
-    console.log(errors);
 
     return (
       <div>
@@ -74,6 +74,7 @@ class MemberAdd extends React.Component {
                   layout={edit_member_layout}
                   innerRef={(form) => {this._clean = form && form.clean}}
                   errors={errors}
+                  onBlurs={[checkDuplicatedMember]}
                 />
               </CardBody>
               <CardFooter chart>

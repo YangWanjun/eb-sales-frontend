@@ -15,7 +15,7 @@ export const config = {
       history: hostApi + '/api/member/members/%s/history/',
       salesperson: hostApi + '/api/member/members/%s/salesperson/',
       organizations: hostApi + '/api/member/members/%s/organizations/',
-      duplicated: hostApi + '/api/member/members/duplicated',
+      duplicated: hostApi + '/api/member/members/duplicated/',
     },
     salesperson: {
       list: hostApi + '/api/member/salesperson/',

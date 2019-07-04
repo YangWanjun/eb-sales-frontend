@@ -9,6 +9,7 @@ export const constant = {
     NO_DATA: 'データはありません。',
     INPUT_KEYWORD: '検索キーワードを入力し、エンターキーを押下してください。',
     DELETE_CONFIRM: '下記データを削除します、よろしいですか？',
+    NO_NOTIFICATIONS: '通知はありません。',
   },
   ERROR: {
     REQUIRE_SELECTED_DATA: 'データを選択してください。',

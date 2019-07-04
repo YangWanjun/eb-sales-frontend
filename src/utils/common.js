@@ -7,6 +7,7 @@ import { loading } from '../actions/status.actions';
 import { store } from '../utils/store';
 import { msgConstants } from '../constants/msg.constants';
 import { errorMessage, warningMessage, successMessage, infoMessage } from '../actions/msg.actions';
+import { addNotification, deleteNotification, notificationReaded } from '../actions/notice.actions';
 
 export const common = {
   /**
@@ -38,7 +39,9 @@ export const common = {
    * 使用方法：utils.format('This is argument: %s', arg1);
    */
   formatStr: function(format) {
-    if (arguments && arguments.length === 2 && this.isJSON(arguments[1])) {
+    if (!format) {
+      return null;
+    } else if (arguments && arguments.length === 2 && this.isJSON(arguments[1])) {
       return vsprintf(format, arguments[1]);
     } else {
       var i = 0,
@@ -618,4 +621,20 @@ export const common = {
         break;
     }
   },
+
+  /**
+   * システム通知を表示する
+   * @param {JSON} notification 通知内容
+   */
+  showNotification: function(notification) {
+    store.dispatch(addNotification(notification));
+  },
+
+  deleteNotification: function(id) {
+    store.dispatch(deleteNotification(id));
+  },
+
+  notificationReaded: function(id) {
+    store.dispatch(notificationReaded(id));
+  }
 };
