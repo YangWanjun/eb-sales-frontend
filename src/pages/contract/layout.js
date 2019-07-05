@@ -12,6 +12,7 @@ import {
 import {
   MemberList,
   MemberAdd,
+  MemberDetail,
 } from './index';
 
 class Layout extends React.Component {
@@ -30,6 +31,7 @@ class Layout extends React.Component {
       >
         <Switch>
           <Route path='/contract/members/add/' component={MemberAdd} />
+          <Route path='/contract/members/:pk/' component={MemberDetail} />
           <Route path='/contract/members/' component={MemberList} />
         </Switch>
       </Main>

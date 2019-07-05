@@ -12,6 +12,11 @@ import { config } from '../../utils/config';
 import { common } from '../../utils/common';
 
 class MemberList extends React.Component {
+  documentTitle = '社員一覧';
+
+  componentDidMount() {
+    document.title = `${this.documentTitle} | ${window.appName}`;
+  }
 
   getDefaultFilter() {
     const { location } = this.props;
@@ -30,7 +35,7 @@ class MemberList extends React.Component {
       <div>
         <Card>
           <CardHeader color="info">
-            社員一覧
+            {this.documentTitle}
           </CardHeader>
           <CardBody>
             <DataSource

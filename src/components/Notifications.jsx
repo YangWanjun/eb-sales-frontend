@@ -64,26 +64,32 @@ class Notification extends React.Component {
     return (
       <Card className={classes.card}>
         <CardActions classes={{ root: classes.actionRoot }}>
-          <Typography variant='subtitle2' className={classes.typography}>{notification.title}</Typography>
-          <div className={classes.icons}>
-            <IconButton className={classes.expand} onClick={() => (common.deleteNotification(notification.id))}>
-              <CloseIcon />
-            </IconButton>
-          </div>
-        </CardActions>
-        <CardContent>
-          <div className={classes.content}>
-            {notification.description}
-          </div>
-          {notification.actions.map((action, key) => (
-            <div key={key} className={classes.action}>
-              <Link className={classes.button} to={action.href}>
-                <CheckCircleIcon className={classes.checkIcon} />
-                {action.name}
-              </Link>
+          <Typography variant='subtitle2' className={classes.typography}>
+            {notification ? notification.title : constant.INFO.NO_NOTIFICATIONS}
+          </Typography>
+          {notification ? (
+            <div className={classes.icons}>
+              <IconButton className={classes.expand} onClick={() => (common.deleteNotification(notification.id))}>
+                <CloseIcon />
+              </IconButton>
             </div>
-          ))}
-        </CardContent>
+          ) : null}
+        </CardActions>
+        {notification ? (
+          <CardContent>
+            <div className={classes.content}>
+              {notification.description}
+            </div>
+            {notification.actions.map((action, key) => (
+              <div key={key} className={classes.action}>
+                <Link className={classes.button} to={action.href}>
+                  <CheckCircleIcon className={classes.checkIcon} />
+                  {action.name}
+                </Link>
+              </div>
+            ))}
+          </CardContent>
+        ) : null}
       </Card>
     );
   }
@@ -91,7 +97,7 @@ class Notification extends React.Component {
 
 Notification.propTypes = {
   classes: PropTypes.object.isRequired,
-  notification: PropTypes.object.isRequired,
+  notification: PropTypes.object,
   onClose: PropTypes.func,
 };
 
@@ -132,11 +138,12 @@ class Notifications extends React.Component {
 
     this.state = {
       open: false,
+      anchorEl: null,
     };
   }
 
-  handleOpen = () => {
-    this.setState({open: true});
+  handleOpen = (anchorEl) => {
+    this.setState({open: true, anchorEl});
   };
 
   handleClose = () => {
@@ -144,8 +151,8 @@ class Notifications extends React.Component {
   };
 
   render() {
-    const { classes, anchorEl, notifications } = this.props;
-    const { open } = this.state;
+    const { classes, notifications } = this.props;
+    const { open, anchorEl } = this.state;
 
     if (anchorEl) {
       return (
@@ -163,17 +170,17 @@ class Notifications extends React.Component {
         >
           {({ TransitionProps }) => (
             <Slide {...TransitionProps} direction="left" timeout={350}>
-              {notifications && notifications.length > 0 ? (
-                <Paper className={classes.notifications} style={getPopperStyle()}>
-                  {notifications.map((notice, key) => (
-                    <NotificationWrapper key={key} notification={notice}/>
-                  ))}
-                </Paper>
-              ) : (
-                <Paper className={classes.no_data} style={getPopperStyle()}>
-                  {constant.INFO.NO_NOTIFICATIONS}
-                </Paper>
-              )}
+              <Paper className={classes.notifications} style={getPopperStyle()}>
+                {notifications && notifications.length > 0 ? (
+                  <React.Fragment>
+                    {notifications.map((notice, key) => (
+                      <NotificationWrapper key={key} notification={notice}/>
+                    ))}
+                  </React.Fragment>
+                ) : (
+                  <NotificationWrapper />
+                )}
+              </Paper>
             </Slide>
           )}
         </Popper>

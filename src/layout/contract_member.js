@@ -12,20 +12,15 @@ export const list_member_schema = [
     "label": "名前",
     'searchable': true,
     "sortable": true,
+    "link": '/contract/members/%(id)s/',
   },
   {
     "name": "gender",
     "type": "choice",
     "label": "性別",
     "choices": [
-      {
-        "value": "1",
-        "display_name": "男",
-      },
-      {
-        "value": "2",
-        "display_name": "女",
-      }
+      { "value": "1", "display_name": "男", },
+      { "value": "2", "display_name": "女", }
     ],
   },
   {
@@ -147,33 +142,12 @@ export const edit_member_schema = [
     "label": "名(通称名)(カナ)",
   },
   {
-    "name": "member_type",
-    "type": "choice",
-    "label": "雇用形態",
-    "choices": [
-      { "value": "1", "display_name": "正社員" },
-      { "value": "2", "display_name": "契約社員" },
-      { "value": "3", "display_name": "個人事業者" },
-      { "value": "4", "display_name": "他社技術者" },
-      { "value": "5", "display_name": "パート" },
-      { "value": "6", "display_name": "アルバイト" },
-      { "value": "7", "display_name": "正社員（試用期間）" },
-    ],
-    "required": true,
-  },
-  {
     "name": "gender",
     "type": "choice",
     "label": "性別",
     "choices": [
-      {
-        "value": "1",
-        "display_name": "男",
-      },
-      {
-        "value": "2",
-        "display_name": "女",
-      }
+      { "value": "1", "display_name": "男", },
+      { "value": "2", "display_name": "女", }
     ],
   },
   {
@@ -192,14 +166,8 @@ export const edit_member_schema = [
     "type": "choice",
     "label": "婚姻状況",
     "choices": [
-      {
-        "value": "0",
-        "display_name": "未婚",
-      },
-      {
-        "value": "1",
-        "display_name": "既婚",
-      }
+      { "value": "0", "display_name": "未婚", },
+      { "value": "1", "display_name": "既婚", }
     ]
   },
   {
@@ -347,11 +315,10 @@ export const edit_member_layout = [
   ['last_name_ja', 'first_name_ja', 'last_name_en', 'first_name_en'],
   ['common_last_name', 'common_first_name', 'common_last_name_ja', 'common_first_name_ja'],
   ['birthday', 'graduate_date', 'marriage'],
-  ['member_type', 'join_date'],
   ['post_code', 'nearest_station'],
   ['address1', 'address2'],
   'phone',
-  'organization',
+  ['join_date', 'organization'],
   ['email', 'private_email'],
   ['passport_number', 'passport_expired_dt'],
   ['id_number', 'residence_type', 'id_card_expired_date'],

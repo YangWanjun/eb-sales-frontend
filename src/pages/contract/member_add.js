@@ -8,7 +8,7 @@ import CustomBreadcrumbs from '../../components/customBreadcrumbs';
 import GridContainer from '../../components/Grid/GridContainer';
 import GridItem from '../../components/Grid/GridItem';
 import Card from "../../components/Card/Card";
-import CardHeader from "../../components/Card/CardHeader.jsx";
+import CardHeader from "../../components/Card/CardHeader";
 import CardBody from "../../components/Card/CardBody";
 import CardFooter from "../../components/Card/CardFooter";
 import {
@@ -22,13 +22,38 @@ import { config } from '../../utils/config';
 import { checkDuplicatedMember } from '../common';
 
 class MemberAdd extends React.Component {
+  _isMounted = false;
+  documentTitle = '社員追加';
 
   constructor(props) {
     super(props);
 
     this.state = {
+      organizations: [],
       errors: {},
-    }
+    };
+  }
+
+  componentDidMount() {
+    document.title = `${this.documentTitle} | ${window.appName}`;
+  }
+
+  componentWillMount() {
+    this._isMounted = true;
+    // 事業部一覧を初期化する
+    common.fetchGet(config.api.organization.list).then(data => {
+      let organizations = [];
+      data.results.map(row => (
+        organizations.push({value: row.id, display_name: row.name, parent: row.parent})
+      ));
+      if (this._isMounted) {
+        this.setState({organizations});
+      }
+    });
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   save = () => {
@@ -43,6 +68,7 @@ class MemberAdd extends React.Component {
         }
         response.then(json => {
           common.showSuccess(constant.SUCCESS.SAVED);
+          common.redirect(`/contract/members/${json.id}`);
         }).catch(errors => {
           this.setState({errors});
           common.showError(constant.ERROR.FORM_CHECK_ERROR);
@@ -54,7 +80,10 @@ class MemberAdd extends React.Component {
   };
 
   render() {
-    const { errors } = this.state;
+    const { organizations, errors } = this.state;
+    // 所属部署の設定
+    let colOrg = common.getFromJsonList(edit_member_schema, 'name', 'organization');
+    colOrg['choices'] = organizations;
 
     return (
       <div>
@@ -66,7 +95,7 @@ class MemberAdd extends React.Component {
           <GridItem xs={12} sm={12} md={9}>
             <Card>
               <CardHeader color="info">
-                社員追加
+                {this.documentTitle}
               </CardHeader>
               <CardBody>
                 <Form

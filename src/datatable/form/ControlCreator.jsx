@@ -12,6 +12,7 @@ import {
   MenuItem,
 } from "@material-ui/core";
 import formStyle from "../assets/css/form";
+import HierarchySelect from './HierarchySelect';
 import { common } from "../utils";
 
 class ControlCreator extends React.Component {
@@ -104,28 +105,41 @@ class ControlCreator extends React.Component {
     } else if (column.type === 'choice') {
       // 選択肢が存在する場合
       const choices = column.choices || [];
-      control = (
-        <React.Fragment>
-          <InputLabel htmlFor={column.name}>{label}</InputLabel>
-          <Select
+      if (!common.isEmpty(column.choices) && column.choices[0].hasOwnProperty('parent')) {
+        control = (
+          <HierarchySelect
+            name={column.name}
+            label={label}
             value={value}
-            inputProps={{ name: column.name, value: value }}
-            onChange={this.handleChange}
-          >
-            <MenuItem value=""><em>None</em></MenuItem>
-            {choices.map(item => {
-              return (
-                <MenuItem
-                  key={item.value}
-                  value={item.value}
-                >
-                  {item.display_name}
-                </MenuItem>
-              );
-            })}
-          </Select>
-        </React.Fragment>
-      );
+            error={error}
+            choices={choices}
+            handleChange={this.handleChange}
+          />
+        );
+      } else {
+        control = (
+          <React.Fragment>
+            <InputLabel htmlFor={column.name}>{label}</InputLabel>
+            <Select
+              value={value}
+              inputProps={{ name: column.name, value: value }}
+              onChange={this.handleChange}
+            >
+              <MenuItem value=""><em>None</em></MenuItem>
+              {choices.map(item => {
+                return (
+                  <MenuItem
+                    key={item.value}
+                    value={item.value}
+                  >
+                    {item.display_name}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </React.Fragment>
+        );
+      }
     } else if (column.type === 'date') {
       control = (
         <TextField

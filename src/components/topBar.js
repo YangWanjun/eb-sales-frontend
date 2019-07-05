@@ -14,6 +14,7 @@ import {
 import MenuIcon from '@material-ui/icons/Menu';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import AccountCircle from '@material-ui/icons/AccountCircle';
+import AccountInfo from './AccountInfo';
 import Notifications from './Notifications';
 
 class TopBar extends React.Component {
@@ -24,31 +25,48 @@ class TopBar extends React.Component {
     this.handleMenuClick = this.handleMenuClick.bind(this);
   }
 
+  componentDidMount() {
+    window.appName = this.props.appName;
+    document.title = this.props.appName;
+  }
+
   handleMenuClick() {
     this.props.handleDrawerOpen();
   }
 
   handleShowNotifications = (event) => {
     if (this._openNotifications) {
-      this._openNotifications();
+      this._openNotifications(this.toobarEl);
     }
   };
 
-  handleClickAway = () => {
+  handleAwayFromNotification = () => {
     if (this._closeNotifications) {
       this._closeNotifications();
     }
   }
 
+  handleShowAccountInfo = (event) => {
+    if (this._openAccountInfo) {
+      this._openAccountInfo(this.toobarEl);
+    }
+  };
+
+  handleAwayFromAccountInfo = () => {
+    if (this._closeAccountInfo) {
+      this._closeAccountInfo();
+    }
+  }
+
   render() {
-    const { classes, loggedIn, appName, notifications } = this.props;
+    const { classes, loggedIn, appName, notifications, accountInfo } = this.props;
 
     return (
       <AppBar
         position="fixed"
         className={classNames(classes.appBar, this.props.open && classes.appBarShift)}
       >
-        <Toolbar disableGutters={!this.props.open} style={{paddingRight: 24}} ref={bar => (this._toolBar = bar)}>
+        <Toolbar disableGutters={!this.props.open} style={{paddingRight: 24}} ref={bar => (this.toobarEl = bar)}>
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -62,7 +80,7 @@ class TopBar extends React.Component {
           </Typography>
           { loggedIn ? (
             <div className={classes.sectionDesktop}>
-              <ClickAwayListener onClickAway={this.handleClickAway}>
+              <ClickAwayListener onClickAway={this.handleAwayFromNotification}>
                 <span style={{float: 'left'}}>
                   <IconButton color="inherit" onClick={this.handleShowNotifications}>
                     {notifications && notifications.length > 0 ? (
@@ -75,7 +93,6 @@ class TopBar extends React.Component {
                   </IconButton>
                   <Notifications
                     notifications={notifications}
-                    anchorEl={this._toolBar}
                     innerRef={popper => {
                       this._openNotifications = popper && popper.handleOpen;
                       this._closeNotifications = popper && popper.handleClose;
@@ -83,9 +100,20 @@ class TopBar extends React.Component {
                   />
                 </span>
               </ClickAwayListener>
-              <IconButton color="inherit">
-                <AccountCircle />
-              </IconButton>
+              <ClickAwayListener onClickAway={this.handleAwayFromAccountInfo}>
+                <span>
+                  <IconButton color="inherit" onClick={this.handleShowAccountInfo}>
+                    <AccountCircle />
+                  </IconButton>
+                  <AccountInfo
+                    accountInfo={accountInfo}
+                    innerRef={popper => {
+                      this._openAccountInfo = popper && popper.handleOpen;
+                      this._closeAccountInfo = popper && popper.handleClose;
+                    }}
+                  />
+                </span>
+              </ClickAwayListener>
             </div>
           ) : (
             <Button component={Link} color="inherit" to="/login">Login</Button>
