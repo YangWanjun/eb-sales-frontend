@@ -4,6 +4,7 @@ export const config = {
   api: {
     authenticate: hostApi + '/api/token-auth/',
     me: hostApi + '/api/me/',
+    logout: hostApi + '/api/logout/',
     contract: {
       member_list: hostApi + '/api/contract/members/',
     },

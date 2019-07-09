@@ -75,7 +75,7 @@ class AccountInfo extends React.Component {
                 <CardActions disableSpacing>
                   <div style={{flex: 1}} />
                   <Tooltip title='ログアウト' placement='bottom' enterDelay={300}>
-                    <IconButton aria-label="logout">
+                    <IconButton aria-label="logout" onClick={this.props.logout}>
                       <ExitToAppIcon />
                     </IconButton>
                   </Tooltip>

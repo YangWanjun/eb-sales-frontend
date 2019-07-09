@@ -14,7 +14,7 @@ import {
 import MenuIcon from '@material-ui/icons/Menu';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import AccountCircle from '@material-ui/icons/AccountCircle';
-import AccountInfo from './AccountInfo';
+import AccountInfo from '../containers/accountInfo';
 import Notifications from './Notifications';
 
 class TopBar extends React.Component {
@@ -59,7 +59,7 @@ class TopBar extends React.Component {
   }
 
   render() {
-    const { classes, loggedIn, appName, notifications, accountInfo } = this.props;
+    const { classes, loggedIn, appName, notifications } = this.props;
 
     return (
       <AppBar
@@ -106,7 +106,6 @@ class TopBar extends React.Component {
                     <AccountCircle />
                   </IconButton>
                   <AccountInfo
-                    accountInfo={accountInfo}
                     innerRef={popper => {
                       this._openAccountInfo = popper && popper.handleOpen;
                       this._closeAccountInfo = popper && popper.handleClose;

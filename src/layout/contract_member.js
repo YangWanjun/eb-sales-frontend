@@ -52,10 +52,11 @@ export const list_member_schema = [
     "sortable": true,
   },
   {
-    "name": "employment_date",
-    "type": "date",
-    "label": "雇用日",
+    "name": "contract_no",
+    "type": "string",
+    "label": "契約番号",
     "sortable": true,
+    "link": '/contract/members/%(id)s/contracts/%(contract_id)s/',
   },
   {
     "name": "has_insurance",

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom'
 import {
-  Typography,
+  Typography, Button,
 } from '@material-ui/core';
 import CustomBreadcrumbs from '../../components/customBreadcrumbs';
 import DetailPanel from '../../containers/detail';
@@ -38,6 +38,10 @@ class MemberDetail extends React.Component {
     });
   }
 
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
+
   handleDataUpdated(newData) {
     let { member } = this.state;
     Object.assign(member, newData);
@@ -67,6 +71,22 @@ class MemberDetail extends React.Component {
           layout={edit_member_layout}
           formComponentProps={formMemberProps}
           sendDataUpdated={this.handleDataUpdated}
+          deleteUrl={common.formatStr(config.api.member.detail, params.pk)}
+          actions={[
+            (
+              <Link
+                key='contract'
+                to={`/contract/members/${params.pk}/contracts/add/`}
+              >
+                <Button
+                  variant="contained"
+                  color="primary"
+                >
+                  契約情報
+                </Button>
+              </Link>
+            )
+          ]}
         />
       </div>
     );
