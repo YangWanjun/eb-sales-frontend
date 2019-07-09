@@ -1,57 +1,61 @@
 import React from 'react';
-import {
-  CircularProgress,
-  Modal,
-} from '@material-ui/core';
+import PropTypes from 'prop-types';
+import withStyles from "@material-ui/core/styles/withStyles";
+import { grey } from '@material-ui/core/colors';
 
-const circleSize = 64;
+const styles = theme => ({
+  fake: {
+    marginBottom: theme.spacing(4),
+    '&:last-child': {
+      marginBottom: `${theme.spacing(2)}px !important`,
+    },
+  },
+  fakeBar: {
+    backgroundColor: grey[200],
+    height: theme.spacing(1),
+    margin: theme.spacing(2),
+    // Selects every two elements among any group of siblings.
+    '&:nth-child(2n)': {
+      marginRight: theme.spacing(5),
+    },
+  },
+});
 
-function getModalStyle() {
-  const top = 50;
-  const left = 50;
+function Fake(props) {
+  const { classes } = props;
 
-  return {
-    top: `calc(${top}% - ${circleSize}px)`,
-    left: `calc(${left}% - ${circleSize}px)`,
-    // transform: `translate(-${top}%, -${left}%)`,
-    position: 'absolute',
-  };
+  return (
+    <div className={classes.fake}>
+      <div className={classes.fakeBar} />
+      <div className={classes.fakeBar} />
+      <div className={classes.fakeBar} />
+      <div className={classes.fakeBar} />
+      <div className={classes.fakeBar} />
+    </div>
+  );
 }
 
-export default class Loading extends React.Component {
+class Loading extends React.Component {
   
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      open: false,
-    };
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.loading !== this.state.open) {
-      this.setState({
-        open: nextProps.loading,
-      })
-    }
-  }
-
   render () {
-    const { open } = this.state;
+    const { classes, stack } = this.props;
 
     return (
       <div>
-        <Modal
-          open={open}
-          aria-labelledby="simple-modal-title"
-          aria-describedby="simple-modal-description"
-          BackdropProps={{style: {opacity: "0.5"}}}
-        >
-          <div style={getModalStyle()}>
-            <CircularProgress size={circleSize} />
-          </div>
-        </Modal>
+        {Array.apply(0, Array(stack)).map((x, key) => (
+          <Fake key={key} classes={classes} />
+        ))}
       </div>
     );
   }
 }
+
+Loading.propTypes = {
+  stack: PropTypes.number,
+}
+
+Loading.defaultProps = {
+  stack: 1,
+}
+
+export default withStyles(styles)(Loading);

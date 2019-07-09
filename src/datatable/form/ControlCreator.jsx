@@ -69,7 +69,20 @@ class ControlCreator extends React.Component {
       };
     }
 
-    if (column.type === 'boolean') {
+    if (column.read_only === true) {
+      control = (
+        <TextField
+          disabled
+          error={error}
+          name={column.name}
+          value={value}
+          label={label}
+          InputLabelProps={{
+            shrink: true,
+          }}
+        />
+      );
+    } else if (column.type === 'boolean') {
       // チェックボックスを表示
       control = (
         <React.Fragment>

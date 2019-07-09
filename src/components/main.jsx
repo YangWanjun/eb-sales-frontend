@@ -12,7 +12,6 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import TopBar from '../containers/topBar';
 import SimpleSnackbar from '../containers/snackBar';
 import ShowNotification from '../containers/notification';
-import Loading from '../containers/Loading';
 import styles from '../assets/jss/views/mainStyle';
 
 class Main extends React.Component {
@@ -78,7 +77,6 @@ class Main extends React.Component {
         </main>
         <SimpleSnackbar />
         <ShowNotification />
-        <Loading />
       </div>
     );
   }

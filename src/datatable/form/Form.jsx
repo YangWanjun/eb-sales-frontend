@@ -2,9 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import withStyles from "@material-ui/core/styles/withStyles";
 import {
+  Typography,
   Grid,
-  FormControl,
-  TextField,
 } from '@material-ui/core';
 import ControlCreateor from './ControlCreator';
 import { common, constant } from '../utils';
@@ -16,6 +15,10 @@ const styles = () => ({
   message: {
     display: 'flex',
     alignItems: 'center',
+  },
+  subtitle: {
+    borderBottom: '2px solid #555',
+    marginTop: '.5rem',
   },
 });
 
@@ -52,10 +55,15 @@ class MyForm extends React.Component {
     }
   }
 
-  handleChange = (name, value, type) => (event) => {
+  handleChange = (prefix, inlineIndex) => (name, value, type) => (event) => {
     this.setState((state) => {
       let data = state.data;
-      data[name] = value;
+      if (prefix && inlineIndex !== undefined && inlineIndex !== null) {
+        let formsetData = data[prefix];
+        formsetData[inlineIndex][name] = value;
+      } else {
+        data[name] = value;
+      }
       return {data: data};
     });
 
@@ -92,22 +100,17 @@ class MyForm extends React.Component {
     let valid = true;
     let errors = {};
     // 項目の定義からチェック
-    this.props.schema.map(col => {
-      const name = col.name;
-      const value = data[name];
-      if (col.required === true) {
-        // 必須項目チェック
-        if (value === null || value === '' || value === undefined || (typeof value === 'object' && common.isEmpty(value))) {
+    if (this.validate_by_schema(null, null, this.props.schema, data, errors) === false) {
+      valid = false;
+    }
+    this.props.inlines.map(formset => {
+      const dataList = data[formset.name];
+      dataList.map((inlineData, index) => {
+        if (this.validate_by_schema(formset.name, index, formset.schema, inlineData, errors) === false) {
           valid = false;
-          this.pushError(name, common.formatStr(constant.ERROR.REQUIRE_FIELD, {name: col.label}), errors);
         }
-      } else if (value && col.regex) {
-        // 正規表現チェック
-        const regex = new RegExp(col.regex);
-        if (regex.test(value) === false) {
-          this.pushError(name, constant.ERROR.INVALID_DATA, errors);
-        }
-      }
+        return true;
+      });
       return true;
     });
     // カスタマイズのチェック
@@ -116,7 +119,7 @@ class MyForm extends React.Component {
       if (retVal !== true) {
         valid = false;
         retVal.map(item => (
-          this.pushError(item.name, item.message, errors)
+          this.pushError(null, null, item.name, item.message, errors)
         ));
       }
       return true;
@@ -126,11 +129,50 @@ class MyForm extends React.Component {
     return valid;
   };
 
-  pushError = (name, error, errors) => {
-    if (name in errors) {
-      errors[name].push(error);
+  validate_by_schema = (prefix, index, schema, data, errors) => {
+    let valid = true;
+    schema.map(col => {
+      const name = col.name;
+      const value = data[name];
+      if (col.required === true) {
+        // 必須項目チェック
+        if (value === null || value === '' || value === undefined || (typeof value === 'object' && common.isEmpty(value))) {
+          valid = false;
+          this.pushError(prefix, index, name, common.formatStr(constant.ERROR.REQUIRE_FIELD, {name: col.label}), errors);
+        }
+      } else if (value && col.regex) {
+        // 正規表現チェック
+        const regex = new RegExp(col.regex);
+        if (regex.test(value) === false) {
+          this.pushError(prefix, index, name, constant.ERROR.INVALID_DATA, errors);
+        }
+      }
+      return true;
+    });
+    return valid;
+  };
+
+  pushError = (prefix, index, name, error, errors) => {
+    let newErrors = errors;
+    if (prefix && index !== undefined && index !== null) {
+      let inlineErrors = {};
+      if (prefix in errors) {
+        inlineErrors = errors[prefix];
+      } else {
+        inlineErrors = {};
+        errors[prefix] = inlineErrors;
+      }
+      if (index in inlineErrors) {
+        newErrors = inlineErrors[index];
+      } else {
+        newErrors = {};
+        inlineErrors[index] = newErrors;
+      }
+    }
+    if (name in newErrors) {
+      newErrors[name].push(error);
     } else {
-      errors[name] = [error];
+      newErrors[name] = [error];
     }
   };
 
@@ -160,13 +202,17 @@ class MyForm extends React.Component {
     }
   };
 
-  createFormLayout(data, schema, layout) {
+  createFormLayout(data, schema, layout, isSingleLine, prefix, inlineIndex) {
     let control = null;
     if (common.isEmpty(layout)) {
+      let colSpan = 12;
+      if (isSingleLine === true) {
+        colSpan = Math.floor(12 / schema.length);
+      }
       control = (
         <Grid container>
           {schema.map((col, key) => (
-            this.createFormField(col, key, 12, data)
+            this.createFormField(col, key, colSpan, data, prefix, inlineIndex)
           ))}
         </Grid>
       );
@@ -174,7 +220,7 @@ class MyForm extends React.Component {
       control = (
         <Grid container>
           {layout.map((row, key) => (
-            this.createRowLayout(row, key, data)
+            this.createRowLayout(row, key, data, prefix, inlineIndex)
           ))}
         </Grid>
       );
@@ -182,18 +228,18 @@ class MyForm extends React.Component {
     return control;
   }
 
-  createRowLayout(row, key, data) {
+  createRowLayout(row, key, data, prefix, inlineIndex) {
     const { schema } = this.props;
     if (typeof row === 'string') {
       const col = common.getFromList(schema, 'name', row);
-      return col ? this.createFormField(col, row, 12, data) : null;
+      return col ? this.createFormField(col, row, 12, data, prefix, inlineIndex) : null;
     } else if (Array.isArray(row)) {
       const colSpan = Math.floor(12 / row.length);
       return (
         <React.Fragment key={key}>
           {row.map((fieldName, key) => {
             const col = common.getFromList(schema, 'name', fieldName);
-            return col ? this.createFormField(col, key, colSpan, data) : null;
+            return col ? this.createFormField(col, key, colSpan, data, prefix, inlineIndex) : null;
           })}
         </React.Fragment>
       );
@@ -201,31 +247,22 @@ class MyForm extends React.Component {
     return null;
   }
 
-  createFormField(col, key, colSpan, data) {
-    const { classes } = this.props;
-    const errors = this.state.errors[col.name];
-    if (col.read_only === true) {
-      return (
-        <Grid item key={key} xs={12} sm={12} md={colSpan}>
-          <FormControl className={classes.formControl}>
-            <TextField
-              disabled
-              value={data[col.name]}
-              label={col.label}
-              InputLabelProps={{
-                shrink: true,
-              }}
-            />
-          </FormControl>
-        </Grid>  
-      );
-    } else if (col.type === 'cascade') {
+  createFormField(col, key, colSpan, data, prefix, inlineIndex) {
+    let errors = null;
+    if (prefix) {
+      if (this.state.errors[prefix] && inlineIndex in this.state.errors[prefix]) {
+        errors = this.state.errors[prefix][inlineIndex][col.name];
+      }
+    } else {
+      errors = this.state.errors[col.name];
+    }
+    if (col.type === 'cascade') {
       return (
         <ControlCreateor
           key={key}
           column={col}
           data={data}
-          handleChange={this.handleChange}
+          handleChange={this.handleChange(prefix, inlineIndex)}
           wrapper={{element: Grid, props: {xs: 12, sm: 12, md: colSpan, item: true}}}
           errors={errors}
         />
@@ -252,7 +289,7 @@ class MyForm extends React.Component {
             placeholder={col.help_text}
             errors={errors}
             handleBlur={this.handleBlur}
-            handleChange={this.handleChange}
+            handleChange={this.handleChange(prefix, inlineIndex)}
           />
         </Grid>
       );
@@ -260,7 +297,7 @@ class MyForm extends React.Component {
   }
 
   render() {
-    const { classes, schema, layout } = this.props;
+    const { classes, schema, layout, inlines } = this.props;
     const { data } = this.state;
     const { non_field_errors } = this.state.errors;
 
@@ -275,7 +312,24 @@ class MyForm extends React.Component {
             ))}
           </ul>
         ) : null}
-        {this.createFormLayout(data, schema, layout)}
+        {this.createFormLayout(data, schema, layout, false, null, null)}
+        {inlines.map((formset, key) => {
+          const init_data_array = data[formset.name];
+          return (
+            <div key={key}>
+              <Typography variant='subtitle1' className={classes.subtitle}>{formset.title}</Typography>
+              {(Array.isArray(init_data_array) && init_data_array.length > 0) ? (
+                <React.Fragment>
+                  {init_data_array.map((init_data, key2) => (
+                    <div key={key2}>
+                      {this.createFormLayout(init_data, formset.schema, formset.layout, true, formset.name, key2)}
+                    </div>
+                  ))}
+                </React.Fragment>
+              ) : null}
+            </div>
+          );
+        })}
       </div>
     );
   }
@@ -285,6 +339,7 @@ class MyForm extends React.Component {
 MyForm.propTypes = {
   schema: PropTypes.arrayOf(PropTypes.object).isRequired,
   layout: PropTypes.array,
+  inlines: PropTypes.arrayOf(PropTypes.object),
   data: PropTypes.object,
   onChanges: PropTypes.arrayOf(PropTypes.func),
   onBlurs: PropTypes.arrayOf(PropTypes.func),
@@ -294,6 +349,7 @@ MyForm.propTypes = {
 
 MyForm.defaultProps = {
   layout: [],
+  inlines: [],
   data: {},
   onChanges: [],
   onBlurs: [],
