@@ -4,11 +4,17 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import {
   Typography,
   Grid,
+  Tooltip,
+  IconButton,
+  Button,
 } from '@material-ui/core';
+import AddIcon from '@material-ui/icons/Add';
+import CloseIcon from '@material-ui/icons/Close';
+import { grey } from '@material-ui/core/colors';
 import ControlCreateor from './ControlCreator';
 import { common, constant } from '../utils';
 
-const styles = () => ({
+const styles = (theme) => ({
   error: {
     color: 'red',
   },
@@ -16,10 +22,17 @@ const styles = () => ({
     display: 'flex',
     alignItems: 'center',
   },
-  subtitle: {
+  inlineTitle: {
     borderBottom: '2px solid #555',
-    marginTop: '.5rem',
+    marginTop: theme.spacing(2),
   },
+  inlineTable: {
+    width: '100%',
+  },
+  inlineAdd: {
+    width: '100%',
+    backgroundColor: grey[100],
+  }
 });
 
 class MyForm extends React.Component {
@@ -93,6 +106,37 @@ class MyForm extends React.Component {
       }
       return true;
     });
+  };
+
+  handleDeleteInline = (prefix, index) => () => {
+    let { data, errors } = this.state;
+    let inlineData = data[prefix];
+    inlineData.splice(index, 1);
+    let inlineErrors = errors[prefix];
+    if (inlineErrors) {
+      // Indexによるエラーを順次移動する
+      delete inlineErrors[index];
+      Object.keys(inlineErrors).map(key => {
+        if (key > index) {
+          const existErrors = inlineErrors[key];
+          delete inlineErrors[key];
+          inlineErrors[key - 1] = existErrors;
+        }
+        return true;
+      });
+    }
+    this.setState({data, errors});
+  };
+
+  handleInlineAdd = (prefix, schema) => () => {
+    let { data } = this.state;
+    let inlineData = data[prefix];
+    if (Array.isArray(inlineData)) {
+      inlineData.push({});
+    } else {
+      data[prefix] = [];
+    }
+    this.setState({data});
   };
 
   validate = () => {
@@ -317,16 +361,36 @@ class MyForm extends React.Component {
           const init_data_array = data[formset.name];
           return (
             <div key={key}>
-              <Typography variant='subtitle1' className={classes.subtitle}>{formset.title}</Typography>
+              <Typography variant='subtitle1' className={classes.inlineTitle}>{formset.title}</Typography>
               {(Array.isArray(init_data_array) && init_data_array.length > 0) ? (
                 <React.Fragment>
                   {init_data_array.map((init_data, key2) => (
-                    <div key={key2}>
-                      {this.createFormLayout(init_data, formset.schema, formset.layout, true, formset.name, key2)}
-                    </div>
+                    <table key={key2} className={classes.inlineTable}>
+                      <tbody>
+                        <tr>
+                          <td>
+                            {this.createFormLayout(init_data, formset.schema, formset.layout, true, formset.name, key2)}
+                            </td>
+                          <td style={{width: 45}}>
+                            <Tooltip title='削除' placement='bottom' enterDelay={300}>
+                              <IconButton aria-label="Action" onClick={this.handleDeleteInline(formset.name, key2)}>
+                                <CloseIcon />
+                              </IconButton>
+                            </Tooltip>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
                   ))}
                 </React.Fragment>
               ) : null}
+              <div>
+                <Tooltip title='追加' placement='bottom' enterDelay={300}>
+                  <Button className={classes.inlineAdd} onClick={this.handleInlineAdd(formset.name, formset.schema)}>
+                    <AddIcon />
+                  </Button>
+                </Tooltip>
+              </div>
             </div>
           );
         })}
